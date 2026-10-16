@@ -33,10 +33,14 @@ established a pattern everyone must follow, or decided **not** to do something? 
 PR as the change** — a decision that lives only in the author's head becomes rework next
 semester. Format and criteria: [`docs/adr/README.md`](./docs/adr/README.md).
 
-**7. Every new screen or flow ships with an E2E spec.** A new feature, a new route, or a change
-to an existing flow ⇒ a Playwright spec under `e2e/tests/`, **in the same PR** (`npm run e2e`,
-config in `playwright.config.ts`). There is no spec yet — the first one sets the pattern
-(fixtures, selectors, naming) every later spec follows.
+**7. Every new screen or flow ships with an E2E spec, in the same PR** (ADR-0012). A new feature,
+a new route, or a change to an existing flow ⇒ `e2e/tests/<area>/<screen>-<aspect>.spec.ts`,
+importing `test`/`expect` from `e2e/support/fixtures` and stubbing every API call with
+`api.respond(...)` — an unstubbed call fails the test. It runs in every R13 viewport by itself;
+`expectNoHorizontalOverflow` (`e2e/support/layout`) checks the layout. Select what a user perceives
+— `getByRole`, `getByLabel`, `getByText` — and a `data-testid` only where nothing accessible
+exists. A critical flow (login, the main CRUD) also gets a spec in `e2e/integrated/`, against the
+real API and seed data.
 
 ## Folder layout
 
@@ -71,11 +75,12 @@ src/
     <domain>.ts                   one per backend domain, via injectEndpoints
     validation-schemas/<form>.ts  Zod schemas (ADR-0003)
   store/index.ts                  the Redux store; global slices in store/slices/<name>.ts
-  test/                           Vitest setup and test-only infrastructure
+  test/                           Vitest setup and the MSW server (server.ts)
   utils/<name>.ts                 generic pure functions
 e2e/
-  tests/<area>/<screen>-<aspect>.spec.ts
-  support/                        fixtures/ and helpers/ shared by specs
+  tests/<area>/<screen>-<aspect>.spec.ts   stubbed API, every viewport (standing rule 7)
+  integrated/<flow>.spec.ts                critical flows against the real API and seed data
+  support/                                 fixtures.ts (api stubs), layout.ts, constants.ts
 ```
 
 - **Names are kebab-case**, files and folders (`status-badge.tsx`, `use-order-filter.ts`). A hook
@@ -247,6 +252,11 @@ this is what separates an error shown to the user from an error swallowed.
 Arrange, Act, Assert in that order, never interleaved. The **name states the acceptance
 criterion** in plain language. Every behaviour gets a happy path **and** an error/edge path.
 
+A test that reaches the API declares the answer with MSW in its Arrange —
+`server.use(http.get(apiUrl("/orders"), () => HttpResponse.json(page)))` (`src/test/server.ts`).
+A request nobody answered fails the test, and the error path is an answer too
+(`HttpResponse.json(problem, { status: 409 })`).
+
 ### R13 — Accessibility and responsiveness are not extras
 
 No horizontal overflow at 320/768/1280/1536 (that's what the E2E suite covers). Every
@@ -325,6 +335,9 @@ Authentication follows ADR-0008:
 
 ## Environment
 
+- `npm run e2e` starts its own Vite on `http://localhost:4173` with the API pointed at a fake
+  origin, so it never reuses — or reaches the API through — the dev server on 5173. Unit tests use
+  `http://api.test`, set in `vite.config.ts`.
 - `foody-api` runs on `http://localhost:8080`; the front runs on `http://localhost:5173`. Copy
   `.env.example` to `.env`: the API base URL goes there as `VITE_API_URL` — never hard-coded in a
   service.
