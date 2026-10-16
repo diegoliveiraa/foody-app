@@ -324,10 +324,16 @@ Authentication follows ADR-0008:
 
 ## Environment
 
-- `foody-api` runs on `http://localhost:8080`; the front runs on `http://localhost:5173`. The API
-  base URL goes in `.env` as `VITE_API_URL` — never hard-coded in a service.
+- `foody-api` runs on `http://localhost:8080`; the front runs on `http://localhost:5173`. Copy
+  `.env.example` to `.env`: the API base URL goes there as `VITE_API_URL` — never hard-coded in a
+  service.
+- **A backend for `npm run dev`:** `docker compose up -d --wait` builds and runs foody-api and its
+  PostgreSQL from `../foody-api` (ADR-0009). It needs that repo cloned beside this one, with its
+  own `.env`, and it takes port 8080 — stop it before `./mvnw spring-boot:run` there.
 - **`VITE_*` variables are inlined at build time:** after changing `.env`, restart `dev` or
-  rebuild; reloading the page does nothing.
+  rebuild; reloading the page does nothing. The same goes for the image:
+  `docker build --build-arg VITE_API_URL=<url> -t foody-app .` — one image per API URL.
+  **Deploy:** `docker compose -f compose.deploy.yaml up -d`, with the `.env` on the host.
 
 ## Before handing off
 

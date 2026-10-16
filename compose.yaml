@@ -1,0 +1,4 @@
+name: foody-web-local
+
+include:
+  - path: ../foody-api/compose.deploy.yaml
