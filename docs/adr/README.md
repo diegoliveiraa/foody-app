@@ -84,3 +84,4 @@ needs migration, rework or monitoring.
 | [ADR-0007](./0007-the-sidebar-and-screen-access-come-from-get-me.md) | 2026-10-16 | The sidebar and screen access come from GET /me | Accepted |
 | [ADR-0008](./0008-keep-the-access-token-in-memory-and-refresh-it-in-the-base-query.md) | 2026-10-16 | Keep the access token in memory and refresh it in the base query | Accepted |
 | [ADR-0009](./0009-serve-the-spa-from-unprivileged-nginx-and-run-the-api-locally-with-compose.md) | 2026-10-16 | Serve the SPA from unprivileged nginx; the local compose runs the API | Accepted |
+| [ADR-0010](./0010-generate-the-api-types-from-its-openapi-contract.md) | 2026-10-16 | Generate the API's types from its OpenAPI contract | Accepted |

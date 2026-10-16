@@ -275,8 +275,12 @@ those are not comments.
 BASE=main
 { git diff --name-only --diff-filter=d "$BASE"...HEAD; git diff --name-only --diff-filter=d HEAD; \
   git ls-files --others --exclude-standard; } | sort -u | grep -E '\.(ts|tsx)$' \
+  | grep -v '^src/@types/api\.d\.ts$' \
   | xargs grep -nE '//|/\*|^\s*\*' | grep -vE 'oxlint-|eslint-|@ts-|prettier-ignore'
 ```
+
+The generated `src/@types/api.d.ts` is exempt: nobody edits it, and its comments come from the
+generator and the API's contract.
 
 ### R15 — Always explicit types
 
@@ -291,12 +295,13 @@ Including local variables, function return types and component return types (`JS
 
 | Type | Where |
 |---|---|
-| API contract (request, response, entities the backend returns) | `src/@types/<domain>.d.ts` — the service in `src/services/<domain>.ts` imports from there |
+| API contract (request, response, entities the backend returns) | Generated into `src/@types/api.d.ts` by `npm run api:types` (ADR-0010), never edited. `src/@types/<domain>.d.ts` names the ones a domain uses — `export type Order = components["schemas"]["OrderResponse"];` — and the service in `src/services/<domain>.ts` imports from there |
 | Screen types shared by more than one file (view model, row types, shapes passed between hook and components) | `src/pages/<area>/<screen>/types.ts` |
 | Filter state, action signatures, filter key types | `src/pages/<area>/<screen>/filter/types.ts` |
 | Props of a single component | the component file itself (`interface XProps`) |
 
-Never: an `interface`/`type` of the API declared inside `src/services/*`; a view model declared
+Never: a request or response shape typed by hand when the contract has it; an `interface`/`type`
+of the API declared inside `src/services/*`; a view model declared
 inside the hook; a shape exported from a component for a hook to import; the same interface
 declared twice (TS **merges** duplicates silently); `Preview["x"]["items"][number]` aliases
 retyped in each file — name the type once in `@types` and import it.
@@ -344,7 +349,8 @@ Authentication follows ADR-0008:
 
 ## Before handing off
 
-`npx tsc -b` · `npm run lint` (zero warnings) · `npm test`.
+`npx tsc -b` · `npm run lint` (zero warnings) · `npm test`. Used a contract foody-api changed?
+`npm run api:types` first, and commit the regenerated `src/@types/api.d.ts` with the change.
 
 **Self-review against what reviewers keep flagging** — over the files you touched, fix every
 hit before handing off:
