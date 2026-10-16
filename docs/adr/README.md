@@ -82,3 +82,4 @@ needs migration, rework or monitoring.
 | [ADR-0005](./0005-organize-the-front-by-area-and-screen.md) | 2026-10-16 | Organize the front by area and screen | Accepted |
 | [ADR-0006](./0006-invalidate-the-cache-by-entity-from-the-service.md) | 2026-10-16 | Invalidate the cache by entity and id, only from the service | Accepted |
 | [ADR-0007](./0007-the-sidebar-and-screen-access-come-from-get-me.md) | 2026-10-16 | The sidebar and screen access come from GET /me | Accepted |
+| [ADR-0008](./0008-keep-the-access-token-in-memory-and-refresh-it-in-the-base-query.md) | 2026-10-16 | Keep the access token in memory and refresh it in the base query | Accepted |

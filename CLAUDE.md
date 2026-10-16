@@ -309,6 +309,19 @@ returns (ADR-0007). The front owns only routes and icons:
   reset on logout.
 - Hiding is UX, not security: the API authorizes every request on its own (standing rule 5).
 
+### R19 — The token never leaves memory
+
+Authentication follows ADR-0008:
+
+- The access token lives only in the session slice (`src/store/slices/session.ts`) — never in
+  `localStorage`, `sessionStorage`, a readable cookie, a URL or a log. The refresh token is an
+  `HttpOnly` cookie the front never reads.
+- Every request goes through the base query in `src/services/api.ts`, which attaches and renews
+  the token. No component or service builds an `Authorization` header or retries a 401 itself.
+- Login, refresh and logout live in `src/services/auth.ts` — the only endpoints sent with
+  `credentials: "include"`.
+- Logout, or a failed refresh, clears the token and calls `resetApiState`.
+
 ## Environment
 
 - `foody-api` runs on `http://localhost:8080`; the front runs on `http://localhost:5173`. The API
