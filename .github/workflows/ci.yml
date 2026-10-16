@@ -1,0 +1,57 @@
+name: CI
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    name: Types, lint, format, tests and build
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: "24"
+          cache: npm
+      - run: npm ci
+      - name: Type-check
+        run: npx tsc -b
+      - name: Lint (type-aware, zero warnings)
+        run: npm run lint
+      - name: Format
+        run: npm run format:check
+      - name: No comments in code
+        run: npm run check:comments
+      - name: Unit tests
+        run: npm test
+      - name: Build
+        run: npm run build
+        env:
+          VITE_API_URL: http://localhost:8080
+
+  image:
+    name: Image runs healthy
+    needs: verify
+    runs-on: ubuntu-24.04
+    env:
+      VITE_API_URL: http://localhost:8080
+      WEB_PORT: "8080"
+    steps:
+      - uses: actions/checkout@v7
+      - name: Build the image and start the web container
+        run: docker compose -f compose.deploy.yaml up -d --build --wait --wait-timeout 300
+      - name: Logs on failure
+        if: failure()
+        run: docker compose -f compose.deploy.yaml logs
+      - name: Tear down
+        if: always()
+        run: docker compose -f compose.deploy.yaml down

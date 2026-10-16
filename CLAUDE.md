@@ -266,21 +266,10 @@ Not comments, and therefore kept: tool directives that change behaviour
 (`// oxlint-disable-next-line <rule>`, `// @ts-expect-error`, `// prettier-ignore`), and only
 where removing them breaks the build. Never add one to dodge a rule (standing rule 4).
 
-Check before handing off — anything printed that is not a string literal is a comment to remove.
-`BASE` is the branch the work started from, so files already committed on the branch are covered
-too. Comments at the end of a line print as well; URLs and globs inside strings also print —
-those are not comments.
-
-```bash
-BASE=main
-{ git diff --name-only --diff-filter=d "$BASE"...HEAD; git diff --name-only --diff-filter=d HEAD; \
-  git ls-files --others --exclude-standard; } | sort -u | grep -E '\.(ts|tsx)$' \
-  | grep -v '^src/@types/api\.d\.ts$' \
-  | xargs grep -nE '//|/\*|^\s*\*' | grep -vE 'oxlint-|eslint-|@ts-|prettier-ignore'
-```
-
-The generated `src/@types/api.d.ts` is exempt: nobody edits it, and its comments come from the
-generator and the API's contract.
+Check with `npm run check:comments` (CI runs it too): it reads every `.ts`/`.tsx` file in the repo,
+ignores what sits inside string and template literals — a URL is not a comment — and prints each
+line that still carries one. The generated `src/@types/api.d.ts` is exempt: nobody edits it, and
+its comments come from the generator and the API's contract.
 
 ### R15 — Always explicit types
 
@@ -349,8 +338,12 @@ Authentication follows ADR-0008:
 
 ## Before handing off
 
-`npx tsc -b` · `npm run lint` (zero warnings) · `npm test`. Used a contract foody-api changed?
-`npm run api:types` first, and commit the regenerated `src/@types/api.d.ts` with the change.
+`npx tsc -b` · `npm run lint` · `npm run format:check` · `npm run check:comments` · `npm test` —
+the same gates CI runs (ADR-0011). The lint is type-aware and fails on any warning; it enforces
+R8 (`any`), R10 (`console`), R11 (floating and misused promises), R15 (function return types) and
+R1 (nested ternaries, `else` after `return`). `npm run format` applies Prettier. Used a contract
+foody-api changed? `npm run api:types` first, and commit the regenerated `src/@types/api.d.ts` with
+the change.
 
 **Self-review against what reviewers keep flagging** — over the files you touched, fix every
 hit before handing off:

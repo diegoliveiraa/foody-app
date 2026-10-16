@@ -1,0 +1,7 @@
+*.md
+dist
+playwright-report
+test-results
+blob-report
+package-lock.json
+src/@types/api.d.ts
