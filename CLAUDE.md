@@ -169,7 +169,14 @@ same helper copied into two files of the same screen is a duplicate too.
   (ADR-0003).
 - **Derived values** → a selector or `useMemo`.
 
-Request errors go through **one** extractor in `src/utils` — never a second one.
+Request errors go through **one** extractor in `src/utils` — never a second one. The API answers
+errors as Problem Details (foody-api ADR-0005): show `detail`, branch on `code` — never on the
+text — and map `errors[]` (`{ field, message }`) onto the form's fields.
+
+List screens are paginated on the server: they send `page` (from 1), `pageSize` and
+`sort=property,asc|desc`, and render `data` with `meta` (`page`, `pageSize`, `totalItems`,
+`totalPages`, `hasNext`, `hasPrevious`). The page-size selector offers exactly 10, 25, 50 and
+100, declared once in `src/constants` — the API rejects anything else.
 
 **Cache tags (ADR-0006)** decide which screens refresh after a write:
 
