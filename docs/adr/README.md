@@ -81,3 +81,4 @@ needs migration, rework or monitoring.
 | [ADR-0004](./0004-route-with-react-router.md) | 2026-10-16 | Route with React Router in data mode | Accepted |
 | [ADR-0005](./0005-organize-the-front-by-area-and-screen.md) | 2026-10-16 | Organize the front by area and screen | Accepted |
 | [ADR-0006](./0006-invalidate-the-cache-by-entity-from-the-service.md) | 2026-10-16 | Invalidate the cache by entity and id, only from the service | Accepted |
+| [ADR-0007](./0007-the-sidebar-and-screen-access-come-from-get-me.md) | 2026-10-16 | The sidebar and screen access come from GET /me | Accepted |

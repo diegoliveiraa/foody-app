@@ -294,6 +294,21 @@ inside the hook; a shape exported from a component for a hook to import; the sam
 declared twice (TS **merges** duplicates silently); `Preview["x"]["items"][number]` aliases
 retyped in each file — name the type once in `@types` and import it.
 
+### R18 — Navigation and access come from `/me`
+
+The sidebar renders `GET /me` → `modules[].screens[]`, in the order and with the labels the API
+returns (ADR-0007). The front owns only routes and icons:
+
+- Each `<screen>.routes.ts` sets `handle: { screenKey, icon }`; each `<area>.routes.ts` sets
+  `handle: { moduleKey, icon }`. Keys are `<area>` and `<area>.<screen>` — the folder names —
+  declared once in `src/constants/screens.ts`.
+- A screen absent from `/me` is forbidden: the route guard renders the forbidden page. No role
+  checks in components (`role === "ADMIN"`).
+- Whether a screen offers an action comes from `useCan(screenKey, action)`, never a local rule.
+- `/me` lives only in the RTK Query cache — no copy in `localStorage` or a context — and is
+  reset on logout.
+- Hiding is UX, not security: the API authorizes every request on its own (standing rule 5).
+
 ## Environment
 
 - `foody-api` runs on `http://localhost:8080`; the front runs on `http://localhost:5173`. The API
