@@ -1,7 +1,8 @@
 # foody-app — working rules
 
-React 19 + Vite + TypeScript, linted by oxlint. Entry `src/main.tsx`, screens in
-`src/pages/<area>/<screen>/`. Consumes `foody-api`. This file is the **single source of truth
+React 19 + Vite + TypeScript, linted by oxlint. Tailwind 4 + shadcn/Radix (ADR-0001), RTK Query
+(ADR-0002), React Hook Form + Zod (ADR-0003), React Router (ADR-0004), Vitest + Testing Library,
+Playwright. Entry `src/main.tsx`, screens in `src/pages/<area>/<screen>/`. Consumes `foody-api`. This file is the **single source of truth
 for this repo's rules** — to change a rule, edit it here.
 
 ## Standing rules
@@ -32,9 +33,9 @@ PR as the change** — a decision that lives only in the author's head becomes r
 semester. Format and criteria: [`docs/adr/README.md`](./docs/adr/README.md).
 
 **7. Every new screen or flow ships with an E2E spec.** A new feature, a new route, or a change
-to an existing flow ⇒ a Playwright spec under `e2e/tests/`, **in the same PR**. Playwright is
-not installed yet — the first screen brings the setup with it, and the pattern it sets
-(fixtures, selectors, naming) is the one every later spec follows.
+to an existing flow ⇒ a Playwright spec under `e2e/tests/`, **in the same PR** (`npm run e2e`,
+config in `playwright.config.ts`). There is no spec yet — the first one sets the pattern
+(fixtures, selectors, naming) every later spec follows.
 
 ## Code rules
 
@@ -99,17 +100,21 @@ UI primitives (button, table, dialog, select, toast…) live in `src/components/
 composites in `src/components/`. **Building a button, table or modal from scratch in a screen
 when a primitive exists is a violation** — if it doesn't exist yet, it is born there.
 
+A primitive is born with `npx shadcn add <name>` (config in `components.json`), and the generated
+file is a file you touched: explicit types (R15), no comments (R14), and its `cva` variants moved
+to a sibling `<name>-variants.ts` (exported from the component file, they trip oxlint's
+`only-export-components`). Icons come only from `lucide-react`; class names are merged with `cn` from the `cn` package.
+
 Formatters (money, dates) live in `src/utils` and hooks in `src/hooks` — `grep` before writing
 your own. A local `const money = (v) => v.toLocaleString(…)` in a screen is a duplicate. The
 same helper copied into two files of the same screen is a duplicate too.
 
 ### R5 — Server data comes from the data layer
 
-- **Server** → one file per domain in `src/services/*`. No `fetch`/`axios` inside a component.
-  The data-fetching library is chosen with the first call to the API — and recorded as an ADR
-  (standing rule 6).
-- **Forms** → a form library plus a schema in `src/services/validation-schemas/`, chosen with
-  the first form.
+- **Server** → RTK Query (ADR-0002), one file per domain in `src/services/*`. No `fetch`/`axios`
+  inside a component.
+- **Forms** → React Hook Form plus a Zod schema in `src/services/validation-schemas/`
+  (ADR-0003).
 - **Derived values** → a selector or `useMemo`.
 
 Request errors go through **one** extractor in `src/utils` — never a second one.
@@ -210,7 +215,7 @@ retyped in each file — name the type once in `@types` and import it.
 
 ## Before handing off
 
-`npx tsc -b` · `npm run lint` (zero warnings).
+`npx tsc -b` · `npm run lint` (zero warnings) · `npm test`.
 
 **Self-review against what reviewers keep flagging** — over the files you touched, fix every
 hit before handing off:

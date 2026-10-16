@@ -75,3 +75,7 @@ needs migration, rework or monitoring.
 
 | ID | Date | Decision | Status |
 |---|---|---|---|
+| [ADR-0001](./0001-build-the-ui-with-tailwind-and-shadcn.md) | 2026-10-16 | Build the UI with Tailwind CSS and shadcn/ui on Radix | Accepted |
+| [ADR-0002](./0002-fetch-server-data-with-rtk-query.md) | 2026-10-16 | Fetch server data with RTK Query | Accepted |
+| [ADR-0003](./0003-build-forms-with-react-hook-form-and-zod.md) | 2026-10-16 | Build forms with React Hook Form and Zod | Accepted |
+| [ADR-0004](./0004-route-with-react-router.md) | 2026-10-16 | Route with React Router in data mode | Accepted |
