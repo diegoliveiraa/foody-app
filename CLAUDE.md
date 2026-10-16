@@ -2,8 +2,9 @@
 
 React 19 + Vite + TypeScript, linted by oxlint. Tailwind 4 + shadcn/Radix (ADR-0001), RTK Query
 (ADR-0002), React Hook Form + Zod (ADR-0003), React Router (ADR-0004), Vitest + Testing Library,
-Playwright. Entry `src/main.tsx`, screens in `src/pages/<area>/<screen>/`. Consumes `foody-api`. This file is the **single source of truth
-for this repo's rules** — to change a rule, edit it here.
+Playwright. Entry `src/main.tsx`, screens in `src/pages/<area>/<screen>/` (layout below,
+ADR-0005). Consumes `foody-api`. This file is the **single source of truth for this repo's
+rules** — to change a rule, edit it here.
 
 ## Standing rules
 
@@ -36,6 +37,55 @@ semester. Format and criteria: [`docs/adr/README.md`](./docs/adr/README.md).
 to an existing flow ⇒ a Playwright spec under `e2e/tests/`, **in the same PR** (`npm run e2e`,
 config in `playwright.config.ts`). There is no spec yet — the first one sets the pattern
 (fixtures, selectors, naming) every later spec follows.
+
+## Folder layout
+
+Every kind of file has one place (ADR-0005). A folder is created with its first file — never
+empty, never "for later".
+
+```
+src/
+  @types/<domain>.d.ts            API contracts (R17)
+  assets/                         images and fonts imported by code
+  components/
+    ui/<primitive>.tsx            shadcn primitives (R4)
+    <composite>/index.tsx         composites shared by screens (data-table, page-header…)
+  constants/                      app-wide consts; messages.ts holds messages shared by screens
+  hooks/use-<name>.ts             generic hooks
+  pages/<area>/
+    <area>.routes.ts              the area's route: its layout and its screens' routes
+    <screen>/
+      <screen>.routes.ts          the screen's route; its views lazy-loaded
+      index.tsx                   the view — or list/, create/, edit/, each laid out like a screen
+      columns.tsx                 table columns; the table itself is components/data-table
+      components/<name>.tsx       this screen only; <name>/index.tsx once it owns more files
+      hooks/use-<name>.ts         the screen's logic (R9)
+      filter/                     filter state: index.ts (reducer), types.ts, hooks/
+      constants/                  index.ts (consts, sentinels) · messages.ts (its messages)
+      utils/<name>.ts             pure functions used only by this screen
+      types.ts                    types shared inside the screen (R17)
+  routes/index.tsx                one createBrowserRouter over every <area>.routes.ts (ADR-0004)
+  services/
+    api.ts                        the RTK Query base (ADR-0002)
+    cache-tags.ts                 every cache tag type, declared once (ADR-0006)
+    <domain>.ts                   one per backend domain, via injectEndpoints
+    validation-schemas/<form>.ts  Zod schemas (ADR-0003)
+  store/index.ts                  the Redux store; global slices in store/slices/<name>.ts
+  test/                           Vitest setup and test-only infrastructure
+  utils/<name>.ts                 generic pure functions
+e2e/
+  tests/<area>/<screen>-<aspect>.spec.ts
+  support/                        fixtures/ and helpers/ shared by specs
+```
+
+- **Names are kebab-case**, files and folders (`status-badge.tsx`, `use-order-filter.ts`). A hook
+  file exports `use<Name>`.
+- **A test sits beside the file it tests:** `status-badge.tsx` → `status-badge.test.tsx`. No
+  `__tests__/`, `test/` or `specs/` folders under `src/pages`.
+- **Filter state is a `useReducer` in the screen's `filter/`.** It becomes a slice in
+  `src/store/slices/` only when it must survive leaving the screen.
+- **Promote, don't copy.** When a second screen needs something, it moves up to `src/components`,
+  `src/hooks`, `src/utils` or `src/constants` — never a copy in each screen (R4).
 
 ## Code rules
 
@@ -74,8 +124,9 @@ A fat screen component becomes smaller components plus hooks, split by responsib
   (`src/constants`).
 - Domain lists are **derived from the enum**, never retyped in each file.
 - Magic numbers become named consts (`MAX_UPLOAD_BYTES`, not `5 * 1024 * 1024`).
-- **UI and error messages are centralized** in `src/constants/messages.ts`. No literal repeated
-  across files. That includes **JSX text** (`<h2>Seus pedidos</h2>`),
+- **UI and error messages live in a messages catalog:** the screen's `constants/messages.ts` when
+  only that screen uses them, `src/constants/messages.ts` once a second one does. No literal
+  repeated across files. That includes **JSX text** (`<h2>Seus pedidos</h2>`),
   `placeholder`/`title`/`aria-label` props, column headers and option labels — not only toasts.
 - **Sentinel values are consts too:** `"ALL"`, `""` as "no filter", `"pt-BR"`, page `1`,
   debounce `500`. Look in the screen's `constants/index.ts` before typing one.
@@ -103,7 +154,8 @@ when a primitive exists is a violation** — if it doesn't exist yet, it is born
 A primitive is born with `npx shadcn add <name>` (config in `components.json`), and the generated
 file is a file you touched: explicit types (R15), no comments (R14), and its `cva` variants moved
 to a sibling `<name>-variants.ts` (exported from the component file, they trip oxlint's
-`only-export-components`). Icons come only from `lucide-react`; class names are merged with `cn` from the `cn` package.
+`only-export-components`). Icons come only from `lucide-react`; class names are merged with `cn`
+from the `cn` package.
 
 Formatters (money, dates) live in `src/utils` and hooks in `src/hooks` — `grep` before writing
 your own. A local `const money = (v) => v.toLocaleString(…)` in a screen is a duplicate. The
@@ -118,6 +170,42 @@ same helper copied into two files of the same screen is a duplicate too.
 - **Derived values** → a selector or `useMemo`.
 
 Request errors go through **one** extractor in `src/utils` — never a second one.
+
+**Cache tags (ADR-0006)** decide which screens refresh after a write:
+
+- **Declared once** in `src/services/cache-tags.ts` — a const object, one type per backend
+  resource (`Order`), never per query shape (`ONE_ORDER`/`ALL_ORDERS`). No TS `enum`:
+  `erasableSyntaxOnly` rejects it.
+- **A list provides `LIST_ID` plus one tag per item; a detail provides its item.** Create
+  invalidates `LIST_ID`; update and delete invalidate the item's `{ type, id }`, plus `LIST_ID`
+  when the list shows what changed.
+- **Only the mutation invalidates**, in its own `invalidatesTags` — another domain's tags
+  included, since there is one API. A component never calls `refetch()` or
+  `util.invalidateTags` after a mutation; "reload" buttons go through one hook in `src/hooks` that
+  ends in `invalidateTags`. `onQueryStarted` is for optimistic updates, not for invalidating.
+- **Every declared tag is provided by some query.** Invalidating a type nobody provides is dead
+  code.
+
+```ts
+// src/services/cache-tags.ts
+export const CACHE_TAGS = { ORDER: "Order", RESTAURANT: "Restaurant" } as const;
+export type CacheTag = (typeof CACHE_TAGS)[keyof typeof CACHE_TAGS];
+export const LIST_ID: string = "LIST";
+
+// src/services/orders.ts — OrderTag = TagDescription<CacheTag>
+getOrders: builder.query<Order[], void>({
+  providesTags: (orders: Order[] = []): OrderTag[] => [
+    { type: CACHE_TAGS.ORDER, id: LIST_ID },
+    ...orders.map((order: Order): OrderTag => ({ type: CACHE_TAGS.ORDER, id: order.id })),
+  ],
+}),
+updateOrder: builder.mutation<Order, UpdateOrderRequest>({
+  invalidatesTags: (_result, _error, { id }: UpdateOrderRequest): OrderTag[] => [
+    { type: CACHE_TAGS.ORDER, id },
+    { type: CACHE_TAGS.ORDER, id: LIST_ID },
+  ],
+}),
+```
 
 ### R6 — TDD: the test fails first
 
@@ -190,7 +278,7 @@ Including local variables, function return types and component return types (`JS
 ### R16 — One folder per role
 
 `hooks/` (never `hook/`), `constants/` (never a parallel `enum/`), `utils/` (never a parallel
-`helpers/`). Don't create a second folder for a role that already has one.
+`helpers/` or `lib/` — shadcn's default `lib/` is redirected to `utils/` in `components.json`). Don't create a second folder for a role that already has one.
 
 ### R17 — Types live in their layer
 
@@ -226,6 +314,8 @@ hit before handing off:
 - the same `"a" | "b"` union or the same helper in two files → R3/R4.
 - `tab === X ? … : tab === Y ? …` → R1 (`Record` by tab).
 - `interface`/`type` outside the table in R17 → move it.
+- `refetch()` after a mutation, or `invalidateTags` outside `src/services` and the reload hook →
+  R5 (the mutation's `invalidatesTags`).
 
 ⚠️ **Do not use `tsc --noEmit`**: it runs against the root `tsconfig.json`, which has
 `"files": []`, so it compiles nothing and exits 0 — a false green.

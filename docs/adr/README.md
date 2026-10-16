@@ -79,3 +79,5 @@ needs migration, rework or monitoring.
 | [ADR-0002](./0002-fetch-server-data-with-rtk-query.md) | 2026-10-16 | Fetch server data with RTK Query | Accepted |
 | [ADR-0003](./0003-build-forms-with-react-hook-form-and-zod.md) | 2026-10-16 | Build forms with React Hook Form and Zod | Accepted |
 | [ADR-0004](./0004-route-with-react-router.md) | 2026-10-16 | Route with React Router in data mode | Accepted |
+| [ADR-0005](./0005-organize-the-front-by-area-and-screen.md) | 2026-10-16 | Organize the front by area and screen | Accepted |
+| [ADR-0006](./0006-invalidate-the-cache-by-entity-from-the-service.md) | 2026-10-16 | Invalidate the cache by entity and id, only from the service | Accepted |
