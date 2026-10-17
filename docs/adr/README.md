@@ -87,3 +87,4 @@ needs migration, rework or monitoring.
 | [ADR-0010](./0010-generate-the-api-types-from-its-openapi-contract.md) | 2026-10-16 | Generate the API's types from its OpenAPI contract | Accepted |
 | [ADR-0011](./0011-enforce-the-code-rules-with-prettier-type-aware-lint-and-ci.md) | 2026-10-16 | Enforce the code rules with Prettier, type-aware lint and CI | Accepted |
 | [ADR-0012](./0012-stub-the-network-in-tests-and-keep-an-integrated-suite-for-critical-flows.md) | 2026-10-16 | Stub the network in tests; keep an integrated suite for critical flows | Accepted |
+| [ADR-0013](./0013-keep-dependencies-current-with-dependabot.md) | 2026-10-16 | Keep dependencies current with Dependabot | Accepted |

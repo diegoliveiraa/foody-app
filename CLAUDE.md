@@ -176,7 +176,8 @@ same helper copied into two files of the same screen is a duplicate too.
 
 Request errors go through **one** extractor in `src/utils` — never a second one. The API answers
 errors as Problem Details (foody-api ADR-0005): show `detail`, branch on `code` — never on the
-text — and map `errors[]` (`{ field, message }`) onto the form's fields.
+text — and map `errors[]` (`{ field, message }`) onto the form's fields. `requestId` names the
+request in the API's logs: keep it with any error that gets reported (foody-api ADR-0010).
 
 List screens are paginated on the server: they send `page` (from 1), `pageSize` and
 `sort=property,asc|desc`, and render `data` with `meta` (`page`, `pageSize`, `totalItems`,
