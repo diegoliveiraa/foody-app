@@ -14,6 +14,7 @@ import {
   LIVE_POLL,
   minutesBefore,
   orderQueries,
+  staffActionsFor,
   staffPage,
   staffSummary,
   stubOrders,
@@ -76,7 +77,10 @@ test("adds a new order on the next poll and announces it once, never on the firs
   await page.clock.fastForward(LIVE_POLL);
   await expect(boardCard(page, NEW_ORDER.number)).toContainText(NEW_ORDER.customerName);
   await expect(page.getByText(MESSAGES.ORDERS.NEW_ORDER(NEW_ORDER.number))).toHaveCount(1);
-  await stubOrders(api, staffPage([WAITING, { ...NEW_ORDER, status: "PREPARING" }]));
+  await stubOrders(
+    api,
+    staffPage([WAITING, { ...NEW_ORDER, ...staffActionsFor("PREPARING"), status: "PREPARING" }]),
+  );
   const preparing: Locator = await preparingOrders(page);
   const now: number = await page.evaluate((): number => Date.now());
   await page.clock.pauseAt(new Date(now + POLL_MS));

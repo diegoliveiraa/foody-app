@@ -17,3 +17,14 @@ export const STEP_ICONS: Record<OrderStatus, LucideIcon> = {
 };
 
 export const DONE_ICON: LucideIcon = Check;
+
+export const SHEET_MODES = {
+  CANCEL: "cancel",
+  REQUEST: "request",
+} as const;
+
+export const CANCELLATION_STATES = {
+  ...SHEET_MODES,
+  PENDING: "pending",
+  DECLINED: "declined",
+} as const;

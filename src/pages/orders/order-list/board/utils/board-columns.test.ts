@@ -26,6 +26,16 @@ describe("toBoardColumns", () => {
     expect(columns.map(numbersOf)).toEqual([[1043, 1044], [1041, 1042], [1038]]);
   });
 
+  it("offers cancelling from the card only in the received and preparing columns", () => {
+    const columns: BoardColumn[] = toBoardColumns([]);
+
+    expect(columns.map((column: BoardColumn): boolean => column.showsCancel)).toEqual([
+      true,
+      true,
+      false,
+    ]);
+  });
+
   it("keeps an empty column for a status without orders", () => {
     const columns: BoardColumn[] = toBoardColumns([staffSummary(1043)]);
 

@@ -10,19 +10,25 @@ import { OrderDetailSkeleton, OrderLoadError, OrderNotFound } from "@/components
 import { OrderStatusBadge } from "@/components/order-status-badge";
 import { PageHeader } from "@/components/page-header";
 import { Button } from "@/components/ui/button";
+import { CANCELLATION_REQUEST_STATUSES } from "@/constants/orders";
 import { SCREEN_KEYS } from "@/constants/screens";
 import { useMeScreen } from "@/hooks/use-me-screen";
 import { useNow } from "@/hooks/use-now";
 import { MS_PER_MINUTE } from "@/constants/time";
 import { formatOrderTime } from "@/utils/format-order-date";
 import { countUnits } from "@/utils/order-items";
+import { useOrderActions } from "../hooks/use-order-actions";
 import { useOrderListPaths } from "../hooks/use-order-list-paths";
-import type { OrderListPaths } from "../types";
+import type { OrderActionsModel, OrderListPaths } from "../types";
+import { CancellationRequestPanel } from "./components/cancellation-request-panel";
 import { CustomerCard } from "./components/customer-card";
+import { DecisionDialog } from "./components/decision-dialog";
+import { NextStepCard } from "./components/next-step-card";
 import { OrderHistoryList } from "./components/order-history-list";
 import { ORDER_DETAIL_MESSAGES } from "./constants/messages";
+import { useCancellationDecision } from "./hooks/use-cancellation-decision";
 import { useStaffOrder } from "./hooks/use-staff-order";
-import type { StaffOrderModel } from "./types";
+import type { DecisionModel, StaffOrderModel } from "./types";
 
 interface StaffOrderBodyProps {
   model: StaffOrderModel;
@@ -30,14 +36,22 @@ interface StaffOrderBodyProps {
 }
 
 function StaffOrderSections({ order }: { order: StaffOrder }): JSX.Element {
+  const actions: OrderActionsModel = useOrderActions(order);
+  const decision: DecisionModel = useCancellationDecision(order);
+  const pending: boolean =
+    order.cancellationRequest?.status === CANCELLATION_REQUEST_STATUSES.PENDING;
+
   return (
     <>
+      <CancellationRequestPanel order={order} decision={decision} />
       {order.cancellation && <OrderCancellation cancellation={order.cancellation} />}
+      <NextStepCard order={order} actions={actions} pending={pending} />
       <CustomerCard customer={order.customer} />
       <OrderItemsCard items={order.items} total={order.total}>
         <DeliveryAddress address={order.deliveryAddress} className="pt-1.5" />
       </OrderItemsCard>
-      <OrderHistoryList history={order.history} />
+      <OrderHistoryList order={order} />
+      <DecisionDialog orderNumber={order.number} model={decision} />
     </>
   );
 }

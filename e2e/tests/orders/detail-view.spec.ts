@@ -21,6 +21,7 @@ import {
   orderId,
   orderPath,
   orderUrl,
+  staffActionsFor,
   staffOrder,
   staffPage,
   stubOrder,
@@ -74,6 +75,7 @@ const PREPARING: StaffOrder = staffOrder(1042, {
 
 const CANCELLED: StaffOrder = {
   ...PREPARING,
+  ...staffActionsFor("CANCELLED"),
   status: "CANCELLED",
   live: false,
   cancellation: { cancelledBy: "RESTAURANT", reason: "STORE_CLOSED", note: "Gás acabou" },

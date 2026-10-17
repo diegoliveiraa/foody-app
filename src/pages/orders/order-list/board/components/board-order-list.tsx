@@ -27,7 +27,12 @@ export function BoardOrderList({ column, paths, now }: BoardOrderListProps): JSX
     >
       {column.orders.map((order: StaffOrderSummary): JSX.Element => (
         <li key={order.id}>
-          <BoardOrderCard order={order} detailPath={paths.detail(order.id)} now={now} />
+          <BoardOrderCard
+            order={order}
+            detailPath={paths.detail(order.id)}
+            now={now}
+            showsCancel={column.showsCancel}
+          />
         </li>
       ))}
     </ul>

@@ -41,3 +41,24 @@ export type ListMyOrdersParams = NonNullable<operations["myOrderList"]["paramete
 export type ListOrdersParams = NonNullable<operations["orderList"]["parameters"]["query"]>;
 
 export type OrderId = operations["orderDetail"]["parameters"]["path"]["id"];
+
+export type OrderPath = operations["orderUpdateStatus"]["parameters"]["path"];
+
+export type UpdateOrderStatusRequest = components["schemas"]["UpdateOrderStatusRequest"];
+
+export type CancelOrderRequest = components["schemas"]["CancelOrderRequest"];
+
+export type CancellationDecisionRequest = components["schemas"]["CancellationDecisionRequest"];
+
+export type UpdateOrderStatusArgs = OrderPath & UpdateOrderStatusRequest;
+
+export type CancelOrderArgs = OrderPath & CancelOrderRequest;
+
+export type DecideCancellationArgs = OrderPath & CancellationDecisionRequest;
+
+export type StaffCancellationRequest = components["schemas"]["StaffCancellationRequestResponse"];
+
+export type CustomerCancellationRequest =
+  components["schemas"]["CustomerCancellationRequestResponse"];
+
+export type CancellationRequestStatus = StaffCancellationRequest["status"];

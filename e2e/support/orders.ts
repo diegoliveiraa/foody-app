@@ -1,22 +1,28 @@
-import type { Locator, Page } from "@playwright/test";
+import { expect, type Locator, type Page } from "@playwright/test";
+import type { CancellationReason } from "../../src/@types/orders";
 import type {
   CustomerOrder,
   CustomerOrderPage,
   StaffOrder,
   StaffOrderPage,
 } from "../../src/@types/orders";
-import { API_PATHS } from "../../src/constants/api";
+import { API_PATHS, MY_ORDER_PATHS, ORDER_PATHS } from "../../src/constants/api";
 import { MESSAGES } from "../../src/constants/messages";
+import { CANCELLATION_REASON_LABELS } from "../../src/constants/orders";
 import { HTTP_METHODS, SCREEN_URLS } from "./constants";
 import type { ApiStubs, RecordedRequest } from "./fixtures";
 import { showsListCards } from "./layout";
 
 export {
+  CUSTOMER_REASONS,
+  customerActionsFor,
   customerOrder,
   customerPage,
   customerSummary,
   orderId,
   PAULISTA,
+  STAFF_REASONS,
+  staffActionsFor,
   staffOrder,
   staffPage,
   staffSummary,
@@ -93,4 +99,32 @@ export function boardCard(page: Page, number: number): Locator {
 
 export async function installClock(page: Page): Promise<void> {
   await page.clock.install({ time: CLOCK_START });
+}
+
+export const ORDER_WRITE_PATHS = {
+  STATUS: ORDER_PATHS.STATUS,
+  CANCEL: ORDER_PATHS.CANCEL,
+  APPROVE: ORDER_PATHS.APPROVE_CANCELLATION,
+  DECLINE: ORDER_PATHS.DECLINE_CANCELLATION,
+  MY_CANCEL: MY_ORDER_PATHS.CANCEL,
+  MY_REQUEST: MY_ORDER_PATHS.REQUEST_CANCELLATION,
+} as const;
+
+export async function expectReasons(
+  scope: Locator,
+  reasons: readonly CancellationReason[],
+): Promise<void> {
+  const radios: Locator = scope.getByRole("radio");
+  await expect(radios).toHaveCount(reasons.length);
+  for (const [index, reason] of reasons.entries()) {
+    await expect(radios.nth(index)).toHaveAccessibleName(CANCELLATION_REASON_LABELS[reason]);
+  }
+}
+
+export async function chooseReason(scope: Locator, reason: CancellationReason): Promise<void> {
+  await scope.getByRole("radio", { name: CANCELLATION_REASON_LABELS[reason] }).click();
+}
+
+export function noteField(scope: Locator): Locator {
+  return scope.getByLabel(MESSAGES.CANCELLATION.NOTE);
 }

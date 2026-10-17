@@ -4,6 +4,7 @@ import type { BoardStatus } from "@/constants/orders";
 export interface BoardColumn {
   status: BoardStatus;
   orders: readonly StaffOrderSummary[];
+  showsCancel: boolean;
 }
 
 export interface OrderBoardModel {
@@ -12,5 +13,11 @@ export interface OrderBoardModel {
   loadError: string | null;
   refreshing: boolean;
   updatedAt: number | null;
+  pendingRequests: PendingRequests | null;
   reload: () => void;
+}
+
+export interface PendingRequests {
+  count: number;
+  oldest: StaffOrderSummary;
 }

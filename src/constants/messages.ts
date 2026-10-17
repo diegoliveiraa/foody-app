@@ -11,6 +11,7 @@ import {
 import { formatMoney } from "@/utils/format-money";
 import {
   ADDRESS_NUMBER_MAX_LENGTH,
+  CANCELLATION_NOTE_MAX_LENGTH,
   CITY_MAX_LENGTH,
   CITY_MIN_LENGTH,
   COMPLEMENT_MAX_LENGTH,
@@ -65,6 +66,9 @@ export const MESSAGES = {
     NEIGHBORHOOD_LENGTH: `Informe o bairro com ${NEIGHBORHOOD_MIN_LENGTH} a ${NEIGHBORHOOD_MAX_LENGTH} caracteres`,
     CITY_LENGTH: `Informe a cidade com ${CITY_MIN_LENGTH} a ${CITY_MAX_LENGTH} caracteres`,
     STATE_REQUIRED: "Escolha a UF",
+    CANCELLATION_REASON_REQUIRED: "Escolha um motivo",
+    CANCELLATION_NOTE_REQUIRED: "Conte o motivo do cancelamento na observação",
+    CANCELLATION_NOTE_TOO_LONG: `A observação pode ter até ${CANCELLATION_NOTE_MAX_LENGTH} caracteres`,
   },
   LOGIN: {
     TITLE: "Entrar",
@@ -184,5 +188,13 @@ export const MESSAGES = {
     NOT_FOUND: "Pedido não encontrado",
     NOT_FOUND_DESCRIPTION: "Confira o endereço ou volte para a lista de pedidos.",
     NEW_ORDER: (number: number): string => `Novo pedido ${orderNumber(number)} recebido`,
+    CANCELLED: (number: number): string => `${orderTitle(number)} cancelado`,
+    CANCELLATION_DECLINED: "O restaurante recusou o cancelamento",
+  },
+  CANCELLATION: {
+    CANCEL_ORDER: "Cancelar pedido",
+    NOTE: "Observação",
+    NOTE_REQUIRED: "Observação (obrigatória)",
+    NOTE_PLACEHOLDER: "Conte mais, se quiser",
   },
 } as const;

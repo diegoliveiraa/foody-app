@@ -9,19 +9,22 @@ import {
 import type { RegisterRequest } from "../../src/@types/auth";
 import { API_PATHS } from "../../src/constants/api";
 import { MESSAGES } from "../../src/constants/messages";
-import { ORDER_STATUS_LABELS } from "../../src/constants/orders";
+import { CANCELLED_BY_LABELS, ORDER_STATUS_LABELS } from "../../src/constants/orders";
 import { ROUTE_PATHS } from "../../src/constants/routes";
 import { ORDER_DETAIL_MESSAGES } from "../../src/pages/orders/order-list/detail/constants/messages";
 import { CHECKOUT_MESSAGES } from "../../src/pages/store/menu/checkout/constants/messages";
 import { MENU_MESSAGES } from "../../src/pages/store/menu/list/constants/messages";
-import { TRACKING_MESSAGES } from "../../src/pages/store/my-orders/detail/constants/messages";
+import {
+  SHEET_COPY,
+  TRACKING_MESSAGES,
+} from "../../src/pages/store/my-orders/detail/constants/messages";
 import { signIn, VALID_PASSWORD } from "../support/auth";
 import { fillDeliveryAddress, placeOrderButton } from "../support/checkout";
 import { HTTP_CREATED, INTEGRATED_API_URL, SCREEN_URLS } from "../support/constants";
 import { pathIs } from "../support/layout";
 import { ME_LABELS } from "../support/me";
 import { continueButton, openBag } from "../support/menu";
-import { boardCard } from "../support/orders";
+import { boardCard, chooseReason } from "../support/orders";
 import { readSeedAccounts, type SeedAccounts } from "../support/seed-accounts";
 
 const ACCOUNTS: SeedAccounts = readSeedAccounts();
@@ -39,6 +42,8 @@ const ORDER_NUMBER_PATTERN: RegExp = /#(\d+)/;
 const ADD_BUTTON_PATTERN: RegExp = new RegExp(`^${MENU_MESSAGES.ADD("")}`);
 
 let placedNumber: number = 0;
+
+let placedPath: string = "";
 
 test.describe.configure({ mode: "serial" });
 
@@ -87,6 +92,7 @@ test("a new customer orders a product from the menu and follows it as received",
   const heading: Locator = page.getByRole("heading", { level: 1 });
   await expect(heading).toHaveText(ORDER_NUMBER_PATTERN);
   placedNumber = await numberIn(heading);
+  placedPath = new URL(page.url()).pathname;
   await expect(page.getByText(CHECKOUT_MESSAGES.PLACED(placedNumber))).toBeVisible();
   await expect(
     page
@@ -114,4 +120,27 @@ test("staff finds the new order on the board and opens it", async ({ page }): Pr
     }),
   ).toBeVisible();
   await expect(page.getByText(NEW_CUSTOMER.email)).toBeVisible();
+});
+
+test("the customer cancels the received order from the tracking and sees it cancelled", async ({
+  page,
+}): Promise<void> => {
+  await signInAsNewCustomer(page);
+  await page.goto(placedPath);
+  await page
+    .getByRole("region", { name: TRACKING_MESSAGES.CANCELLATION })
+    .getByRole("button", { name: SHEET_COPY.cancel.open })
+    .click();
+  const sheet: Locator = page.getByRole("dialog", { name: SHEET_COPY.cancel.title });
+  await chooseReason(sheet, "CHANGED_MIND");
+
+  await sheet.getByRole("button", { name: SHEET_COPY.cancel.submit }).click();
+
+  await expect(page.getByText(MESSAGES.ORDERS.CANCELLED(placedNumber))).toBeVisible();
+  await expect(page.getByText(CANCELLED_BY_LABELS.CUSTOMER)).toBeVisible();
+  await expect(
+    page
+      .getByRole("region", { name: TRACKING_MESSAGES.STATUS })
+      .getByText(ORDER_STATUS_LABELS.CANCELLED, { exact: true }),
+  ).toBeVisible();
 });

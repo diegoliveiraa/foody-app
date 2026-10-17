@@ -340,6 +340,38 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/my-orders/{id}/cancel": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["myOrderCancel"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/my-orders/{id}/cancellation-request": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["myOrderRequestCancellation"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/orders": {
         parameters: {
             query?: never;
@@ -372,6 +404,70 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/orders/{id}/cancel": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["orderCancel"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/orders/{id}/cancellation-request/approve": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["orderApproveCancellation"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/orders/{id}/cancellation-request/decline": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["orderDeclineCancellation"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/orders/{id}/status": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch: operations["orderUpdateStatus"];
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -394,6 +490,14 @@ export interface components {
             accessToken: string;
             /** Format: int64 */
             expiresIn: number;
+        };
+        CancelOrderRequest: {
+            note?: string | null;
+            /** @enum {string} */
+            reason: "CHANGED_MIND" | "ORDERED_BY_MISTAKE" | "TAKING_TOO_LONG" | "ITEM_UNAVAILABLE" | "STORE_CLOSED" | "CUSTOMER_REQUEST" | "DELIVERY_FAILED" | "OTHER";
+        };
+        CancellationDecisionRequest: {
+            note?: string | null;
         };
         CartItem: {
             /** Format: uuid */
@@ -427,8 +531,24 @@ export interface components {
             /** @enum {string} */
             role: "CUSTOMER" | "STAFF" | "ADMIN";
         };
+        CustomerCancellationRequestResponse: {
+            /** Format: date-time */
+            decidedAt?: string | null;
+            decisionNote?: string | null;
+            note?: string | null;
+            /** @enum {string} */
+            reason: "CHANGED_MIND" | "ORDERED_BY_MISTAKE" | "TAKING_TOO_LONG" | "ITEM_UNAVAILABLE" | "STORE_CLOSED" | "CUSTOMER_REQUEST" | "DELIVERY_FAILED" | "OTHER";
+            /** Format: date-time */
+            requestedAt: string;
+            /** @enum {string} */
+            status: "PENDING" | "APPROVED" | "DECLINED";
+        };
         CustomerOrderDetailResponse: {
+            canCancel: boolean;
+            canRequestCancellation: boolean;
             cancellation?: components["schemas"]["OrderCancellationResponse"] | null;
+            cancellationReasons: ("CHANGED_MIND" | "ORDERED_BY_MISTAKE" | "TAKING_TOO_LONG" | "ITEM_UNAVAILABLE" | "STORE_CLOSED" | "CUSTOMER_REQUEST" | "DELIVERY_FAILED" | "OTHER")[];
+            cancellationRequest?: components["schemas"]["CustomerCancellationRequestResponse"] | null;
             deliveryAddress: components["schemas"]["DeliveryAddressResponse"];
             history: components["schemas"]["CustomerOrderHistoryEntry"][];
             /** Format: uuid */
@@ -457,6 +577,8 @@ export interface components {
             toStatus: "RECEIVED" | "PREPARING" | "OUT_FOR_DELIVERY" | "DELIVERED" | "CANCELLED";
         };
         CustomerOrderSummaryResponse: {
+            /** @enum {string|null} */
+            cancellationRequestStatus?: "PENDING" | "APPROVED" | "DECLINED" | null;
             /** Format: uuid */
             id: string;
             items: components["schemas"]["OrderItemSummary"][];
@@ -634,8 +756,25 @@ export interface components {
             name: string;
             password: string;
         };
+        StaffCancellationRequestResponse: {
+            /** Format: date-time */
+            decidedAt?: string | null;
+            decidedByName?: string | null;
+            decisionNote?: string | null;
+            note?: string | null;
+            /** @enum {string} */
+            reason: "CHANGED_MIND" | "ORDERED_BY_MISTAKE" | "TAKING_TOO_LONG" | "ITEM_UNAVAILABLE" | "STORE_CLOSED" | "CUSTOMER_REQUEST" | "DELIVERY_FAILED" | "OTHER";
+            /** Format: date-time */
+            requestedAt: string;
+            /** @enum {string} */
+            status: "PENDING" | "APPROVED" | "DECLINED";
+        };
         StaffOrderDetailResponse: {
+            allowedTransitions: ("RECEIVED" | "PREPARING" | "OUT_FOR_DELIVERY" | "DELIVERED" | "CANCELLED")[];
+            canCancel: boolean;
             cancellation?: components["schemas"]["OrderCancellationResponse"] | null;
+            cancellationReasons: ("CHANGED_MIND" | "ORDERED_BY_MISTAKE" | "TAKING_TOO_LONG" | "ITEM_UNAVAILABLE" | "STORE_CLOSED" | "CUSTOMER_REQUEST" | "DELIVERY_FAILED" | "OTHER")[];
+            cancellationRequest?: components["schemas"]["StaffCancellationRequestResponse"] | null;
             customer: components["schemas"]["OrderCustomer"];
             deliveryAddress: components["schemas"]["DeliveryAddressResponse"];
             history: components["schemas"]["StaffOrderHistoryEntry"][];
@@ -666,7 +805,11 @@ export interface components {
             toStatus: "RECEIVED" | "PREPARING" | "OUT_FOR_DELIVERY" | "DELIVERED" | "CANCELLED";
         };
         StaffOrderSummaryResponse: {
+            allowedTransitions: ("RECEIVED" | "PREPARING" | "OUT_FOR_DELIVERY" | "DELIVERED" | "CANCELLED")[];
+            canCancel: boolean;
+            cancellationReasons: ("CHANGED_MIND" | "ORDERED_BY_MISTAKE" | "TAKING_TOO_LONG" | "ITEM_UNAVAILABLE" | "STORE_CLOSED" | "CUSTOMER_REQUEST" | "DELIVERY_FAILED" | "OTHER")[];
             customerName: string;
+            hasPendingCancellationRequest: boolean;
             /** Format: uuid */
             id: string;
             items: components["schemas"]["OrderItemSummary"][];
@@ -678,6 +821,10 @@ export interface components {
             /** @enum {string} */
             status: "RECEIVED" | "PREPARING" | "OUT_FOR_DELIVERY" | "DELIVERED" | "CANCELLED";
             total: number;
+        };
+        UpdateOrderStatusRequest: {
+            /** @enum {string} */
+            status: "RECEIVED" | "PREPARING" | "OUT_FOR_DELIVERY" | "DELIVERED" | "CANCELLED";
         };
     };
     responses: never;
@@ -1287,6 +1434,58 @@ export interface operations {
             };
         };
     };
+    myOrderCancel: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CancelOrderRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["CustomerOrderDetailResponse"];
+                };
+            };
+        };
+    };
+    myOrderRequestCancellation: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CancelOrderRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["CustomerOrderDetailResponse"];
+                };
+            };
+        };
+    };
     orderList: {
         parameters: {
             query?: {
@@ -1326,6 +1525,110 @@ export interface operations {
             cookie?: never;
         };
         requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["StaffOrderDetailResponse"];
+                };
+            };
+        };
+    };
+    orderCancel: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CancelOrderRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["StaffOrderDetailResponse"];
+                };
+            };
+        };
+    };
+    orderApproveCancellation: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CancellationDecisionRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["StaffOrderDetailResponse"];
+                };
+            };
+        };
+    };
+    orderDeclineCancellation: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CancellationDecisionRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["StaffOrderDetailResponse"];
+                };
+            };
+        };
+    };
+    orderUpdateStatus: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateOrderStatusRequest"];
+            };
+        };
         responses: {
             /** @description OK */
             200: {

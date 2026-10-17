@@ -1,10 +1,17 @@
-import type { FetchArgs, InfiniteData, TagDescription } from "@reduxjs/toolkit/query";
 import type {
+  FetchArgs,
+  InfiniteData,
+  TagDescription,
+  TypedMutationOnQueryStarted,
+} from "@reduxjs/toolkit/query";
+import type {
+  CancelOrderArgs,
   CustomerOrder,
   CustomerOrderPage,
   CustomerOrderSummary,
   ListMyOrdersParams,
   OrderId,
+  OrderPath,
   PlaceOrderRequest,
 } from "@/@types/orders";
 import type { ApiError } from "@/@types/problem-details";
@@ -14,8 +21,8 @@ import { DEFAULT_PAGE_SIZE, FIRST_PAGE } from "@/constants/pagination";
 import { SORT_DIRECTIONS } from "@/constants/sorting";
 import { extractApiError } from "@/utils/api-error";
 import { toSortParam } from "@/utils/sort-param";
-import { api } from "./api";
-import { CACHE_TAGS, LIST_ID, type CacheTag } from "./cache-tags";
+import { api, baseQuery } from "./api";
+import { CACHE_TAGS, LIST_ID, orderWriteTags, type CacheTag } from "./cache-tags";
 
 type OrderTag = TagDescription<CacheTag>;
 
@@ -56,7 +63,7 @@ function orderTagsOf(data: MyOrdersData | undefined): OrderTag[] {
   );
 }
 
-export const myOrdersApi = api.injectEndpoints({
+const myOrderQueriesApi = api.injectEndpoints({
   endpoints: (build) => ({
     placeOrder: build.mutation<CustomerOrder, PlaceOrderRequest>({
       query: (body: PlaceOrderRequest): FetchArgs => ({
@@ -87,5 +94,52 @@ export const myOrdersApi = api.injectEndpoints({
   }),
 });
 
-export const { usePlaceOrderMutation, useListMyOrdersInfiniteQuery, useGetMyOrderQuery } =
-  myOrdersApi;
+const writeCustomerOrder: TypedMutationOnQueryStarted<
+  CustomerOrder,
+  OrderPath,
+  typeof baseQuery
+> = async ({ id }: OrderPath, { dispatch, queryFulfilled }): Promise<void> => {
+  try {
+    const { data } = await queryFulfilled;
+    await dispatch(myOrderQueriesApi.util.upsertQueryData("getMyOrder", id, data));
+  } catch {
+    return;
+  }
+};
+
+function writeTags(
+  _order: CustomerOrder | undefined,
+  error: unknown,
+  { id }: OrderPath,
+): OrderTag[] {
+  return orderWriteTags(id, error);
+}
+
+function postTo(url: string, body: object): FetchArgs {
+  return { url, method: HTTP_METHODS.POST, body };
+}
+
+export const myOrdersApi = myOrderQueriesApi.injectEndpoints({
+  endpoints: (build) => ({
+    cancelMyOrder: build.mutation<CustomerOrder, CancelOrderArgs>({
+      query: ({ id, ...body }: CancelOrderArgs): FetchArgs =>
+        postTo(MY_ORDER_PATHS.CANCEL(id), body),
+      onQueryStarted: writeCustomerOrder,
+      invalidatesTags: writeTags,
+    }),
+    requestCancellation: build.mutation<CustomerOrder, CancelOrderArgs>({
+      query: ({ id, ...body }: CancelOrderArgs): FetchArgs =>
+        postTo(MY_ORDER_PATHS.REQUEST_CANCELLATION(id), body),
+      onQueryStarted: writeCustomerOrder,
+      invalidatesTags: writeTags,
+    }),
+  }),
+});
+
+export const {
+  usePlaceOrderMutation,
+  useListMyOrdersInfiniteQuery,
+  useGetMyOrderQuery,
+  useCancelMyOrderMutation,
+  useRequestCancellationMutation,
+} = myOrdersApi;

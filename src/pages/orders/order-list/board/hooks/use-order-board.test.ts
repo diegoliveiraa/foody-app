@@ -45,6 +45,28 @@ describe("useOrderBoard", () => {
       ),
     ).toEqual([[1043], [1042], []]);
     expect(result.current.updatedAt).toEqual(expect.any(Number));
+    expect(result.current.pendingRequests).toBeNull();
+  });
+
+  it("tells how many customers wait for a cancellation answer and which order came first", async () => {
+    const waiting: StaffOrderSummary = staffSummary(1042, {
+      status: "PREPARING",
+      hasPendingCancellationRequest: true,
+      allowedTransitions: [],
+      canCancel: false,
+      cancellationReasons: [],
+    });
+    server.use(
+      http.get(apiUrl("/orders"), () =>
+        HttpResponse.json(staffPage([waiting, staffSummary(1043)])),
+      ),
+    );
+
+    const { result }: RenderHookResult<OrderBoardModel, unknown> = renderBoard();
+
+    await waitFor((): void =>
+      expect(result.current.pendingRequests).toEqual({ count: 1, oldest: waiting }),
+    );
   });
 
   it("asks for the board again when reloaded", async () => {

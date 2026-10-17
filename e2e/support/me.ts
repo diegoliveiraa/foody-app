@@ -1,4 +1,5 @@
-import type { MeModule, MeResponse, ScreenAction } from "../../src/@types/me";
+import type { MeModule, MeResponse, MeScreen, ScreenAction } from "../../src/@types/me";
+import { SCREEN_KEYS } from "../../src/constants/screens";
 
 export const ME_LABELS = {
   STORE: "Loja",
@@ -97,3 +98,33 @@ export function adminMeWithUserActions(userActions: ScreenAction[]): MeResponse 
 }
 
 export const ADMIN_ME: MeResponse = adminMeWithUserActions(["UPDATE", "DISABLE"]);
+
+export function staffMeWithOrderActions(orderActions: ScreenAction[]): MeResponse {
+  return {
+    ...STAFF_ME,
+    modules: STAFF_MODULES.map((module: MeModule): MeModule => ({
+      ...module,
+      screens: module.screens.map((screen: MeScreen): MeScreen =>
+        screen.key === SCREEN_KEYS.ORDERS_ORDER_LIST
+          ? { ...screen, actions: orderActions }
+          : screen,
+      ),
+    })),
+  };
+}
+
+export function customerMeWithOrderActions(orderActions: ScreenAction[]): MeResponse {
+  return {
+    ...CUSTOMER_ME,
+    modules: [
+      {
+        ...STORE_MODULE,
+        screens: STORE_MODULE.screens.map((screen: MeScreen): MeScreen =>
+          screen.key === SCREEN_KEYS.STORE_MY_ORDERS
+            ? { ...screen, actions: orderActions }
+            : screen,
+        ),
+      },
+    ],
+  };
+}

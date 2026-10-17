@@ -13,15 +13,21 @@ import { MESSAGES } from "@/constants/messages";
 import { PARENT_PATH } from "@/constants/routes";
 import { SCREEN_KEYS } from "@/constants/screens";
 import { useMeScreen } from "@/hooks/use-me-screen";
+import { CancellationBlock } from "./components/cancellation-block";
+import { CancellationSheet } from "./components/cancellation-sheet";
 import { OrderStatusCard } from "./components/order-status-card";
 import { TRACKING_MESSAGES } from "./constants/messages";
+import { useCancellation } from "./hooks/use-cancellation";
 import { useMyOrder } from "./hooks/use-my-order";
-import type { MyOrderModel } from "./types";
+import type { CancellationModel, MyOrderModel } from "./types";
 
 function OrderTracking({ order }: { order: CustomerOrder }): JSX.Element {
+  const cancellation: CancellationModel = useCancellation(order);
+
   return (
     <>
       <OrderStatusCard order={order} />
+      <CancellationBlock order={order} model={cancellation} />
       {order.cancellation && <OrderCancellation cancellation={order.cancellation} />}
       <OrderItemsCard items={order.items} total={order.total} />
       <section
@@ -30,6 +36,7 @@ function OrderTracking({ order }: { order: CustomerOrder }): JSX.Element {
       >
         <DeliveryAddress address={order.deliveryAddress} />
       </section>
+      <CancellationSheet order={order} model={cancellation} />
     </>
   );
 }

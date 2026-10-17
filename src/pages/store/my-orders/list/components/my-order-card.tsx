@@ -1,15 +1,35 @@
+import type { LucideIcon } from "lucide-react";
 import type { JSX } from "react";
 import { Link } from "react-router";
-import type { CustomerOrderSummary } from "@/@types/orders";
+import type { CancellationRequestStatus, CustomerOrderSummary } from "@/@types/orders";
 import { OrderStatusBadge } from "@/components/order-status-badge";
 import { MESSAGES } from "@/constants/messages";
 import { formatMoney } from "@/utils/format-money";
 import { formatOrderTime } from "@/utils/format-order-date";
 import { summarizeItems } from "@/utils/order-items";
+import { REQUEST_NOTE_ICONS } from "../constants";
+import { REQUEST_NOTES } from "../constants/messages";
 
 interface MyOrderCardProps {
   order: CustomerOrderSummary;
   now: number;
+}
+
+interface RequestNoteProps {
+  status: CancellationRequestStatus | null | undefined;
+}
+
+function RequestNote({ status }: RequestNoteProps): JSX.Element | null {
+  if (status === null || status === undefined || REQUEST_NOTES[status] === null) {
+    return null;
+  }
+  const Icon: LucideIcon = REQUEST_NOTE_ICONS[status];
+  return (
+    <span className="inline-flex w-fit items-center gap-1.5 rounded-[10px] bg-attention px-2.5 py-1.5 text-[13px] font-semibold text-secondary-foreground">
+      <Icon aria-hidden="true" className="size-3.5 shrink-0" />
+      {REQUEST_NOTES[status]}
+    </span>
+  );
 }
 
 export function MyOrderCard({ order, now }: MyOrderCardProps): JSX.Element {
@@ -31,6 +51,7 @@ export function MyOrderCard({ order, now }: MyOrderCardProps): JSX.Element {
         </span>
         <span className="text-[15px] font-bold">{formatMoney(order.total)}</span>
       </span>
+      <RequestNote status={order.cancellationRequestStatus} />
     </Link>
   );
 }

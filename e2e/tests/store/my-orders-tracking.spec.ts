@@ -14,6 +14,7 @@ import { expect, test, type ApiStubs } from "../../support/fixtures";
 import { expectNoHorizontalOverflow } from "../../support/layout";
 import { CUSTOMER_ME } from "../../support/me";
 import {
+  customerActionsFor,
   customerOrder,
   installClock,
   LIVE_POLL,
@@ -46,12 +47,14 @@ const PREPARING: CustomerOrder = customerOrder(1042, {
 
 const DELIVERED: CustomerOrder = {
   ...PREPARING,
+  ...customerActionsFor("DELIVERED"),
   status: "DELIVERED",
   live: false,
 };
 
 const CANCELLED: CustomerOrder = {
   ...PREPARING,
+  ...customerActionsFor("CANCELLED"),
   status: "CANCELLED",
   live: false,
   cancellation: { cancelledBy: "RESTAURANT", reason: "ITEM_UNAVAILABLE", note: null },

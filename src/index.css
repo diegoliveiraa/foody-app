@@ -17,6 +17,10 @@
   --primary-hover: #9a3412;
   --primary-foreground: #ffffff;
   --brand-soft: #ffedd5;
+  --attention: #fff7ed;
+  --attention-foreground: #7c2d12;
+  --attention-border: #fb923c;
+  --attention-soft-border: #fed7aa;
   --secondary: #fff1e8;
   --secondary-foreground: #9a3412;
   --muted: #f5f5f4;
@@ -78,6 +82,10 @@
   --color-primary-hover: var(--primary-hover);
   --color-primary-foreground: var(--primary-foreground);
   --color-brand-soft: var(--brand-soft);
+  --color-attention: var(--attention);
+  --color-attention-foreground: var(--attention-foreground);
+  --color-attention-border: var(--attention-border);
+  --color-attention-soft-border: var(--attention-soft-border);
   --color-secondary: var(--secondary);
   --color-secondary-foreground: var(--secondary-foreground);
   --color-muted: var(--muted);

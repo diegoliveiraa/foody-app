@@ -5,8 +5,9 @@ import { extractApiError } from "@/utils/api-error";
 import { livePolling } from "@/utils/live-polling";
 import { ORDER_LIST_TAGS } from "../../constants";
 import { NO_ORDERS } from "../constants";
-import type { BoardColumn, OrderBoardModel } from "../types";
+import type { BoardColumn, OrderBoardModel, PendingRequests } from "../types";
 import { toBoardColumns } from "../utils/board-columns";
+import { pendingRequestsOf } from "../utils/pending-requests";
 
 export function useOrderBoard(): OrderBoardModel {
   const { data, error, isLoading, isFetching, fulfilledTimeStamp } = useGetOrderBoardQuery(
@@ -16,6 +17,10 @@ export function useOrderBoard(): OrderBoardModel {
   const reload: () => void = useReload(ORDER_LIST_TAGS);
   const columns: readonly BoardColumn[] = useMemo(
     (): BoardColumn[] => toBoardColumns(data?.data ?? NO_ORDERS),
+    [data],
+  );
+  const pendingRequests: PendingRequests | null = useMemo(
+    (): PendingRequests | null => pendingRequestsOf(data?.data ?? NO_ORDERS),
     [data],
   );
   const loadError: string | null = useMemo(
@@ -30,6 +35,7 @@ export function useOrderBoard(): OrderBoardModel {
     loadError,
     refreshing: isFetching,
     updatedAt: fulfilledTimeStamp ?? null,
+    pendingRequests,
     reload,
   };
 }

@@ -1,19 +1,18 @@
 import { cn } from "cn";
 import { useMemo, type JSX } from "react";
-import type { StaffOrderHistoryEntry } from "@/@types/orders";
-import { ORDER_STATUS_TONES } from "@/components/order-status-badge/tones";
+import type { StaffOrder } from "@/@types/orders";
 import { ORDER_DETAIL_MESSAGES } from "../constants/messages";
 import type { HistoryEntryView } from "../types";
 import { toHistoryEntries } from "../utils/history-entries";
 
 interface OrderHistoryListProps {
-  history: readonly StaffOrderHistoryEntry[];
+  order: StaffOrder;
 }
 
-export function OrderHistoryList({ history }: OrderHistoryListProps): JSX.Element {
+export function OrderHistoryList({ order }: OrderHistoryListProps): JSX.Element {
   const entries: readonly HistoryEntryView[] = useMemo(
-    (): HistoryEntryView[] => toHistoryEntries(history),
-    [history],
+    (): HistoryEntryView[] => toHistoryEntries(order),
+    [order],
   );
 
   return (
@@ -27,10 +26,7 @@ export function OrderHistoryList({ history }: OrderHistoryListProps): JSX.Elemen
           <li key={entry.key} className="flex gap-3 text-sm">
             <span
               aria-hidden="true"
-              className={cn(
-                "mt-1.5 size-2.5 shrink-0 rounded-full",
-                ORDER_STATUS_TONES[entry.status].dot,
-              )}
+              className={cn("mt-1.5 size-2.5 shrink-0 rounded-full", entry.dot)}
             />
             <div className="flex min-w-0 flex-col gap-0.5">
               <span className="font-semibold">{entry.title}</span>

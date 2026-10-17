@@ -1,5 +1,16 @@
-import type { ActorSide, BrazilianState, CancellationReason, OrderStatus } from "@/@types/orders";
+import type {
+  ActorSide,
+  BrazilianState,
+  CancellationReason,
+  CancellationRequestStatus,
+  OrderStatus,
+} from "@/@types/orders";
+import type {
+  CancellationFormInput,
+  DecisionFormInput,
+} from "@/services/validation-schemas/cancellation";
 import { MS_PER_SECOND } from "./time";
+import { EMPTY_TEXT } from "./validation";
 
 export const ORDER_STATUSES = {
   RECEIVED: "RECEIVED",
@@ -58,6 +69,36 @@ export const CANCELLATION_REASONS = {
   CUSTOMER_REQUEST: "CUSTOMER_REQUEST",
   DELIVERY_FAILED: "DELIVERY_FAILED",
 } as const satisfies Record<CancellationReason, CancellationReason>;
+
+export const CANCELLATION_REASON_LIST: readonly CancellationReason[] =
+  Object.values(CANCELLATION_REASONS);
+
+export const CANCELLATION_NOTE_MAX_LENGTH: number = 300;
+
+export const EMPTY_CANCELLATION_FORM: CancellationFormInput = {
+  reason: EMPTY_TEXT,
+  note: EMPTY_TEXT,
+};
+
+export const EMPTY_DECISION_FORM: DecisionFormInput = { note: EMPTY_TEXT };
+
+export const NO_CANCELLATION_CODE_FIELDS: Readonly<Partial<Record<string, never>>> = {};
+
+export const CANCELLATION_REQUEST_STATUSES = {
+  PENDING: "PENDING",
+  APPROVED: "APPROVED",
+  DECLINED: "DECLINED",
+} as const satisfies Record<CancellationRequestStatus, CancellationRequestStatus>;
+
+export type DecidedRequestStatus = Exclude<
+  CancellationRequestStatus,
+  typeof CANCELLATION_REQUEST_STATUSES.PENDING
+>;
+
+export type AdvanceStatus =
+  | typeof ORDER_STATUSES.PREPARING
+  | typeof ORDER_STATUSES.OUT_FOR_DELIVERY
+  | typeof ORDER_STATUSES.DELIVERED;
 
 export const CANCELLATION_REASON_LABELS: Record<CancellationReason, string> = {
   [CANCELLATION_REASONS.CHANGED_MIND]: "Mudei de ideia",

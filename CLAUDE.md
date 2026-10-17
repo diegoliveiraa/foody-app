@@ -216,7 +216,8 @@ List screens are paginated on the server: they send `page` (from 1), `pageSize` 
 - **Only the mutation invalidates**, in its own `invalidatesTags` — another domain's tags
   included, since there is one API. A component never calls `refetch()` or
   `util.invalidateTags` after a mutation; "reload" buttons go through one hook in `src/hooks` that
-  ends in `invalidateTags`. `onQueryStarted` is for optimistic updates, not for invalidating.
+  ends in `invalidateTags`. `onQueryStarted` is for optimistic updates and for storing a
+  mutation's answer in the cache (ADR-0021), never for invalidating.
 - **Every declared tag is provided by some query.** Invalidating a type nobody provides is dead
   code.
 

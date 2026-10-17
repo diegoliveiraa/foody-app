@@ -1,8 +1,10 @@
-import { http, HttpResponse } from "msw";
+import { http, HttpResponse, type JsonBodyType } from "msw";
 import { describe, expect, it, vi } from "vitest";
 import type { CartQuote } from "@/@types/menu";
 import type { CustomerOrder, CustomerOrderPage, PlaceOrderRequest } from "@/@types/orders";
+import type { AppStore } from "@/store";
 import { tokenReceived } from "@/store/slices/session";
+import { countDashboardReads, openDashboard } from "@/test/dashboard";
 import { customerOrder, customerPage, customerSummary, orderId, PAULISTA } from "@/test/orders";
 import { problem } from "@/test/problems";
 import { apiUrl, server } from "@/test/server";
@@ -225,5 +227,173 @@ describe("my orders service", () => {
       .unwrap();
 
     await expect(reading).rejects.toMatchObject({ status: 404 });
+  });
+});
+
+interface SentWrite {
+  method: string;
+  body: unknown;
+}
+
+interface CustomerWriteCase {
+  action: string;
+  path: string;
+  body: unknown;
+  answer: CustomerOrder;
+  send: (store: AppStore) => Promise<CustomerOrder>;
+}
+
+const SETTLE_MS: number = 50;
+
+const CUSTOMER_WRITES: readonly CustomerWriteCase[] = [
+  {
+    action: "cancellation",
+    path: `/my-orders/${PLACED.id}/cancel`,
+    body: { reason: "CHANGED_MIND" },
+    answer: customerOrder(1042, {
+      status: "CANCELLED",
+      live: false,
+      cancellation: { cancelledBy: "CUSTOMER", reason: "CHANGED_MIND", note: null },
+    }),
+    send: (store: AppStore): Promise<CustomerOrder> =>
+      store
+        .dispatch(
+          myOrdersApi.endpoints.cancelMyOrder.initiate({ id: PLACED.id, reason: "CHANGED_MIND" }),
+        )
+        .unwrap(),
+  },
+  {
+    action: "cancellation request",
+    path: `/my-orders/${PLACED.id}/cancellation-request`,
+    body: { reason: "OTHER", note: "Vou sair de casa" },
+    answer: customerOrder(1042, {
+      status: "PREPARING",
+      cancellationRequest: {
+        status: "PENDING",
+        reason: "OTHER",
+        note: "Vou sair de casa",
+        requestedAt: "2026-10-17T22:31:00Z",
+      },
+    }),
+    send: (store: AppStore): Promise<CustomerOrder> =>
+      store
+        .dispatch(
+          myOrdersApi.endpoints.requestCancellation.initiate({
+            id: PLACED.id,
+            reason: "OTHER",
+            note: "Vou sair de casa",
+          }),
+        )
+        .unwrap(),
+  },
+];
+
+function answerWrite(
+  write: CustomerWriteCase,
+  status: number = 200,
+  answer: JsonBodyType = write.answer,
+): SentWrite[] {
+  const sent: SentWrite[] = [];
+  server.use(
+    http.post(apiUrl(write.path), async ({ request }) => {
+      sent.push({ method: request.method, body: await request.json() });
+      return HttpResponse.json(answer, { status });
+    }),
+  );
+  return sent;
+}
+
+function countOrderReads(): () => number {
+  let reads: number = 0;
+  server.use(
+    http.get(apiUrl(`/my-orders/${PLACED.id}`), () => {
+      reads += 1;
+      return HttpResponse.json(PLACED);
+    }),
+  );
+  return (): number => reads;
+}
+
+async function settle(): Promise<void> {
+  await new Promise((resolve: (value: unknown) => void): void => {
+    setTimeout(resolve, SETTLE_MS);
+  });
+}
+
+describe("my orders service lifecycle", () => {
+  it.each(CUSTOMER_WRITES)("posts the $action with the reason and the note", async (write) => {
+    const sent: SentWrite[] = answerWrite(write);
+    const { store }: TestStore = signedInStore();
+
+    const answered: CustomerOrder = await write.send(store);
+
+    expect(answered).toEqual(write.answer);
+    expect(sent).toEqual([{ method: "POST", body: write.body }]);
+  });
+
+  it.each(CUSTOMER_WRITES)(
+    "writes the order answered to the $action into the tracking without reading it again",
+    async (write) => {
+      answerWrite(write);
+      const reads: () => number = countOrderReads();
+      const { store }: TestStore = signedInStore();
+      await store.dispatch(myOrdersApi.endpoints.getMyOrder.initiate(PLACED.id));
+
+      await write.send(store);
+      await settle();
+
+      expect(myOrdersApi.endpoints.getMyOrder.select(PLACED.id)(store.getState()).data).toEqual(
+        write.answer,
+      );
+      expect(reads()).toBe(1);
+    },
+  );
+
+  it.each(CUSTOMER_WRITES)(
+    "refreshes the customer's orders and the dashboard after the $action",
+    async (write) => {
+      answerWrite(write);
+      const urls: URL[] = recordListRequests([customerPage([customerSummary(1042)])]);
+      const dashboardReads: () => number = countDashboardReads();
+      const { store }: TestStore = signedInStore();
+      await store.dispatch(myOrdersApi.endpoints.listMyOrders.initiate());
+      await openDashboard(store);
+
+      await write.send(store);
+
+      await vi.waitFor((): void => expect(urls).toHaveLength(2));
+      await vi.waitFor((): void => expect(dashboardReads()).toBe(2));
+    },
+  );
+
+  it("reads the order and the list again when the request came too late", async () => {
+    const request: CustomerWriteCase = CUSTOMER_WRITES[1] as CustomerWriteCase;
+    answerWrite(request, 422, problem(422, "CANCELLATION_ALREADY_REQUESTED"));
+    const reads: () => number = countOrderReads();
+    const urls: URL[] = recordListRequests([customerPage([customerSummary(1042)])]);
+    const { store }: TestStore = signedInStore();
+    await store.dispatch(myOrdersApi.endpoints.getMyOrder.initiate(PLACED.id));
+    await store.dispatch(myOrdersApi.endpoints.listMyOrders.initiate());
+
+    await expect(request.send(store)).rejects.toMatchObject({ status: 422 });
+
+    await vi.waitFor((): void => expect(reads()).toBe(2));
+    await vi.waitFor((): void => expect(urls).toHaveLength(2));
+  });
+
+  it("reads nothing again when the API asks for a note", async () => {
+    const cancellation: CustomerWriteCase = CUSTOMER_WRITES[0] as CustomerWriteCase;
+    answerWrite(cancellation, 400, {
+      ...problem(400, "VALIDATION_FAILED"),
+      errors: [{ field: "note", message: "Conte o motivo do cancelamento na observação" }],
+    });
+    const reads: () => number = countOrderReads();
+    const { store }: TestStore = signedInStore();
+    await store.dispatch(myOrdersApi.endpoints.getMyOrder.initiate(PLACED.id));
+
+    await expect(cancellation.send(store)).rejects.toMatchObject({ status: 400 });
+    await settle();
+
+    expect(reads()).toBe(1);
   });
 });
