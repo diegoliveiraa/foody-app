@@ -118,7 +118,7 @@ describe("useUserActions", () => {
     await chooseStaffFor(result);
 
     await waitFor((): void =>
-      expect(toast.success).toHaveBeenCalledWith("Papel de Bruno Lima alterado para Equipe"),
+      expect(toast.success).toHaveBeenCalledWith("Papel alterado: Bruno Lima agora é Equipe"),
     );
     expect(result.current.target?.open).toBe(false);
   });
@@ -173,7 +173,7 @@ describe("useUserActions", () => {
 
     expect(beforeConfirming).toEqual([]);
     await waitFor((): void =>
-      expect(toast.success).toHaveBeenCalledWith("Bruno Lima foi desabilitado"),
+      expect(toast.success).toHaveBeenCalledWith("Usuário desabilitado: Bruno Lima"),
     );
     expect(disabled).toEqual([BRUNO.id]);
     expect(result.current.target?.open).toBe(false);
@@ -188,7 +188,7 @@ describe("useUserActions", () => {
     act((): void => result.current.row.enable({ ...BRUNO, status: "DISABLED" }));
 
     await waitFor((): void =>
-      expect(toast.success).toHaveBeenCalledWith("Bruno Lima foi habilitado"),
+      expect(toast.success).toHaveBeenCalledWith("Usuário habilitado: Bruno Lima"),
     );
     expect(result.current.target).toBeNull();
   });

@@ -9,13 +9,16 @@ import {
 } from "@reduxjs/toolkit";
 import { setupListeners } from "@reduxjs/toolkit/query";
 import { api } from "@/services/api";
+import { listenForCartChanges } from "./listeners/cart";
 import { listenForRateLimits } from "./listeners/rate-limit";
 import { listenForSessionChanges } from "./listeners/session";
+import { cartSlice } from "./slices/cart";
 import { sessionSlice } from "./slices/session";
 
 const rootReducer = combineReducers({
   [api.reducerPath]: api.reducer,
   [sessionSlice.reducerPath]: sessionSlice.reducer,
+  [cartSlice.reducerPath]: cartSlice.reducer,
 });
 
 export type RootState = ReturnType<typeof rootReducer>;
@@ -44,5 +47,6 @@ export function createAppStore(dependencies: StoreDependencies): AppStore {
   setupListeners(store.dispatch);
   listenForRateLimits(listener.startListening);
   listenForSessionChanges(listener.startListening);
+  listenForCartChanges(listener.startListening);
   return store;
 }

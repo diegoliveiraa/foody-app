@@ -1,0 +1,43 @@
+import { CART_MAX_DISTINCT_PRODUCTS, CART_MAX_QUANTITY } from "@/constants/cart";
+import { MESSAGES } from "@/constants/messages";
+
+export const MENU_MESSAGES = {
+  SEARCH: "Buscar no cardápio",
+  CATEGORIES: "Categorias",
+  ALL_CATEGORIES: "Todos",
+  LOADING: "Carregando o cardápio",
+  ADD: (name: string): string => `Adicionar ${name}`,
+  ADDED: (name: string): string => `Adicionado à sacola: ${name}`,
+  QUANTITY_LIMIT: (name: string): string =>
+    `Você pode levar até ${CART_MAX_QUANTITY} unidades de ${name}`,
+  DISTINCT_LIMIT: `A sacola aceita até ${CART_MAX_DISTINCT_PRODUCTS} produtos diferentes`,
+  EMPTY: "O cardápio ainda está vazio",
+  EMPTY_DESCRIPTION: "Volte daqui a pouco para ver as novidades.",
+  NO_RESULTS: "Nenhum produto encontrado",
+  CLEAR_SEARCH: "Limpar busca",
+  LOAD_FAILED: "Não foi possível carregar o cardápio",
+  VIEW_BAG: "Ver sacola",
+  UNITS: (count: number): string => `Itens na sacola: ${count}`,
+  BAG: {
+    TITLE: "Sua sacola",
+    DESCRIPTION: "Itens, quantidades e total da sua sacola",
+    CLOSE: MESSAGES.CLOSE,
+    LINES: "Itens da sacola",
+    EACH: (price: string): string => `${price} cada`,
+    DECREASE: (name: string): string => `Diminuir ${name}`,
+    INCREASE: (name: string): string => `Aumentar ${name}`,
+    REMOVE: (name: string): string => `Remover ${name}`,
+    REMOVE_UNAVAILABLE: "Remover",
+    UNAVAILABLE: "Indisponível",
+    UNAVAILABLE_HINT: "Este item saiu do cardápio.",
+    UNAVAILABLE_NOTICE: "Remova os itens indisponíveis para continuar.",
+    UNKNOWN_PRODUCT: "Produto indisponível",
+    ADD_MORE: "Adicionar mais itens",
+    SUMMARY: "Resumo da sacola",
+    ITEMS: "Itens",
+    TOTAL: "Total",
+    NO_TOTAL: "—",
+    CONTINUE: "Continuar",
+    EMPTY: "Sua sacola está vazia",
+  },
+} as const;

@@ -1,7 +1,8 @@
 import { createSlice, type PayloadAction, type Reducer } from "@reduxjs/toolkit";
+import { ALL_FILTER, EMPTY_SEARCH } from "@/constants/filters";
 import { DEFAULT_PAGE_SIZE, FIRST_PAGE, type PageSize } from "@/constants/pagination";
 import type { SortOrder } from "@/utils/sort-param";
-import { ALL_FILTER, DEFAULT_USER_SORT, EMPTY_SEARCH, USERS_FILTER_NAME } from "../constants";
+import { DEFAULT_USER_SORT, USERS_FILTER_NAME } from "../constants";
 import type { RoleFilter, StatusFilter, UsersFilterState } from "./types";
 
 export const INITIAL_USERS_FILTER: UsersFilterState = {
@@ -68,11 +69,3 @@ export const {
   sortChanged,
   filtersCleared,
 } = usersFilterSlice.actions;
-
-export function settledSearchToApply(
-  { search, appliedSearch }: UsersFilterState,
-  settled: string,
-): string | null {
-  const trimmed: string = settled.trim();
-  return settled === search && trimmed !== appliedSearch ? trimmed : null;
-}

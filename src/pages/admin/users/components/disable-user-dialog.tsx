@@ -1,14 +1,6 @@
 import type { JSX } from "react";
-import {
-  AlertDialog,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
-import { Button } from "@/components/ui/button";
+import { ConfirmDialog } from "@/components/confirm-dialog";
+import { EMPTY_TEXT } from "@/constants/validation";
 import { USER_DIALOGS } from "../constants";
 import { USERS_MESSAGES } from "../constants/messages";
 import type { UserDialogTarget } from "../types";
@@ -27,34 +19,17 @@ export function DisableUserDialog({
   onClose,
 }: DisableUserDialogProps): JSX.Element {
   const open: boolean = target?.dialog === USER_DIALOGS.DISABLE && target.open;
+  const name: string = target?.user.name ?? EMPTY_TEXT;
 
   return (
-    <AlertDialog
+    <ConfirmDialog
       open={open}
-      onOpenChange={(next: boolean): void => {
-        if (!next) {
-          onClose();
-        }
-      }}
-    >
-      {target && (
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>
-              {USERS_MESSAGES.DISABLE_DIALOG.TITLE(target.user.name)}
-            </AlertDialogTitle>
-            <AlertDialogDescription>
-              {USERS_MESSAGES.DISABLE_DIALOG.DESCRIPTION(target.user.name)}
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>{USERS_MESSAGES.CANCEL}</AlertDialogCancel>
-            <Button variant="destructive" disabled={pending} onClick={onConfirm}>
-              {USERS_MESSAGES.DISABLE_DIALOG.CONFIRM}
-            </Button>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      )}
-    </AlertDialog>
+      title={USERS_MESSAGES.DISABLE_DIALOG.TITLE(name)}
+      description={USERS_MESSAGES.DISABLE_DIALOG.DESCRIPTION(name)}
+      confirmLabel={USERS_MESSAGES.DISABLE_DIALOG.CONFIRM}
+      pending={pending}
+      onConfirm={onConfirm}
+      onClose={onClose}
+    />
   );
 }

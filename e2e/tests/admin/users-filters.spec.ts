@@ -10,7 +10,8 @@ import { expect, test, type ApiStubs } from "../../support/fixtures";
 import { expectNoHorizontalOverflow, showsListCards } from "../../support/layout";
 import { ADMIN_ME } from "../../support/me";
 import { stubSession } from "../../support/session";
-import { chooseOption, EVERYONE, sentQueries, stubUsers, usersPage } from "../../support/users";
+import { chooseOption } from "../../support/select";
+import { EVERYONE, sentQueries, stubUsers, usersPage } from "../../support/users";
 
 const MANY_PAGES: number = 3;
 

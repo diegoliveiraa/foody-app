@@ -5,6 +5,7 @@ import { SCREEN_URLS } from "../../support/constants";
 import { expect, test } from "../../support/fixtures";
 import { expectNoHorizontalOverflow, isMobileViewport, pathIs } from "../../support/layout";
 import { CUSTOMER_ME } from "../../support/me";
+import { stubMenu } from "../../support/menu";
 import { stubLogout, stubSession } from "../../support/session";
 
 function accountPanel(page: Page): Locator {
@@ -16,6 +17,7 @@ test("shows the customer's name and e-mail in the account panel", async ({
   api,
 }): Promise<void> => {
   await stubSession(api, CUSTOMER_ME);
+  await stubMenu(api);
   await page.goto(SCREEN_URLS.MENU);
 
   await page.getByRole("button", { name: MESSAGES.NAVIGATION.ACCOUNT }).click();
@@ -30,6 +32,7 @@ test("signs the customer out to the login page from the account panel", async ({
   api,
 }): Promise<void> => {
   await stubSession(api, CUSTOMER_ME);
+  await stubMenu(api);
   await stubLogout(api);
   await page.goto(SCREEN_URLS.MENU);
   await page.getByRole("button", { name: MESSAGES.NAVIGATION.ACCOUNT }).click();

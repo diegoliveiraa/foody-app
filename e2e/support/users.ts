@@ -133,8 +133,3 @@ export async function chooseUserAction(
   await actionsButton(page, user).click();
   await page.getByRole("menuitem", { name: action }).click();
 }
-
-export async function chooseOption(page: Page, select: Locator, option: string): Promise<void> {
-  await select.click();
-  await page.getByRole("option", { name: option, exact: true }).click();
-}

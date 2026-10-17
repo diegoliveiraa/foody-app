@@ -4,35 +4,24 @@ import { useForm, type UseFormReturn } from "react-hook-form";
 import { toast } from "sonner";
 import type { MeUser } from "@/@types/me";
 import type { AdminUser } from "@/@types/users";
-import { ERROR_CODES } from "@/constants/api";
 import { SCREEN_ACTIONS, SCREEN_KEYS } from "@/constants/screens";
 import { useCan } from "@/hooks/use-can";
 import { useCurrentUser } from "@/hooks/use-current-user";
+import { useNotifyError } from "@/hooks/use-notify-error";
 import {
   useChangeUserRoleMutation,
   useDisableUserMutation,
   useEnableUserMutation,
 } from "@/services/users";
 import { changeRoleSchema, type ChangeRoleValues } from "@/services/validation-schemas/change-role";
-import { extractApiError, type ApiErrorInfo } from "@/utils/api-error";
+import { closeTarget } from "@/utils/dialog-target";
 import { USER_DIALOGS } from "../constants";
 import { USER_ROLE_LABELS, USERS_MESSAGES } from "../constants/messages";
 import type { UserActionsModel, UserDialog, UserDialogTarget, UserRowActions } from "../types";
 
-function showActionError(error: unknown): void {
-  const info: ApiErrorInfo = extractApiError(error);
-  if (info.code === ERROR_CODES.RATE_LIMITED) {
-    return;
-  }
-  toast.error(info.detail);
-}
-
-function closed(target: UserDialogTarget | null): UserDialogTarget | null {
-  return target === null ? null : { ...target, open: false };
-}
-
 export function useUserActions(): UserActionsModel {
   const currentUser: MeUser | undefined = useCurrentUser();
+  const showActionError: (error: unknown) => void = useNotifyError();
   const canChangeRole: boolean = useCan(SCREEN_KEYS.ADMIN_USERS, SCREEN_ACTIONS.UPDATE);
   const canChangeStatus: boolean = useCan(SCREEN_KEYS.ADMIN_USERS, SCREEN_ACTIONS.DISABLE);
   const [target, setTarget] = useState<UserDialogTarget | null>(null);
@@ -49,7 +38,7 @@ export function useUserActions(): UserActionsModel {
   }, []);
 
   const closeDialog = useCallback((): void => {
-    setTarget(closed);
+    setTarget(closeTarget);
   }, []);
 
   const askForRole = useCallback(
@@ -74,7 +63,7 @@ export function useUserActions(): UserActionsModel {
         })
         .catch(showActionError);
     },
-    [enableUser],
+    [enableUser, showActionError],
   );
 
   const saveRole = async ({ role }: ChangeRoleValues): Promise<void> => {

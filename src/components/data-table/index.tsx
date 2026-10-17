@@ -32,8 +32,8 @@ interface DataTableProps<TData extends RowData> {
   columns: DataTableColumns<TData>;
   data: ReadonlyArray<TData>;
   getRowId: (row: TData) => string;
-  sort: SortOrder;
-  onSortChange: (sort: SortOrder) => void;
+  sort?: SortOrder;
+  onSortChange?: (sort: SortOrder) => void;
   loading?: boolean;
   emptyState?: ReactNode;
 }
@@ -58,11 +58,16 @@ const SORT_ICONS: Record<SortState, LucideIcon> = {
   [UNSORTED]: ArrowUpDown,
 };
 
-function toSortingState({ property, direction }: SortOrder): SortingState {
-  return [{ id: property, desc: direction === SORT_DIRECTIONS.DESC }];
+const UNSORTED_STATE: SortingState = [];
+
+function toSortingState(sort: SortOrder | undefined): SortingState {
+  if (sort === undefined) {
+    return UNSORTED_STATE;
+  }
+  return [{ id: sort.property, desc: sort.direction === SORT_DIRECTIONS.DESC }];
 }
 
-function toSortOrder(sorting: SortingState, current: SortOrder): SortOrder {
+function toSortOrder(sorting: SortingState, current: SortOrder | undefined): SortOrder | undefined {
   const [first] = sorting;
   if (first === undefined) {
     return current;
@@ -159,8 +164,14 @@ export function DataTable<TData extends RowData>({
     data,
     getRowId,
     state: { sorting },
-    onSortingChange: (updater: Updater<SortingState>): void =>
-      onSortChange(toSortOrder(functionalUpdate(updater, sorting), sort)),
+    onSortingChange: (updater: Updater<SortingState>): void => {
+      const next: SortOrder | undefined = toSortOrder(functionalUpdate(updater, sorting), sort);
+      if (next === undefined || onSortChange === undefined) {
+        return;
+      }
+      onSortChange(next);
+    },
+    enableSorting: onSortChange !== undefined,
     manualSorting: true,
     enableSortingRemoval: false,
     enableMultiSort: false,

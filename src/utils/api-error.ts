@@ -2,6 +2,7 @@ import type { ProblemDetails, ProblemFieldError } from "@/@types/problem-details
 import { MESSAGES } from "@/constants/messages";
 
 export interface ApiErrorInfo {
+  status: number | null;
   detail: string;
   code: string | null;
   requestId: string | null;
@@ -24,6 +25,13 @@ function readRetryAfter(error: unknown): number | null {
   return error.retryAfterSeconds;
 }
 
+function readStatus(error: unknown): number | null {
+  if (!isRecord(error) || typeof error.status !== "number") {
+    return null;
+  }
+  return error.status;
+}
+
 function toFieldErrors(errors: ProblemFieldError[]): Record<string, string> {
   return errors.reduce(
     (
@@ -36,9 +44,11 @@ function toFieldErrors(errors: ProblemFieldError[]): Record<string, string> {
 
 export function extractApiError(error: unknown): ApiErrorInfo {
   const retryAfterSeconds: number | null = readRetryAfter(error);
+  const status: number | null = readStatus(error);
   const problem: unknown = isRecord(error) ? error.data : undefined;
   if (!isProblemDetails(problem)) {
     return {
+      status,
       detail: MESSAGES.ERRORS.UNAVAILABLE,
       code: null,
       requestId: null,
@@ -47,10 +57,20 @@ export function extractApiError(error: unknown): ApiErrorInfo {
     };
   }
   return {
+    status,
     detail: problem.detail,
     code: problem.code,
     requestId: problem.requestId ?? null,
     fieldErrors: toFieldErrors(problem.errors ?? []),
     retryAfterSeconds,
   };
+}
+
+export function knownFieldErrors<TField extends string>(
+  info: ApiErrorInfo,
+  fields: readonly TField[],
+): [TField, string][] {
+  const isKnown = (entry: [string, string]): entry is [TField, string] =>
+    fields.some((field: TField): boolean => field === entry[0]);
+  return Object.entries(info.fieldErrors).filter(isKnown);
 }

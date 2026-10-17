@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import type { ApiError, ProblemDetails } from "@/@types/problem-details";
 import { MESSAGES } from "@/constants/messages";
-import { extractApiError, type ApiErrorInfo } from "./api-error";
+import { extractApiError, knownFieldErrors, type ApiErrorInfo } from "./api-error";
 
 const CONFLICT: ProblemDetails = {
   status: 409,
@@ -33,6 +33,7 @@ describe("extractApiError", () => {
     const info: ApiErrorInfo = extractApiError(error);
 
     expect(info).toEqual({
+      status: 409,
       detail: CONFLICT.detail,
       code: "EMAIL_ALREADY_REGISTERED",
       requestId: "req-1",
@@ -71,6 +72,7 @@ describe("extractApiError", () => {
     const info: ApiErrorInfo = extractApiError(error);
 
     expect(info).toEqual({
+      status: null,
       detail: MESSAGES.ERRORS.UNAVAILABLE,
       code: null,
       requestId: null,
@@ -86,11 +88,28 @@ describe("extractApiError", () => {
 
     expect(info.detail).toBe(MESSAGES.ERRORS.UNAVAILABLE);
     expect(info.code).toBeNull();
+    expect(info.status).toBe(502);
   });
 
   it("falls back to a generic message for a value that is not an API error", () => {
     const info: ApiErrorInfo = extractApiError(new Error("boom"));
 
     expect(info.detail).toBe(MESSAGES.ERRORS.UNAVAILABLE);
+  });
+});
+
+describe("knownFieldErrors", () => {
+  it("keeps only the messages of the fields a form has, in the API's order", () => {
+    const info: ApiErrorInfo = extractApiError({ status: 400, data: VALIDATION });
+
+    const errors: [string, string][] = knownFieldErrors(info, ["password", "email"]);
+
+    expect(errors).toEqual([["password", "A senha é curta demais."]]);
+  });
+
+  it("finds nothing when the API sent no field errors", () => {
+    const info: ApiErrorInfo = extractApiError({ status: 409, data: CONFLICT });
+
+    expect(knownFieldErrors(info, ["name"])).toEqual([]);
   });
 });

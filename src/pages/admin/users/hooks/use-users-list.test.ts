@@ -2,11 +2,11 @@ import { act, renderHook, waitFor, type RenderHookResult } from "@testing-librar
 import { http, HttpResponse } from "msw";
 import { describe, expect, it } from "vitest";
 import type { AdminUserPage } from "@/@types/users";
+import { SEARCH_DEBOUNCE_MS } from "@/constants/filters";
 import { tokenReceived } from "@/store/slices/session";
 import { withStore } from "@/test/render";
 import { apiUrl, server } from "@/test/server";
 import { createTestStore, type TestStore } from "@/test/store";
-import { SEARCH_DEBOUNCE_MS } from "../constants";
 import type { UsersListModel } from "../types";
 import { useUsersList } from "./use-users-list";
 

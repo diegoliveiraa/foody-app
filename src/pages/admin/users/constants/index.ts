@@ -1,14 +1,9 @@
 import type { AdminUser } from "@/@types/users";
+import { ALL_FILTER } from "@/constants/filters";
 import { SORT_DIRECTIONS } from "@/constants/sorting";
 import { USER_ROLE_LIST, USER_STATUS_LIST } from "@/constants/users";
 import type { SortOrder } from "@/utils/sort-param";
 import type { RoleFilter, StatusFilter } from "../filter/types";
-
-export const ALL_FILTER = "ALL" as const;
-
-export const EMPTY_SEARCH: string = "";
-
-export const SEARCH_DEBOUNCE_MS: number = 500;
 
 export const USERS_FILTER_NAME: string = "usersFilter";
 

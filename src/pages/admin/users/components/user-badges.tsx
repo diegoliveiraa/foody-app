@@ -1,9 +1,10 @@
 import type { VariantProps } from "class-variance-authority";
 import type { JSX } from "react";
 import type { AdminUser, UserRole, UserStatus } from "@/@types/users";
+import { StatusBadge } from "@/components/status-badge";
 import { Badge } from "@/components/ui/badge";
 import type { badgeVariants } from "@/components/ui/badge-variants";
-import { USER_ROLES, USER_STATUSES } from "@/constants/users";
+import { USER_ROLES } from "@/constants/users";
 import { USER_ROLE_LABELS, USER_STATUS_LABELS, USERS_MESSAGES } from "../constants/messages";
 
 type BadgeVariant = NonNullable<VariantProps<typeof badgeVariants>["variant"]>;
@@ -14,17 +15,12 @@ const ROLE_VARIANTS: Record<UserRole, BadgeVariant> = {
   [USER_ROLES.ADMIN]: "default",
 };
 
-const STATUS_VARIANTS: Record<UserStatus, BadgeVariant> = {
-  [USER_STATUSES.ACTIVE]: "outline",
-  [USER_STATUSES.DISABLED]: "destructive",
-};
-
 export function UserRoleBadge({ role }: { role: UserRole }): JSX.Element {
   return <Badge variant={ROLE_VARIANTS[role]}>{USER_ROLE_LABELS[role]}</Badge>;
 }
 
 export function UserStatusBadge({ status }: { status: UserStatus }): JSX.Element {
-  return <Badge variant={STATUS_VARIANTS[status]}>{USER_STATUS_LABELS[status]}</Badge>;
+  return <StatusBadge status={status} label={USER_STATUS_LABELS[status]} />;
 }
 
 interface UserNameProps {

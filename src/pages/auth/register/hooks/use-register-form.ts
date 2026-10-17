@@ -11,21 +11,11 @@ import {
   type RegisterField,
   type RegisterValues,
 } from "@/services/validation-schemas/register";
-import { extractApiError, type ApiErrorInfo } from "@/utils/api-error";
+import { extractApiError, knownFieldErrors, type ApiErrorInfo } from "@/utils/api-error";
 import { REGISTER_DEFAULTS } from "../constants";
 import type { RegisterFormModel } from "../types";
 
 type FieldMessage = [RegisterField, string];
-
-function isRegisterField(field: string): field is RegisterField {
-  return REGISTER_FIELDS.some((known: RegisterField): boolean => known === field);
-}
-
-function fieldMessagesOf(info: ApiErrorInfo): FieldMessage[] {
-  return Object.entries(info.fieldErrors).filter((entry: [string, string]): entry is FieldMessage =>
-    isRegisterField(entry[0]),
-  );
-}
 
 export function useRegisterForm(): RegisterFormModel {
   const form: UseFormReturn<RegisterValues> = useForm<RegisterValues>({
@@ -41,7 +31,7 @@ export function useRegisterForm(): RegisterFormModel {
       form.setError("email", { message: info.detail });
       return;
     }
-    const fieldMessages: FieldMessage[] = fieldMessagesOf(info);
+    const fieldMessages: FieldMessage[] = knownFieldErrors(info, REGISTER_FIELDS);
     if (fieldMessages.length === 0) {
       form.setError("root", { message: info.detail });
       return;

@@ -20,7 +20,8 @@ import { HTTP_CREATED, INTEGRATED_API_URL, SCREEN_URLS } from "../support/consta
 import { pathIs } from "../support/layout";
 import { ME_LABELS } from "../support/me";
 import { readSeedAccounts, type SeedAccounts } from "../support/seed-accounts";
-import { chooseOption, chooseUserAction, userEntry } from "../support/users";
+import { chooseOption } from "../support/select";
+import { chooseUserAction, userEntry } from "../support/users";
 
 const ACCOUNTS: SeedAccounts = readSeedAccounts();
 

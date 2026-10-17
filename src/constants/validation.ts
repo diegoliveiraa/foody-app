@@ -9,3 +9,5 @@ export const PASSWORD_MIN_LENGTH: number = 8;
 export const PASSWORD_MAX_BYTES: number = 72;
 
 export const REQUIRED_MIN_LENGTH: number = 1;
+
+export const EMPTY_TEXT: string = "";

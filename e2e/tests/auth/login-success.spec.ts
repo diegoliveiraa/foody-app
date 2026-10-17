@@ -8,6 +8,7 @@ import { HTTP_METHODS, SCREEN_URLS } from "../../support/constants";
 import { expect, test } from "../../support/fixtures";
 import { expectNoHorizontalOverflow, pathIs } from "../../support/layout";
 import { CUSTOMER_ME, ME_LABELS, STAFF_ME } from "../../support/me";
+import { stubMenu } from "../../support/menu";
 import { SIGNED_IN, stubMe, stubSignedOut } from "../../support/session";
 
 test("a customer who signs in lands on the menu, with the store navigation", async ({
@@ -17,6 +18,7 @@ test("a customer who signs in lands on the menu, with the store navigation", asy
   await stubSignedOut(api);
   await api.respond(HTTP_METHODS.POST, API_PATHS.LOGIN, SIGNED_IN);
   await stubMe(api, CUSTOMER_ME);
+  await stubMenu(api);
   await page.goto(ROUTE_PATHS.LOGIN);
 
   await signIn(page, CUSTOMER_ME.user.email);

@@ -9,9 +9,9 @@ import { HTTP_METHODS } from "../../support/constants";
 import { expect, test, type RecordedRequest } from "../../support/fixtures";
 import { expectNoHorizontalOverflow } from "../../support/layout";
 import { problem } from "../../support/problems";
+import { chooseOption } from "../../support/select";
 import {
   ANA,
-  chooseOption,
   chooseUserAction,
   GABRIEL,
   openUsersScreen,

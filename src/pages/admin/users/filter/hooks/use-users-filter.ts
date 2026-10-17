@@ -1,8 +1,9 @@
 import { useMemo, useReducer } from "react";
+import { ALL_FILTER, EMPTY_SEARCH, SEARCH_DEBOUNCE_MS } from "@/constants/filters";
 import type { PageSize } from "@/constants/pagination";
 import { useDebouncedValue } from "@/hooks/use-debounced-value";
+import { settledSearchToApply } from "@/utils/settled-search";
 import type { SortOrder } from "@/utils/sort-param";
-import { ALL_FILTER, EMPTY_SEARCH, SEARCH_DEBOUNCE_MS } from "../../constants";
 import {
   filtersCleared,
   INITIAL_USERS_FILTER,
@@ -11,7 +12,6 @@ import {
   roleChanged,
   searchApplied,
   searchChanged,
-  settledSearchToApply,
   sortChanged,
   statusChanged,
   usersFilterReducer,

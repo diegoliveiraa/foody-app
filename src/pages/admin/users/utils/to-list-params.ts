@@ -1,6 +1,6 @@
 import type { ListUsersParams } from "@/@types/users";
+import { ALL_FILTER, EMPTY_SEARCH } from "@/constants/filters";
 import { toSortParam } from "@/utils/sort-param";
-import { ALL_FILTER, EMPTY_SEARCH } from "../constants";
 import type { UsersFilterState } from "../filter/types";
 
 export function toListUsersParams({

@@ -1,8 +1,10 @@
 import { describe, expect, it } from "vitest";
+import { ALL_FILTER, EMPTY_SEARCH } from "@/constants/filters";
 import { DEFAULT_PAGE_SIZE, FIRST_PAGE } from "@/constants/pagination";
 import { SORT_DIRECTIONS } from "@/constants/sorting";
 import { USER_ROLES, USER_STATUSES } from "@/constants/users";
-import { ALL_FILTER, DEFAULT_USER_SORT, EMPTY_SEARCH, USER_COLUMNS } from "../constants";
+import { settledSearchToApply } from "@/utils/settled-search";
+import { DEFAULT_USER_SORT, USER_COLUMNS } from "../constants";
 import {
   filtersCleared,
   INITIAL_USERS_FILTER,
@@ -11,7 +13,6 @@ import {
   roleChanged,
   searchApplied,
   searchChanged,
-  settledSearchToApply,
   sortChanged,
   statusChanged,
   usersFilterReducer,
@@ -109,40 +110,7 @@ describe("users filter", () => {
   });
 });
 
-describe("settledSearchToApply", () => {
-  it("applies the search once the debounced value caught up with what was typed", () => {
-    const search: string | null = settledSearchToApply(
-      { ...INITIAL_USERS_FILTER, search: "ana" },
-      "ana",
-    );
-
-    expect(search).toBe("ana");
-  });
-
-  it("applies the search without the spaces around it", () => {
-    const search: string | null = settledSearchToApply(
-      { ...INITIAL_USERS_FILTER, search: " ana " },
-      " ana ",
-    );
-
-    expect(search).toBe("ana");
-  });
-
-  it("applies nothing while the typed text is ahead of the debounced value", () => {
-    const search: string | null = settledSearchToApply(
-      { ...INITIAL_USERS_FILTER, search: "ana" },
-      "an",
-    );
-
-    expect(search).toBeNull();
-  });
-
-  it("applies nothing when the settled search is already applied, spaces aside", () => {
-    const search: string | null = settledSearchToApply({ ...FILTERED, search: "ana " }, "ana ");
-
-    expect(search).toBeNull();
-  });
-
+describe("settledSearchToApply on the users filter", () => {
   it("applies nothing right after the filters were cleared, while the old value settles", () => {
     const cleared: UsersFilterState = usersFilterReducer(FILTERED, filtersCleared());
 

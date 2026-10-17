@@ -1,9 +1,7 @@
 import type { UserRole, UserStatus } from "@/@types/users";
+import type { AllFilter } from "@/constants/filters";
 import type { PageSize } from "@/constants/pagination";
 import type { SortOrder } from "@/utils/sort-param";
-import type { ALL_FILTER } from "../constants";
-
-export type AllFilter = typeof ALL_FILTER;
 
 export type RoleFilter = UserRole | AllFilter;
 

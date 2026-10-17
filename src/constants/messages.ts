@@ -1,4 +1,17 @@
+import {
+  CATEGORY_NAME_MAX_LENGTH,
+  CATEGORY_NAME_MIN_LENGTH,
+  DISPLAY_ORDER_MAX,
+  DISPLAY_ORDER_MIN,
+  PRODUCT_DESCRIPTION_MAX_LENGTH,
+  PRODUCT_NAME_MAX_LENGTH,
+  PRODUCT_NAME_MIN_LENGTH,
+  PRODUCT_PRICE_MAX,
+} from "./catalog";
+import { formatMoney } from "@/utils/format-money";
 import { NAME_MAX_LENGTH, NAME_MIN_LENGTH, PASSWORD_MIN_LENGTH } from "./validation";
+
+const CREATED_AT: string = "Criado em";
 
 export const MESSAGES = {
   BRAND: "foody",
@@ -18,6 +31,15 @@ export const MESSAGES = {
     PASSWORD_TOO_SHORT: `A senha precisa ter pelo menos ${PASSWORD_MIN_LENGTH} caracteres`,
     PASSWORD_TOO_LONG: "A senha está longa demais; acentos e emojis ocupam mais espaço",
     ROLE_REQUIRED: "Escolha um papel",
+    PRODUCT_NAME_LENGTH: `Informe um nome entre ${PRODUCT_NAME_MIN_LENGTH} e ${PRODUCT_NAME_MAX_LENGTH} caracteres`,
+    DESCRIPTION_TOO_LONG: `A descrição pode ter até ${PRODUCT_DESCRIPTION_MAX_LENGTH} caracteres`,
+    PRICE_REQUIRED: "Informe o preço",
+    PRICE_INVALID: "Informe o preço com até duas casas decimais, como 34,90",
+    PRICE_POSITIVE: "O preço precisa ser maior que zero",
+    PRICE_TOO_HIGH: `O preço máximo é ${formatMoney(PRODUCT_PRICE_MAX)}`,
+    CATEGORY_REQUIRED: "Escolha uma categoria",
+    CATEGORY_NAME_LENGTH: `Informe um nome entre ${CATEGORY_NAME_MIN_LENGTH} e ${CATEGORY_NAME_MAX_LENGTH} caracteres`,
+    DISPLAY_ORDER_RANGE: `Informe um número inteiro de ${DISPLAY_ORDER_MIN} a ${DISPLAY_ORDER_MAX}`,
   },
   LOGIN: {
     TITLE: "Entrar",
@@ -49,7 +71,37 @@ export const MESSAGES = {
     MENU_DESCRIPTION: "Telas que você pode abrir",
     TOGGLE_SIDEBAR: "Mostrar ou esconder o menu",
   },
+  ACTIONS: {
+    CANCEL: "Cancelar",
+    SAVE: "Salvar",
+    EDIT: "Editar",
+    DELETE: "Excluir",
+    DISABLE: "Desabilitar",
+    ENABLE: "Habilitar",
+    DISABLE_INSTEAD: "Desabilitar em vez disso",
+    CLEAR_FILTERS: "Limpar filtros",
+    FOR: (name: string): string => `Ações para ${name}`,
+  },
+  DIALOGS: {
+    EDIT_TITLE: (name: string): string => `Editar ${name}`,
+    DISABLE_TITLE: (name: string): string => `Desabilitar ${name}?`,
+    DELETE_TITLE: (name: string): string => `Excluir ${name}?`,
+    CANNOT_UNDO: "Esta ação não pode ser desfeita.",
+  },
+  STATUS_LABELS: {
+    ACTIVE: "Ativo",
+    DISABLED: "Desabilitado",
+  },
+  STATUS_FILTER_LABELS: {
+    ALL: "Todos",
+    ACTIVE: "Ativos",
+    DISABLED: "Desabilitados",
+  },
   LIST: {
+    STATUS: "Status",
+    CREATED_AT,
+    ACTIONS: "Ações",
+    CREATED_ON: (date: string): string => `${CREATED_AT} ${date}`,
     PAGINATION: "Paginação",
     PAGE_SIZE: "Itens por página",
     PREVIOUS_PAGE: "Página anterior",

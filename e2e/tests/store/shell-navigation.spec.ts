@@ -9,12 +9,14 @@ import {
   type BoundingBox,
 } from "../../support/layout";
 import { CUSTOMER_ME, ME_LABELS } from "../../support/me";
+import { stubMenu } from "../../support/menu";
 import { stubSession } from "../../support/session";
 
 const TOP_BAR_MAX_Y: number = 80;
 
 test("moves between the store screens that /me offers", async ({ page, api }): Promise<void> => {
   await stubSession(api, CUSTOMER_ME);
+  await stubMenu(api);
   await page.goto(SCREEN_URLS.MENU);
   const navigation: Locator = page.getByRole("navigation", { name: MESSAGES.NAVIGATION.MAIN });
 
@@ -36,6 +38,7 @@ test("keeps the store navigation in a tab bar at the bottom on phones", async ({
 }): Promise<void> => {
   test.skip(!isMobileViewport(page), SKIP_REASONS.PHONES_ONLY);
   await stubSession(api, CUSTOMER_ME);
+  await stubMenu(api);
 
   await page.goto(SCREEN_URLS.MENU);
 
@@ -51,6 +54,7 @@ test("keeps the store navigation in a top bar from tablets up", async ({
 }): Promise<void> => {
   test.skip(isMobileViewport(page), SKIP_REASONS.TABLETS_UP);
   await stubSession(api, CUSTOMER_ME);
+  await stubMenu(api);
 
   await page.goto(SCREEN_URLS.MENU);
 

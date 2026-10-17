@@ -18,6 +18,8 @@ export const HTTP_CREATED: number = 201;
 
 export const HTTP_NO_CONTENT: number = 204;
 
+export const HTTP_INTERNAL_ERROR: number = 500;
+
 export const HTTP_METHODS = {
   GET: "GET",
   POST: "POST",
@@ -47,9 +49,11 @@ export const SKIP_REASONS = {
 
 export const SCREEN_URLS = {
   MENU: "/menu",
+  CHECKOUT: "/menu/checkout",
   MY_ORDERS: "/my-orders",
   DASHBOARD: "/dashboard",
   PRODUCTS: "/catalog/products",
+  CATEGORIES: "/catalog/categories",
   ADMIN_USERS: "/admin/users",
 } as const;
 

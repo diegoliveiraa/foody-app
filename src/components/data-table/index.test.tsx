@@ -134,3 +134,20 @@ describe("DataTable", () => {
     expect(cell).toHaveAttribute("colspan", "3");
   });
 });
+
+describe("DataTable without sorting", () => {
+  it("renders plain headers, without sort buttons, for a list kept in the API's order", () => {
+    render(
+      <DataTable
+        label={LABEL}
+        columns={COLUMNS}
+        data={PEOPLE}
+        getRowId={(person: Person): string => person.id}
+      />,
+    );
+
+    expect(header("Nome")).not.toHaveAttribute("aria-sort");
+    expect(screen.queryAllByRole("button")).toEqual([]);
+    expect(screen.getAllByRole("row")).toHaveLength(3);
+  });
+});

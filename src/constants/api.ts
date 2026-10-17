@@ -5,6 +5,10 @@ export const API_PATHS = {
   LOGOUT: "/auth/logout",
   ME: "/me",
   ADMIN_USERS: "/admin/users",
+  MENU: "/menu",
+  MENU_QUOTE: "/menu/quote",
+  CATALOG_CATEGORIES: "/catalog/categories",
+  CATALOG_PRODUCTS: "/catalog/products",
 } as const;
 
 export const ADMIN_USER_PATHS = {
@@ -13,12 +17,26 @@ export const ADMIN_USER_PATHS = {
   ENABLE: (id: string): string => `${API_PATHS.ADMIN_USERS}/${id}/enable`,
 } as const;
 
+export const CATEGORY_PATHS = {
+  ONE: (id: string): string => `${API_PATHS.CATALOG_CATEGORIES}/${id}`,
+  DISABLE: (id: string): string => `${API_PATHS.CATALOG_CATEGORIES}/${id}/disable`,
+  ENABLE: (id: string): string => `${API_PATHS.CATALOG_CATEGORIES}/${id}/enable`,
+} as const;
+
+export const PRODUCT_PATHS = {
+  ONE: (id: string): string => `${API_PATHS.CATALOG_PRODUCTS}/${id}`,
+  DISABLE: (id: string): string => `${API_PATHS.CATALOG_PRODUCTS}/${id}/disable`,
+  ENABLE: (id: string): string => `${API_PATHS.CATALOG_PRODUCTS}/${id}/enable`,
+} as const;
+
 export const AUTH_PATH_PREFIX: string = "/auth/";
 
 export const HTTP_METHODS = {
   GET: "GET",
   POST: "POST",
+  PUT: "PUT",
   PATCH: "PATCH",
+  DELETE: "DELETE",
 } as const;
 
 export const HTTP_STATUS = {
@@ -48,6 +66,10 @@ export const ERROR_CODES = {
   RATE_LIMITED: "RATE_LIMITED",
   CANNOT_CHANGE_OWN_ACCOUNT: "CANNOT_CHANGE_OWN_ACCOUNT",
   LAST_ACTIVE_ADMIN: "LAST_ACTIVE_ADMIN",
+  CATEGORY_NAME_TAKEN: "CATEGORY_NAME_TAKEN",
+  CATEGORY_IN_USE: "CATEGORY_IN_USE",
+  UNKNOWN_CATEGORY: "UNKNOWN_CATEGORY",
+  PRODUCT_IN_USE: "PRODUCT_IN_USE",
 } as const;
 
 export type ErrorCode = (typeof ERROR_CODES)[keyof typeof ERROR_CODES];
