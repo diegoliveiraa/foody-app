@@ -2,6 +2,7 @@
 dist
 playwright-report
 test-results
+test-results-integrated
 blob-report
 package-lock.json
 src/@types/api.d.ts

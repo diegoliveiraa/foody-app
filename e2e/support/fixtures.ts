@@ -1,8 +1,14 @@
 import { test as base, expect, type Route } from "@playwright/test";
-import { E2E_API_URL, HTTP_OK, type HttpMethod } from "./constants";
+import { CORS_HEADERS, E2E_API_URL, HTTP_NO_CONTENT, HTTP_OK, type HttpMethod } from "./constants";
 
 export interface ApiStubs {
-  respond<T>(method: HttpMethod, path: string, body: T, status?: number): Promise<void>;
+  respond<T>(
+    method: HttpMethod,
+    path: string,
+    body: T,
+    status?: number,
+    headers?: Record<string, string>,
+  ): Promise<void>;
 }
 
 interface Fixtures {
@@ -27,6 +33,7 @@ export const test = base.extend<Fixtures>({
           path: string,
           body: T,
           status: number = HTTP_OK,
+          headers: Record<string, string> = {},
         ): Promise<void> {
           await page.route(
             (url: URL): boolean => url.href.startsWith(E2E_API_URL) && url.pathname === path,
@@ -35,7 +42,12 @@ export const test = base.extend<Fixtures>({
                 await route.fallback();
                 return;
               }
-              await route.fulfill({ status, json: body });
+              const allHeaders: Record<string, string> = { ...CORS_HEADERS, ...headers };
+              if (status === HTTP_NO_CONTENT) {
+                await route.fulfill({ status, headers: allHeaders });
+                return;
+              }
+              await route.fulfill({ status, json: body, headers: allHeaders });
             },
           );
         },

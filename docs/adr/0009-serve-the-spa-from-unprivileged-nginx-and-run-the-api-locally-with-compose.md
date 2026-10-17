@@ -1,6 +1,6 @@
 # ADR-0009 — Serve the SPA from unprivileged nginx; the local compose runs the API
 
-- **Status:** Accepted
+- **Status:** Accepted — CSP decided in ADR-0017
 - **Date:** 2026-10-16
 - **Decided by:** Diego
 

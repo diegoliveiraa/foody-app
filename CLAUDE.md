@@ -36,7 +36,9 @@ semester. Format and criteria: [`docs/adr/README.md`](./docs/adr/README.md).
 **7. Every new screen or flow ships with an E2E spec, in the same PR** (ADR-0012). A new feature,
 a new route, or a change to an existing flow ⇒ `e2e/tests/<area>/<screen>-<aspect>.spec.ts`,
 importing `test`/`expect` from `e2e/support/fixtures` and stubbing every API call with
-`api.respond(...)` — an unstubbed call fails the test. It runs in every R13 viewport by itself;
+`api.respond(...)` — an unstubbed call fails the test. Every page load restores the session first,
+so a spec starts with `stubSession(api, me)` or `stubSignedOut(api)` (`e2e/support/session`), with
+the typed `/me` fixtures of `e2e/support/me`. It runs in every R13 viewport by itself;
 `expectNoHorizontalOverflow` (`e2e/support/layout`) checks the layout. Select what a user perceives
 — `getByRole`, `getByLabel`, `getByText` — and a `data-testid` only where nothing accessible
 exists. A critical flow (login, the main CRUD) also gets a spec in `e2e/integrated/`, against the
@@ -52,15 +54,20 @@ src/
   @types/<domain>.d.ts            API contracts (R17)
   assets/                         images and fonts imported by code
   components/
-    ui/<primitive>.tsx            shadcn primitives (R4)
-    <composite>/index.tsx         composites shared by screens (data-table, page-header…)
-  constants/                      app-wide consts; messages.ts holds messages shared by screens
+    ui/<primitive>.tsx            shadcn primitives (R4); their cva variants in <primitive>-variants.ts
+    <composite>/index.tsx         composites shared by screens (data-table, page-header…); one that
+                                  owns more files lays them out like a screen (components, hooks/)
+    store-layout/                 the store area's shell; backoffice-layout/ and auth-layout/ the
+                                  others' — chosen by the route's area, never by role (ADR-0014)
+  constants/                      app-wide consts; messages.ts holds messages shared by screens;
+                                  screens.ts the module and screen keys and their icons (R18)
   hooks/use-<name>.ts             generic hooks
   pages/<area>/
     <area>.routes.ts              the area's route: its layout and its screens' routes
     <screen>/
       <screen>.routes.ts          the screen's route; its views lazy-loaded
-      index.tsx                   the view — or list/, create/, edit/, each laid out like a screen
+      index.tsx                   the view — or list/, create/, edit/, detail/, checkout/, board/,
+                                  history/, each laid out like a screen
       columns.tsx                 table columns; the table itself is components/data-table
       components/<name>.tsx       this screen only; <name>/index.tsx once it owns more files
       hooks/use-<name>.ts         the screen's logic (R9)
@@ -68,19 +75,29 @@ src/
       constants/                  index.ts (consts, sentinels) · messages.ts (its messages)
       utils/<name>.ts             pure functions used only by this screen
       types.ts                    types shared inside the screen (R17)
-  routes/index.tsx                one createBrowserRouter over every <area>.routes.ts (ADR-0004)
+  pages/auth/{login,register}/    public pages: handle { public: true }, outside /me (ADR-0014)
+  pages/errors/<page>/            forbidden, not-found and unexpected error pages
+  routes/
+    index.tsx                     one createBrowserRouter over every <area>.routes.ts (ADR-0004)
+    guards.ts                     loaders: session bootstrap and guards, derived from the handles
+    navigation.ts                 /me joined with the route table: screen paths come from the
+                                  table, never from a second path map
+    handles.ts · types.ts         route handle builders and the route-level types
   services/
     api.ts                        the RTK Query base (ADR-0002)
     cache-tags.ts                 every cache tag type, declared once (ADR-0006)
     <domain>.ts                   one per backend domain, via injectEndpoints
-    validation-schemas/<form>.ts  Zod schemas (ADR-0003)
+    validation-schemas/<form>.ts  Zod schemas (ADR-0003); fields.ts for fields shared by forms
   store/index.ts                  the Redux store; global slices in store/slices/<name>.ts
-  test/                           Vitest setup and the MSW server (server.ts)
+  store/listeners/<name>.ts       listener middleware: side effects triggered by actions (R7)
+  test/                           Vitest setup, the MSW server (server.ts) and test helpers
   utils/<name>.ts                 generic pure functions
 e2e/
   tests/<area>/<screen>-<aspect>.spec.ts   stubbed API, every viewport (standing rule 7)
   integrated/<flow>.spec.ts                critical flows against the real API and seed data
-  support/                                 fixtures.ts (api stubs), layout.ts, constants.ts
+  support/                                 fixtures.ts (api stubs), layout.ts, constants.ts,
+                                           session.ts and me.ts (session stubs, /me fixtures),
+                                           seed-accounts.ts (integrated suite credentials)
 ```
 
 - **Names are kebab-case**, files and folders (`status-badge.tsx`, `use-order-filter.ts`). A hook
@@ -228,7 +245,10 @@ assertion, not a compilation error). Then the minimum code that passes. Then ref
 ### R7 — Avoid `useEffect`
 
 **No fetching in `useEffect`** (R5 covers data). `useEffect` is only for genuinely imperative
-integration — focus, listeners, canvas — isolated in a hook whose name says why.
+integration — focus, listeners, canvas — isolated in a hook whose name says why. Never for session
+or data logic: session bootstrap and route guards are React Router loaders (`src/routes/guards.ts`),
+side effects triggered by actions live in RTK listener middleware (`src/store/listeners/`), and
+media queries and timers are read with `useSyncExternalStore` (`useIsMobile`, `useCountdown`).
 
 ### R8 — No `any`
 
@@ -313,9 +333,14 @@ returns (ADR-0007). The front owns only routes and icons:
 
 - Each `<screen>.routes.ts` sets `handle: { screenKey, icon }`; each `<area>.routes.ts` sets
   `handle: { moduleKey, icon }`. Keys are `<area>` and `<area>.<screen>` — the folder names —
-  declared once in `src/constants/screens.ts`.
-- A screen absent from `/me` is forbidden: the route guard renders the forbidden page. No role
-  checks in components (`role === "ADMIN"`).
+  declared once in `src/constants/screens.ts`, with their icons. Build handles with
+  `screenHandle(key)` / `moduleHandle(key)` (`src/routes/handles.ts`).
+- **Public pages** (login, register) set `handle: { public: true }` (`PUBLIC_HANDLE`) instead of a
+  screen key and are not in `/me`; a signed-in user who opens one is sent home.
+- Guards are attached from the handles by `guardRoutes` — never written per route. A screen absent
+  from `/me` is forbidden: its loader throws 403 and the forbidden page renders inside the shell; a
+  signed-out visitor goes to `/login?redirectTo=<path>`. No role checks in components
+  (`role === "ADMIN"`).
 - Whether a screen offers an action comes from `useCan(screenKey, action)`, never a local rule.
 - `/me` lives only in the RTK Query cache — no copy in `localStorage` or a context — and is
   reset on logout.
@@ -330,30 +355,47 @@ Authentication follows ADR-0008:
   `HttpOnly` cookie the front never reads.
 - Every request goes through the base query in `src/services/api.ts`, which attaches and renews
   the token. No component or service builds an `Authorization` header or retries a 401 itself.
-- Login, refresh and logout live in `src/services/auth.ts` — the only endpoints sent with
-  `credentials: "include"`.
-- Logout, or a failed refresh, clears the token and calls `resetApiState`.
+- Login, register, refresh and logout live in `src/services/auth.ts`. The `refresh` endpoint and
+  the base query's renewal share one single-flight refresh (`refreshAccessToken` in
+  `src/services/api.ts`, under the `foody-refresh` Web Lock when the browser has one). These are the
+  only requests sent with `credentials: "include"`, and the only ones sent without the bearer.
+- Logout is the `logoutRequested` action, and a refused refresh dispatches `sessionExpired`: the
+  session listener clears the token, leaves for `/login`, and only then calls `resetApiState`.
 
 ## Environment
 
 - `npm run e2e` starts its own Vite on `http://localhost:4173` with the API pointed at a fake
   origin, so it never reuses — or reaches the API through — the dev server on 5173. Unit tests use
-  `http://api.test`, set in `vite.config.ts`.
+  `http://api.test`, set in `vite.config.ts`. The fake API is cross-origin: `api.respond` sends the
+  CORS headers the real API sends (allowed origin, credentials, `Access-Control-Expose-Headers:
+  Retry-After, X-Request-Id`) — without the expose header the app cannot read `Retry-After`.
+  Preflights never reach `page.route` (Chromium under Playwright answers them), so specs do not
+  stub `OPTIONS`.
+- **Integrated suite (ADR-0016), local only:** start the API with `./mvnw spring-boot:test-run` in
+  `../foody-api` (seed data and accounts on port 8080), then run
+  `set -a; . ../foody-api/.env; set +a; npm run e2e:integrated`. It starts its own Vite on 4174,
+  logs in with `SEED_CUSTOMER_EMAIL`, `SEED_STAFF_EMAIL` and `SEED_DEFAULT_PASSWORD`, and fails
+  before starting anything when one of them is missing.
 - `foody-api` runs on `http://localhost:8080`; the front runs on `http://localhost:5173`. Copy
   `.env.example` to `.env`: the API base URL goes there as `VITE_API_URL` — never hard-coded in a
   service.
 - **A backend for `npm run dev`:** `docker compose up -d --wait` builds and runs foody-api and its
   PostgreSQL from `../foody-api` (ADR-0009). It needs that repo cloned beside this one, with its
-  own `.env`, and it takes port 8080 — stop it before `./mvnw spring-boot:run` there.
+  own `.env`, and it takes port 8080 — stop it before `./mvnw spring-boot:run` there. Before the
+  first `docker compose up` (which includes the API's deploy file), run
+  `bash scripts/generate-jwt-keys.sh` in `../foody-api` once.
 - **`VITE_*` variables are inlined at build time:** after changing `.env`, restart `dev` or
   rebuild; reloading the page does nothing. The same goes for the image:
-  `docker build --build-arg VITE_API_URL=<url> -t foody-app .` — one image per API URL.
+  `docker build --build-arg VITE_API_URL=<url> -t foody-app .` — one image per API URL. The build
+  also renders `nginx.conf.template` into the image's nginx config, with the API's origin in the
+  Content-Security-Policy (ADR-0017).
   **Deploy:** `docker compose -f compose.deploy.yaml up -d`, with the `.env` on the host.
 
 ## Before handing off
 
-`npx tsc -b` · `npm run lint` · `npm run format:check` · `npm run check:comments` · `npm test` —
-the same gates CI runs (ADR-0011). The lint is type-aware and fails on any warning; it enforces
+`npx tsc -b` · `npm run lint` · `npm run format:check` · `npm run check:comments` · `npm test` ·
+`npm run e2e` · `npm run build` — the same gates CI runs (ADR-0011). A change to a critical flow
+also runs `npm run e2e:integrated` against the local API (ADR-0016). The lint is type-aware and fails on any warning; it enforces
 R8 (`any`), R10 (`console`), R11 (floating and misused promises), R15 (function return types) and
 R1 (nested ternaries, `else` after `return`). `npm run format` applies Prettier. Used a contract
 foody-api changed? `npm run api:types` first, and commit the regenerated `src/@types/api.d.ts` with

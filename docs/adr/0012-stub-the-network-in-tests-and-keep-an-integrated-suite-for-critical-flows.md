@@ -1,6 +1,6 @@
 # ADR-0012 — Stub the network in tests; keep an integrated suite for critical flows
 
-- **Status:** Accepted
+- **Status:** Accepted — integrated CI job superseded by ADR-0016
 - **Date:** 2026-10-16
 - **Decided by:** Diego
 

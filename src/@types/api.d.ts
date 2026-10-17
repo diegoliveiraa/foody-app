@@ -89,9 +89,9 @@ export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
         AuthResponse: {
-            accessToken?: string;
+            accessToken: string;
             /** Format: int64 */
-            expiresIn?: number;
+            expiresIn: number;
         };
         LoginRequest: {
             /** Format: email */
@@ -99,24 +99,24 @@ export interface components {
             password: string;
         };
         MeModule: {
-            key?: string;
-            label?: string;
-            screens?: components["schemas"]["MeScreen"][];
+            key: string;
+            label: string;
+            screens: components["schemas"]["MeScreen"][];
         };
         MeResponse: {
-            modules?: components["schemas"]["MeModule"][];
-            user?: components["schemas"]["MeUser"];
+            modules: components["schemas"]["MeModule"][];
+            user: components["schemas"]["MeUser"];
         };
         MeScreen: {
-            actions?: ("PLACE_ORDER" | "CANCEL" | "REQUEST_CANCELLATION" | "UPDATE_STATUS" | "DECIDE_CANCELLATION" | "CREATE" | "UPDATE" | "DISABLE" | "DELETE")[];
-            key?: string;
-            label?: string;
+            actions: ("PLACE_ORDER" | "CANCEL" | "REQUEST_CANCELLATION" | "UPDATE_STATUS" | "DECIDE_CANCELLATION" | "CREATE" | "UPDATE" | "DISABLE" | "DELETE")[];
+            key: string;
+            label: string;
         };
         MeUser: {
-            email?: string;
+            email: string;
             /** Format: uuid */
-            id?: string;
-            name?: string;
+            id: string;
+            name: string;
         };
         RegisterRequest: {
             /** Format: email */
