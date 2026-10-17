@@ -4,6 +4,70 @@
  */
 
 export interface paths {
+    "/admin/users": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["adminUserList"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/users/{id}/disable": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["adminUserDisable"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/users/{id}/enable": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["adminUserEnable"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/users/{id}/role": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch: operations["adminUserChangeRole"];
+        trace?: never;
+    };
     "/auth/login": {
         parameters: {
             query?: never;
@@ -13,7 +77,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        post: operations["login"];
+        post: operations["authLogin"];
         delete?: never;
         options?: never;
         head?: never;
@@ -29,7 +93,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        post: operations["logout"];
+        post: operations["authLogout"];
         delete?: never;
         options?: never;
         head?: never;
@@ -45,7 +109,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        post: operations["refresh"];
+        post: operations["authRefresh"];
         delete?: never;
         options?: never;
         head?: never;
@@ -61,7 +125,135 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        post: operations["register"];
+        post: operations["authRegister"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/catalog/categories": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["categoryList"];
+        put?: never;
+        post: operations["categoryCreate"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/catalog/categories/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put: operations["categoryUpdate"];
+        post?: never;
+        delete: operations["categoryDelete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/catalog/categories/{id}/disable": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["categoryDisable"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/catalog/categories/{id}/enable": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["categoryEnable"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/catalog/products": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["productList"];
+        put?: never;
+        post: operations["productCreate"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/catalog/products/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put: operations["productUpdate"];
+        post?: never;
+        delete: operations["productDelete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/catalog/products/{id}/disable": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["productDisable"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/catalog/products/{id}/enable": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["productEnable"];
         delete?: never;
         options?: never;
         head?: never;
@@ -75,9 +267,41 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get: operations["me"];
+        get: operations["meGet"];
         put?: never;
         post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/menu": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["menuGet"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/menu/quote": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["menuQuote"];
         delete?: never;
         options?: never;
         head?: never;
@@ -88,10 +312,56 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        AdminUserResponse: {
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            disabledAt?: string | null;
+            email: string;
+            /** Format: uuid */
+            id: string;
+            name: string;
+            /** @enum {string} */
+            role: "CUSTOMER" | "STAFF" | "ADMIN";
+            /** @enum {string} */
+            status: "ACTIVE" | "DISABLED";
+        };
         AuthResponse: {
             accessToken: string;
             /** Format: int64 */
             expiresIn: number;
+        };
+        CartItem: {
+            /** Format: uuid */
+            productId: string;
+            /** Format: int32 */
+            quantity: number;
+        };
+        CartQuote: {
+            items: components["schemas"]["QuotedItem"][];
+            total: number;
+        };
+        CategoryRequest: {
+            /** Format: int32 */
+            displayOrder: number;
+            name: string;
+        };
+        CategoryResponse: {
+            /** Format: date-time */
+            disabledAt?: string | null;
+            /** Format: int32 */
+            displayOrder: number;
+            /** Format: uuid */
+            id: string;
+            name: string;
+            /** Format: int64 */
+            productCount: number;
+            /** @enum {string} */
+            status: "ACTIVE" | "DISABLED";
+        };
+        ChangeRoleRequest: {
+            /** @enum {string} */
+            role: "CUSTOMER" | "STAFF" | "ADMIN";
         };
         LoginRequest: {
             /** Format: email */
@@ -118,6 +388,81 @@ export interface components {
             id: string;
             name: string;
         };
+        MenuCategory: {
+            /** Format: uuid */
+            id: string;
+            name: string;
+            products: components["schemas"]["MenuProduct"][];
+        };
+        MenuProduct: {
+            description?: string | null;
+            /** Format: uuid */
+            id: string;
+            name: string;
+            price: number;
+        };
+        MenuResponse: {
+            categories: components["schemas"]["MenuCategory"][];
+        };
+        PageMeta: {
+            hasNext: boolean;
+            hasPrevious: boolean;
+            /** Format: int32 */
+            page: number;
+            /** Format: int32 */
+            pageSize: number;
+            /** Format: int64 */
+            totalItems: number;
+            /** Format: int32 */
+            totalPages: number;
+        };
+        PageResponseAdminUserResponse: {
+            data: components["schemas"]["AdminUserResponse"][];
+            meta: components["schemas"]["PageMeta"];
+        };
+        PageResponseProductResponse: {
+            data: components["schemas"]["ProductResponse"][];
+            meta: components["schemas"]["PageMeta"];
+        };
+        ProductCategory: {
+            /** Format: uuid */
+            id: string;
+            name: string;
+        };
+        ProductRequest: {
+            /** Format: uuid */
+            categoryId: string;
+            description?: string | null;
+            name: string;
+            price: number;
+        };
+        ProductResponse: {
+            category: components["schemas"]["ProductCategory"];
+            /** Format: date-time */
+            createdAt: string;
+            description?: string | null;
+            /** Format: date-time */
+            disabledAt?: string | null;
+            /** Format: uuid */
+            id: string;
+            name: string;
+            price: number;
+            /** @enum {string} */
+            status: "ACTIVE" | "DISABLED";
+        };
+        QuoteRequest: {
+            items: components["schemas"]["CartItem"][];
+        };
+        QuotedItem: {
+            available: boolean;
+            name?: string | null;
+            /** Format: uuid */
+            productId: string;
+            /** Format: int32 */
+            quantity: number;
+            subtotal?: number | null;
+            unitPrice?: number | null;
+        };
         RegisterRequest: {
             /** Format: email */
             email: string;
@@ -133,7 +478,105 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
-    login: {
+    adminUserList: {
+        parameters: {
+            query?: {
+                search?: string;
+                role?: "CUSTOMER" | "STAFF" | "ADMIN";
+                status?: "ACTIVE" | "DISABLED";
+                page?: number;
+                pageSize?: 10 | 25 | 50 | 100;
+                /** @description property,asc or property,desc; repeat it to sort by more than one property */
+                sort?: string[];
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["PageResponseAdminUserResponse"];
+                };
+            };
+        };
+    };
+    adminUserDisable: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["AdminUserResponse"];
+                };
+            };
+        };
+    };
+    adminUserEnable: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["AdminUserResponse"];
+                };
+            };
+        };
+    };
+    adminUserChangeRole: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ChangeRoleRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["AdminUserResponse"];
+                };
+            };
+        };
+    };
+    authLogin: {
         parameters: {
             query?: never;
             header?: never;
@@ -157,7 +600,7 @@ export interface operations {
             };
         };
     };
-    logout: {
+    authLogout: {
         parameters: {
             query?: never;
             header?: never;
@@ -177,7 +620,7 @@ export interface operations {
             };
         };
     };
-    refresh: {
+    authRefresh: {
         parameters: {
             query?: never;
             header?: never;
@@ -199,7 +642,7 @@ export interface operations {
             };
         };
     };
-    register: {
+    authRegister: {
         parameters: {
             query?: never;
             header?: never;
@@ -223,7 +666,283 @@ export interface operations {
             };
         };
     };
-    me: {
+    categoryList: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["CategoryResponse"][];
+                };
+            };
+        };
+    };
+    categoryCreate: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CategoryRequest"];
+            };
+        };
+        responses: {
+            /** @description Created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["CategoryResponse"];
+                };
+            };
+        };
+    };
+    categoryUpdate: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CategoryRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["CategoryResponse"];
+                };
+            };
+        };
+    };
+    categoryDelete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description No Content */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    categoryDisable: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["CategoryResponse"];
+                };
+            };
+        };
+    };
+    categoryEnable: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["CategoryResponse"];
+                };
+            };
+        };
+    };
+    productList: {
+        parameters: {
+            query?: {
+                categoryId?: string;
+                status?: "ACTIVE" | "DISABLED";
+                search?: string;
+                page?: number;
+                pageSize?: 10 | 25 | 50 | 100;
+                /** @description property,asc or property,desc; repeat it to sort by more than one property */
+                sort?: string[];
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["PageResponseProductResponse"];
+                };
+            };
+        };
+    };
+    productCreate: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ProductRequest"];
+            };
+        };
+        responses: {
+            /** @description Created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ProductResponse"];
+                };
+            };
+        };
+    };
+    productUpdate: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ProductRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ProductResponse"];
+                };
+            };
+        };
+    };
+    productDelete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description No Content */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    productDisable: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ProductResponse"];
+                };
+            };
+        };
+    };
+    productEnable: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ProductResponse"];
+                };
+            };
+        };
+    };
+    meGet: {
         parameters: {
             query?: never;
             header?: never;
@@ -239,6 +958,50 @@ export interface operations {
                 };
                 content: {
                     "*/*": components["schemas"]["MeResponse"];
+                };
+            };
+        };
+    };
+    menuGet: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["MenuResponse"];
+                };
+            };
+        };
+    };
+    menuQuote: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["QuoteRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["CartQuote"];
                 };
             };
         };

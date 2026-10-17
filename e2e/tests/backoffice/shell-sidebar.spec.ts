@@ -1,12 +1,14 @@
 import type { Locator } from "@playwright/test";
 import { MESSAGES } from "../../../src/constants/messages";
 import { ROUTE_PATHS } from "../../../src/constants/routes";
+import { USERS_MESSAGES } from "../../../src/pages/admin/users/constants/messages";
 import { openBackofficeNavigation } from "../../support/backoffice";
 import { SCREEN_URLS } from "../../support/constants";
 import { expect, test } from "../../support/fixtures";
 import { expectNoHorizontalOverflow, pathIs } from "../../support/layout";
 import { ADMIN_ME, ME_LABELS, STAFF_ME } from "../../support/me";
 import { stubLogout, stubSession } from "../../support/session";
+import { EVERYONE, stubUsers, usersPage } from "../../support/users";
 
 test("gives staff one sidebar group per module, without administration", async ({
   page,
@@ -31,6 +33,7 @@ test("lets an admin reach the users screen from the sidebar", async ({
   api,
 }): Promise<void> => {
   await stubSession(api, ADMIN_ME);
+  await stubUsers(api, usersPage(EVERYONE));
   await page.goto(SCREEN_URLS.DASHBOARD);
   const navigation: Locator = await openBackofficeNavigation(page);
 
@@ -41,7 +44,7 @@ test("lets an admin reach the users screen from the sidebar", async ({
 
   await expect(page).toHaveURL(pathIs(SCREEN_URLS.ADMIN_USERS));
   await expect(page.getByRole("heading", { name: ME_LABELS.USERS })).toBeVisible();
-  await expect(page.getByText(MESSAGES.SCREEN_PLACEHOLDER.TITLE)).toBeVisible();
+  await expect(page.getByRole("searchbox", { name: USERS_MESSAGES.SEARCH })).toBeVisible();
   await expectNoHorizontalOverflow(page);
 });
 

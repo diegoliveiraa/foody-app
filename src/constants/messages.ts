@@ -17,6 +17,7 @@ export const MESSAGES = {
     PASSWORD_REQUIRED: "Informe a senha",
     PASSWORD_TOO_SHORT: `A senha precisa ter pelo menos ${PASSWORD_MIN_LENGTH} caracteres`,
     PASSWORD_TOO_LONG: "A senha está longa demais; acentos e emojis ocupam mais espaço",
+    ROLE_REQUIRED: "Escolha um papel",
   },
   LOGIN: {
     TITLE: "Entrar",
@@ -47,6 +48,14 @@ export const MESSAGES = {
     MENU_TITLE: "Menu",
     MENU_DESCRIPTION: "Telas que você pode abrir",
     TOGGLE_SIDEBAR: "Mostrar ou esconder o menu",
+  },
+  LIST: {
+    PAGINATION: "Paginação",
+    PAGE_SIZE: "Itens por página",
+    PREVIOUS_PAGE: "Página anterior",
+    NEXT_PAGE: "Próxima página",
+    PAGE_OF: (page: number, totalPages: number): string => `Página ${page} de ${totalPages}`,
+    RANGE: (first: number, last: number, total: number): string => `${first}–${last} de ${total}`,
   },
   SCREEN_PLACEHOLDER: {
     TITLE: "Esta tela ainda está sendo preparada",

@@ -92,3 +92,4 @@ needs migration, rework or monitoring.
 | [ADR-0015](./0015-visual-identity-mobile-first-and-sonner-toasts.md) | 2026-10-17 | Visual identity, mobile-first and Sonner toasts | Accepted |
 | [ADR-0016](./0016-run-the-integrated-suite-locally-until-the-repos-have-a-remote.md) | 2026-10-17 | Run the integrated suite locally until the repos have a remote | Accepted |
 | [ADR-0017](./0017-render-the-content-security-policy-at-build-time.md) | 2026-10-17 | Render the Content Security Policy at build time | Accepted |
+| [ADR-0018](./0018-lists-render-cards-below-1024px-and-a-data-table-from-1024px-up.md) | 2026-10-17 | Lists render cards below 1024px and a data table from 1024px up | Accepted |

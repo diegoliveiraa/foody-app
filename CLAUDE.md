@@ -36,7 +36,9 @@ semester. Format and criteria: [`docs/adr/README.md`](./docs/adr/README.md).
 **7. Every new screen or flow ships with an E2E spec, in the same PR** (ADR-0012). A new feature,
 a new route, or a change to an existing flow ⇒ `e2e/tests/<area>/<screen>-<aspect>.spec.ts`,
 importing `test`/`expect` from `e2e/support/fixtures` and stubbing every API call with
-`api.respond(...)` — an unstubbed call fails the test. Every page load restores the session first,
+`api.respond(...)` — an unstubbed call fails the test. `api.respond` matches the pathname only;
+`api.requests(method, path)` returns what the page sent to a stub (URL and JSON body), so a spec
+asserts query parameters and bodies with `expect.poll`. Every page load restores the session first,
 so a spec starts with `stubSession(api, me)` or `stubSignedOut(api)` (`e2e/support/session`), with
 the typed `/me` fixtures of `e2e/support/me`. It runs in every R13 viewport by itself;
 `expectNoHorizontalOverflow` (`e2e/support/layout`) checks the layout. Select what a user perceives
@@ -199,7 +201,9 @@ request in the API's logs: keep it with any error that gets reported (foody-api 
 List screens are paginated on the server: they send `page` (from 1), `pageSize` and
 `sort=property,asc|desc`, and render `data` with `meta` (`page`, `pageSize`, `totalItems`,
 `totalPages`, `hasNext`, `hasPrevious`). The page-size selector offers exactly 10, 25, 50 and
-100, declared once in `src/constants` — the API rejects anything else.
+100, declared once in `src/constants` — the API rejects anything else. A list renders cards below
+1024px and `components/data-table` from 1024px up (`LIST_TABLE_BREAKPOINT_PX`), through
+`components/responsive-list`, with `components/list-pagination` under both (ADR-0018).
 
 **Cache tags (ADR-0006)** decide which screens refresh after a write:
 
@@ -374,8 +378,10 @@ Authentication follows ADR-0008:
 - **Integrated suite (ADR-0016), local only:** start the API with `./mvnw spring-boot:test-run` in
   `../foody-api` (seed data and accounts on port 8080), then run
   `set -a; . ../foody-api/.env; set +a; npm run e2e:integrated`. It starts its own Vite on 4174,
-  logs in with `SEED_CUSTOMER_EMAIL`, `SEED_STAFF_EMAIL` and `SEED_DEFAULT_PASSWORD`, and fails
-  before starting anything when one of them is missing.
+  logs in with `SEED_CUSTOMER_EMAIL`, `SEED_STAFF_EMAIL` and `SEED_DEFAULT_PASSWORD`, and as the
+  admin with `SEED_ADMIN_EMAIL` and `SEED_ADMIN_PASSWORD`; it fails before starting anything when
+  one of them is missing. `admin-users.spec.ts` registers a fresh customer on every run (a unique
+  e-mail) and changes only that account, never the seed ones.
 - `foody-api` runs on `http://localhost:8080`; the front runs on `http://localhost:5173`. Copy
   `.env.example` to `.env`: the API base URL goes there as `VITE_API_URL` — never hard-coded in a
   service.

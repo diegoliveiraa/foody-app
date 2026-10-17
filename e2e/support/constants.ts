@@ -4,6 +4,8 @@ export const E2E_BASE_URL: string = `http://localhost:${E2E_PORT}`;
 
 export const E2E_API_URL: string = "http://api.e2e.test";
 
+export const INTEGRATED_API_URL: string = "http://localhost:8080";
+
 export const VIEWPORT_WIDTHS: readonly number[] = [320, 768, 1280, 1536];
 
 export const VIEWPORT_HEIGHT: number = 800;
@@ -39,6 +41,8 @@ export const ACCESS_TOKEN_LIFETIME_SECONDS: number = 900;
 export const SKIP_REASONS = {
   PHONES_ONLY: "Only phones show this layout",
   TABLETS_UP: "Only tablets and larger screens show this layout",
+  LIST_CARDS: "Only screens narrower than 1024px list cards",
+  LIST_TABLE: "Only screens of 1024px or more list a table",
 } as const;
 
 export const SCREEN_URLS = {

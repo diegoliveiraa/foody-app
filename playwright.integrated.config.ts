@@ -1,11 +1,10 @@
 import { defineConfig, devices } from "@playwright/test";
+import { INTEGRATED_API_URL } from "./e2e/support/constants";
 import { readSeedAccounts } from "./e2e/support/seed-accounts";
 
 const INTEGRATED_PORT: number = 4174;
 
 const INTEGRATED_BASE_URL: string = `http://localhost:${INTEGRATED_PORT}`;
-
-const LOCAL_API_URL: string = "http://localhost:8080";
 
 const DESKTOP_WIDTH: number = 1280;
 
@@ -38,6 +37,6 @@ export default defineConfig({
     command: `npm run dev -- --port ${INTEGRATED_PORT} --strictPort`,
     url: INTEGRATED_BASE_URL,
     reuseExistingServer: false,
-    env: { VITE_API_URL: LOCAL_API_URL },
+    env: { VITE_API_URL: INTEGRATED_API_URL },
   },
 });

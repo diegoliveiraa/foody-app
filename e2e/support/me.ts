@@ -1,4 +1,4 @@
-import type { MeModule, MeResponse } from "../../src/@types/me";
+import type { MeModule, MeResponse, ScreenAction } from "../../src/@types/me";
 
 export const ME_LABELS = {
   STORE: "Loja",
@@ -63,11 +63,13 @@ const STAFF_MODULES: MeModule[] = [
   },
 ];
 
-const ADMIN_MODULE: MeModule = {
-  key: "admin",
-  label: ME_LABELS.ADMIN,
-  screens: [{ key: "admin.users", label: ME_LABELS.USERS, actions: ["UPDATE", "DISABLE"] }],
-};
+function adminModule(userActions: ScreenAction[]): MeModule {
+  return {
+    key: "admin",
+    label: ME_LABELS.ADMIN,
+    screens: [{ key: "admin.users", label: ME_LABELS.USERS, actions: userActions }],
+  };
+}
 
 export const CUSTOMER_ME: MeResponse = {
   user: { id: "0199f2a0-0000-7000-8000-000000000001", name: "Ana Souza", email: "ana@foody.dev" },
@@ -83,11 +85,15 @@ export const STAFF_ME: MeResponse = {
   modules: STAFF_MODULES,
 };
 
-export const ADMIN_ME: MeResponse = {
-  user: {
-    id: "0199f2a0-0000-7000-8000-000000000003",
-    name: "Carla Mendes",
-    email: "carla@foody.dev",
-  },
-  modules: [...STAFF_MODULES, ADMIN_MODULE],
-};
+export function adminMeWithUserActions(userActions: ScreenAction[]): MeResponse {
+  return {
+    user: {
+      id: "0199f2a0-0000-7000-8000-000000000003",
+      name: "Carla Mendes",
+      email: "carla@foody.dev",
+    },
+    modules: [...STAFF_MODULES, adminModule(userActions)],
+  };
+}
+
+export const ADMIN_ME: MeResponse = adminMeWithUserActions(["UPDATE", "DISABLE"]);

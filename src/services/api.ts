@@ -21,6 +21,7 @@ import {
 } from "@/constants/api";
 import type { RootState } from "@/store";
 import { selectAccessToken, sessionExpired, tokenReceived } from "@/store/slices/session";
+import { serializeSearchParams } from "@/utils/search-params";
 import { CACHE_TAGS } from "./cache-tags";
 
 type ApiResult<T> = QueryReturnValue<T, ApiError, FetchBaseQueryMeta | undefined>;
@@ -46,6 +47,7 @@ function isAuthRequest(args: string | FetchArgs): boolean {
 
 const rawBaseQuery: ApiBaseQuery = fetchBaseQuery({
   baseUrl: import.meta.env.VITE_API_URL,
+  paramsSerializer: serializeSearchParams,
   prepareHeaders: (headers: Headers, { getState, arg }): Headers => {
     const token: string | null = readToken(getState);
     if (token === null || isAuthRequest(arg)) {

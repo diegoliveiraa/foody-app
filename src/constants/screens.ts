@@ -1,3 +1,4 @@
+import type { ScreenAction } from "@/@types/me";
 import {
   LayoutDashboard,
   Package,
@@ -49,3 +50,15 @@ export const SCREEN_ICONS: Record<ScreenKey, LucideIcon> = {
   [SCREEN_KEYS.CATALOG_CATEGORIES]: Tags,
   [SCREEN_KEYS.ADMIN_USERS]: Users,
 };
+
+export const SCREEN_ACTIONS = {
+  PLACE_ORDER: "PLACE_ORDER",
+  CANCEL: "CANCEL",
+  REQUEST_CANCELLATION: "REQUEST_CANCELLATION",
+  UPDATE_STATUS: "UPDATE_STATUS",
+  DECIDE_CANCELLATION: "DECIDE_CANCELLATION",
+  CREATE: "CREATE",
+  UPDATE: "UPDATE",
+  DISABLE: "DISABLE",
+  DELETE: "DELETE",
+} as const satisfies Record<ScreenAction, ScreenAction>;

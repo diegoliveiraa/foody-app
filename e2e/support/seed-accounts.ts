@@ -2,6 +2,8 @@ export const SEED_VARIABLES = {
   CUSTOMER_EMAIL: "SEED_CUSTOMER_EMAIL",
   STAFF_EMAIL: "SEED_STAFF_EMAIL",
   PASSWORD: "SEED_DEFAULT_PASSWORD",
+  ADMIN_EMAIL: "SEED_ADMIN_EMAIL",
+  ADMIN_PASSWORD: "SEED_ADMIN_PASSWORD",
 } as const;
 
 type SeedVariable = (typeof SEED_VARIABLES)[keyof typeof SEED_VARIABLES];
@@ -10,6 +12,8 @@ export interface SeedAccounts {
   customerEmail: string;
   staffEmail: string;
   password: string;
+  adminEmail: string;
+  adminPassword: string;
 }
 
 function missingVariables(): SeedVariable[] {
@@ -30,5 +34,7 @@ export function readSeedAccounts(): SeedAccounts {
     customerEmail: process.env[SEED_VARIABLES.CUSTOMER_EMAIL] ?? "",
     staffEmail: process.env[SEED_VARIABLES.STAFF_EMAIL] ?? "",
     password: process.env[SEED_VARIABLES.PASSWORD] ?? "",
+    adminEmail: process.env[SEED_VARIABLES.ADMIN_EMAIL] ?? "",
+    adminPassword: process.env[SEED_VARIABLES.ADMIN_PASSWORD] ?? "",
   };
 }
