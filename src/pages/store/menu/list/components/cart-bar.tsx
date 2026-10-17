@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { formatMoney } from "@/utils/format-money";
 import { MENU_MESSAGES } from "../constants/messages";
-import type { CartQuoteModel } from "../types";
+import type { CartQuoteModel } from "../../types";
 
 interface CartBarProps {
   count: number;

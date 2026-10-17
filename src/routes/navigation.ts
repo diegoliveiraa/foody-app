@@ -10,7 +10,7 @@ function withoutTrailingSeparator(path: string): string {
   return path.endsWith(PATH_SEPARATOR) ? path.slice(0, -PATH_SEPARATOR.length) : path;
 }
 
-function joinPath(parentPath: string, path: string | undefined): string {
+export function joinPath(parentPath: string, path: string | undefined): string {
   if (path === undefined) {
     return parentPath;
   }

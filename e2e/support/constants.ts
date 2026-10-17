@@ -18,6 +18,12 @@ export const HTTP_CREATED: number = 201;
 
 export const HTTP_NO_CONTENT: number = 204;
 
+export const HTTP_BAD_REQUEST: number = 400;
+
+export const HTTP_NOT_FOUND: number = 404;
+
+export const HTTP_UNPROCESSABLE: number = 422;
+
 export const HTTP_INTERNAL_ERROR: number = 500;
 
 export const HTTP_METHODS = {
@@ -51,6 +57,8 @@ export const SCREEN_URLS = {
   MENU: "/menu",
   CHECKOUT: "/menu/checkout",
   MY_ORDERS: "/my-orders",
+  ORDERS: "/orders",
+  ORDER_HISTORY: "/orders/history",
   DASHBOARD: "/dashboard",
   PRODUCTS: "/catalog/products",
   CATEGORIES: "/catalog/categories",

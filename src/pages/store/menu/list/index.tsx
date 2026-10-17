@@ -4,6 +4,8 @@ import { PageHeader } from "@/components/page-header";
 import { SearchInput } from "@/components/search-input";
 import { SCREEN_KEYS } from "@/constants/screens";
 import { useMeScreen } from "@/hooks/use-me-screen";
+import { useCartQuote } from "../hooks/use-cart-quote";
+import type { CartQuoteModel } from "../types";
 import { BagDrawer } from "./components/bag";
 import { CartBar } from "./components/cart-bar";
 import { CategoryChips } from "./components/category-chips";
@@ -12,9 +14,8 @@ import { MenuEmpty, MenuLoadError, MenuNoResults, MenuSkeleton } from "./compone
 import { MENU_MESSAGES } from "./constants/messages";
 import { useBag } from "./hooks/use-bag";
 import { useCart } from "./hooks/use-cart";
-import { useCartQuote } from "./hooks/use-cart-quote";
 import { useMenu } from "./hooks/use-menu";
-import type { BagModel, CartModel, CartQuoteModel, MenuModel } from "./types";
+import type { BagModel, CartModel, MenuModel } from "./types";
 
 interface MenuBodyProps {
   menu: MenuModel;

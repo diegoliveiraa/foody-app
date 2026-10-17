@@ -9,9 +9,27 @@ import {
   PRODUCT_PRICE_MAX,
 } from "./catalog";
 import { formatMoney } from "@/utils/format-money";
+import {
+  ADDRESS_NUMBER_MAX_LENGTH,
+  CITY_MAX_LENGTH,
+  CITY_MIN_LENGTH,
+  COMPLEMENT_MAX_LENGTH,
+  NEIGHBORHOOD_MAX_LENGTH,
+  NEIGHBORHOOD_MIN_LENGTH,
+  STREET_MAX_LENGTH,
+  STREET_MIN_LENGTH,
+} from "./orders";
 import { NAME_MAX_LENGTH, NAME_MIN_LENGTH, PASSWORD_MIN_LENGTH } from "./validation";
 
 const CREATED_AT: string = "Criado em";
+
+function orderNumber(number: number): string {
+  return `#${number}`;
+}
+
+function orderTitle(number: number): string {
+  return `Pedido ${orderNumber(number)}`;
+}
 
 export const MESSAGES = {
   BRAND: "foody",
@@ -40,6 +58,13 @@ export const MESSAGES = {
     CATEGORY_REQUIRED: "Escolha uma categoria",
     CATEGORY_NAME_LENGTH: `Informe um nome entre ${CATEGORY_NAME_MIN_LENGTH} e ${CATEGORY_NAME_MAX_LENGTH} caracteres`,
     DISPLAY_ORDER_RANGE: `Informe um número inteiro de ${DISPLAY_ORDER_MIN} a ${DISPLAY_ORDER_MAX}`,
+    ZIP_CODE_INVALID: "Informe o CEP no formato 00000-000",
+    STREET_LENGTH: `Informe a rua com ${STREET_MIN_LENGTH} a ${STREET_MAX_LENGTH} caracteres`,
+    ADDRESS_NUMBER_LENGTH: `Informe o número com até ${ADDRESS_NUMBER_MAX_LENGTH} caracteres`,
+    COMPLEMENT_TOO_LONG: `O complemento pode ter até ${COMPLEMENT_MAX_LENGTH} caracteres`,
+    NEIGHBORHOOD_LENGTH: `Informe o bairro com ${NEIGHBORHOOD_MIN_LENGTH} a ${NEIGHBORHOOD_MAX_LENGTH} caracteres`,
+    CITY_LENGTH: `Informe a cidade com ${CITY_MIN_LENGTH} a ${CITY_MAX_LENGTH} caracteres`,
+    STATE_REQUIRED: "Escolha a UF",
   },
   LOGIN: {
     TITLE: "Entrar",
@@ -126,4 +151,38 @@ export const MESSAGES = {
     RETRY: "Tentar novamente",
   },
   BACK_HOME: "Voltar ao início",
+  BROWSE_MENU: "Ver cardápio",
+  DATES: {
+    TODAY: (time: string): string => `Hoje, ${time}`,
+    YESTERDAY: (time: string): string => `Ontem, ${time}`,
+    DAY: (day: string, time: string): string => `${day}, ${time}`,
+    AGE_NOW: "agora",
+    AGE_MINUTES: (minutes: number): string => `há ${minutes} min`,
+    AGE_HOURS: (hours: number, minutes: number): string =>
+      minutes === 0 ? `há ${hours} h` : `há ${hours} h ${minutes} min`,
+    UPDATED_SECONDS_AGO: (seconds: number): string => `Atualizado há ${seconds} s`,
+    UPDATED_MINUTES_AGO: (minutes: number): string => `Atualizado há ${minutes} min`,
+  },
+  ORDERS: {
+    NUMBER: orderNumber,
+    TITLE: orderTitle,
+    PLACED: (number: number): string => `${orderTitle(number)} enviado ao restaurante`,
+    ITEM_LINE: (quantity: number, name: string): string => `${quantity}× ${name}`,
+    ITEMS_SEPARATOR: ", ",
+    UNAVAILABLE: "Indisponível",
+    UNKNOWN_PRODUCT: "Produto indisponível",
+    ITEMS: "Itens",
+    TOTAL: "Total",
+    DELIVERY_ADDRESS: "Endereço de entrega",
+    STREET_LINE: (street: string, number: string): string => `${street}, ${number}`,
+    CITY_LINE: (neighborhood: string, city: string, state: string): string =>
+      `${neighborhood}, ${city} - ${state}`,
+    ADDRESS_SEPARATOR: " · ",
+    CANCELLED_TITLE: "Pedido cancelado",
+    REASON: (reason: string): string => `Motivo: ${reason}`,
+    LOAD_FAILED: "Não foi possível carregar o pedido",
+    NOT_FOUND: "Pedido não encontrado",
+    NOT_FOUND_DESCRIPTION: "Confira o endereço ou volte para a lista de pedidos.",
+    NEW_ORDER: (number: number): string => `Novo pedido ${orderNumber(number)} recebido`,
+  },
 } as const;

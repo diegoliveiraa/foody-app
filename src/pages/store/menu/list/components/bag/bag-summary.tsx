@@ -2,7 +2,7 @@ import type { JSX } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { formatMoney } from "@/utils/format-money";
 import { MENU_MESSAGES } from "../../constants/messages";
-import type { CartQuoteModel } from "../../types";
+import type { CartQuoteModel } from "../../../types";
 
 interface BagSummaryProps {
   count: number;

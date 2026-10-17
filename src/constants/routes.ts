@@ -11,3 +11,9 @@ export const ROOT_ROUTE_ID: string = "root";
 export const PATH_SEPARATOR: string = "/";
 
 export const EMPTY_PATH: string = "";
+
+export const ID_PARAM = "id" as const;
+
+export const ID_SEGMENT: string = `:${ID_PARAM}`;
+
+export const PARENT_PATH: string = "..";

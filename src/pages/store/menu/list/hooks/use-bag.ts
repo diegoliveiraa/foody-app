@@ -2,7 +2,8 @@ import { useCallback, useMemo, useState } from "react";
 import { useNavigate, type NavigateFunction } from "react-router";
 import { useNotifyError } from "@/hooks/use-notify-error";
 import { CHECKOUT_SEGMENT } from "../../constants";
-import type { BagLine, BagModel, CartModel, CartQuoteModel } from "../types";
+import type { CartQuoteModel } from "../../types";
+import type { BagLine, BagModel, CartModel } from "../types";
 import { toBagLines } from "../utils/bag-lines";
 
 export function useBag(

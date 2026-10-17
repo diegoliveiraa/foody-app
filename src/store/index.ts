@@ -10,6 +10,7 @@ import {
 import { setupListeners } from "@reduxjs/toolkit/query";
 import { api } from "@/services/api";
 import { listenForCartChanges } from "./listeners/cart";
+import { listenForNewOrders } from "./listeners/orders";
 import { listenForRateLimits } from "./listeners/rate-limit";
 import { listenForSessionChanges } from "./listeners/session";
 import { cartSlice } from "./slices/cart";
@@ -48,5 +49,6 @@ export function createAppStore(dependencies: StoreDependencies): AppStore {
   listenForRateLimits(listener.startListening);
   listenForSessionChanges(listener.startListening);
   listenForCartChanges(listener.startListening);
+  listenForNewOrders(listener.startListening);
   return store;
 }

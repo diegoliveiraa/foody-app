@@ -3,7 +3,8 @@ import type { JSX, ReactNode } from "react";
 import { MemoryRouter, Route, Routes, useLocation, type Location } from "react-router";
 import { describe, expect, it, vi } from "vitest";
 import type { CartQuote } from "@/@types/menu";
-import type { BagModel, CartModel, CartQuoteModel } from "../types";
+import type { CartQuoteModel } from "../../types";
+import type { BagModel, CartModel } from "../types";
 import { useBag } from "./use-bag";
 
 interface BagSetup {

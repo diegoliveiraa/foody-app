@@ -1,5 +1,6 @@
 import type { Locator } from "@playwright/test";
 import { MESSAGES } from "../../../src/constants/messages";
+import { MY_ORDERS_MESSAGES } from "../../../src/pages/store/my-orders/list/constants/messages";
 import { SCREEN_URLS, SKIP_REASONS } from "../../support/constants";
 import { expect, test } from "../../support/fixtures";
 import {
@@ -10,6 +11,7 @@ import {
 } from "../../support/layout";
 import { CUSTOMER_ME, ME_LABELS } from "../../support/me";
 import { stubMenu } from "../../support/menu";
+import { customerPage, stubMyOrders } from "../../support/orders";
 import { stubSession } from "../../support/session";
 
 const TOP_BAR_MAX_Y: number = 80;
@@ -17,6 +19,7 @@ const TOP_BAR_MAX_Y: number = 80;
 test("moves between the store screens that /me offers", async ({ page, api }): Promise<void> => {
   await stubSession(api, CUSTOMER_ME);
   await stubMenu(api);
+  await stubMyOrders(api, customerPage([]));
   await page.goto(SCREEN_URLS.MENU);
   const navigation: Locator = page.getByRole("navigation", { name: MESSAGES.NAVIGATION.MAIN });
 
@@ -24,7 +27,7 @@ test("moves between the store screens that /me offers", async ({ page, api }): P
 
   await expect(page).toHaveURL(pathIs(SCREEN_URLS.MY_ORDERS));
   await expect(page.getByRole("heading", { name: ME_LABELS.MY_ORDERS })).toBeVisible();
-  await expect(page.getByText(MESSAGES.SCREEN_PLACEHOLDER.TITLE)).toBeVisible();
+  await expect(page.getByText(MY_ORDERS_MESSAGES.EMPTY)).toBeVisible();
   await expect(navigation.getByRole("link", { name: ME_LABELS.MY_ORDERS })).toHaveAttribute(
     "aria-current",
     "page",

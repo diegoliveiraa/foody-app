@@ -12,7 +12,8 @@ import {
   DrawerTitle,
 } from "@/components/ui/drawer";
 import { MENU_MESSAGES } from "../../constants/messages";
-import type { BagLine, BagModel, CartModel, CartQuoteModel } from "../../types";
+import type { CartQuoteModel } from "../../../types";
+import type { BagLine, BagModel, CartModel } from "../../types";
 import { BagLineItem } from "./bag-line";
 import { BagSummary } from "./bag-summary";
 

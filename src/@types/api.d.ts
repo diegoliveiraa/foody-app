@@ -308,6 +308,70 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/my-orders": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["myOrderList"];
+        put?: never;
+        post: operations["myOrderPlace"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/my-orders/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["myOrderDetail"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/orders": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["orderList"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/orders/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["orderDetail"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -363,6 +427,68 @@ export interface components {
             /** @enum {string} */
             role: "CUSTOMER" | "STAFF" | "ADMIN";
         };
+        CustomerOrderDetailResponse: {
+            cancellation?: components["schemas"]["OrderCancellationResponse"] | null;
+            deliveryAddress: components["schemas"]["DeliveryAddressResponse"];
+            history: components["schemas"]["CustomerOrderHistoryEntry"][];
+            /** Format: uuid */
+            id: string;
+            items: components["schemas"]["OrderItemResponse"][];
+            live: boolean;
+            /** Format: int64 */
+            number: number;
+            /** Format: date-time */
+            placedAt: string;
+            /** @enum {string} */
+            status: "RECEIVED" | "PREPARING" | "OUT_FOR_DELIVERY" | "DELIVERED" | "CANCELLED";
+            total: number;
+        };
+        CustomerOrderHistoryEntry: {
+            /** @enum {string} */
+            actorSide: "CUSTOMER" | "RESTAURANT";
+            /** @enum {string|null} */
+            fromStatus?: "RECEIVED" | "PREPARING" | "OUT_FOR_DELIVERY" | "DELIVERED" | "CANCELLED" | null;
+            note?: string | null;
+            /** Format: date-time */
+            occurredAt: string;
+            /** @enum {string|null} */
+            reason?: "CHANGED_MIND" | "ORDERED_BY_MISTAKE" | "TAKING_TOO_LONG" | "ITEM_UNAVAILABLE" | "STORE_CLOSED" | "CUSTOMER_REQUEST" | "DELIVERY_FAILED" | "OTHER" | null;
+            /** @enum {string} */
+            toStatus: "RECEIVED" | "PREPARING" | "OUT_FOR_DELIVERY" | "DELIVERED" | "CANCELLED";
+        };
+        CustomerOrderSummaryResponse: {
+            /** Format: uuid */
+            id: string;
+            items: components["schemas"]["OrderItemSummary"][];
+            live: boolean;
+            /** Format: int64 */
+            number: number;
+            /** Format: date-time */
+            placedAt: string;
+            /** @enum {string} */
+            status: "RECEIVED" | "PREPARING" | "OUT_FOR_DELIVERY" | "DELIVERED" | "CANCELLED";
+            total: number;
+        };
+        DeliveryAddressRequest: {
+            city: string;
+            complement?: string | null;
+            neighborhood: string;
+            number: string;
+            /** @enum {string} */
+            state: "AC" | "AL" | "AP" | "AM" | "BA" | "CE" | "DF" | "ES" | "GO" | "MA" | "MT" | "MS" | "MG" | "PA" | "PB" | "PR" | "PE" | "PI" | "RJ" | "RN" | "RS" | "RO" | "RR" | "SC" | "SP" | "SE" | "TO";
+            street: string;
+            zipCode: string;
+        };
+        DeliveryAddressResponse: {
+            city: string;
+            complement?: string | null;
+            neighborhood: string;
+            number: string;
+            /** @enum {string} */
+            state: "AC" | "AL" | "AP" | "AM" | "BA" | "CE" | "DF" | "ES" | "GO" | "MA" | "MT" | "MS" | "MG" | "PA" | "PB" | "PR" | "PE" | "PI" | "RJ" | "RN" | "RS" | "RO" | "RR" | "SC" | "SP" | "SE" | "TO";
+            street: string;
+            zipCode: string;
+        };
         LoginRequest: {
             /** Format: email */
             email: string;
@@ -404,6 +530,33 @@ export interface components {
         MenuResponse: {
             categories: components["schemas"]["MenuCategory"][];
         };
+        OrderCancellationResponse: {
+            /** @enum {string} */
+            cancelledBy: "CUSTOMER" | "RESTAURANT";
+            note?: string | null;
+            /** @enum {string} */
+            reason: "CHANGED_MIND" | "ORDERED_BY_MISTAKE" | "TAKING_TOO_LONG" | "ITEM_UNAVAILABLE" | "STORE_CLOSED" | "CUSTOMER_REQUEST" | "DELIVERY_FAILED" | "OTHER";
+        };
+        OrderCustomer: {
+            email: string;
+            /** Format: uuid */
+            id: string;
+            name: string;
+        };
+        OrderItemResponse: {
+            /** Format: uuid */
+            productId: string;
+            productName: string;
+            /** Format: int32 */
+            quantity: number;
+            subtotal: number;
+            unitPrice: number;
+        };
+        OrderItemSummary: {
+            productName: string;
+            /** Format: int32 */
+            quantity: number;
+        };
         PageMeta: {
             hasNext: boolean;
             hasPrevious: boolean;
@@ -420,9 +573,21 @@ export interface components {
             data: components["schemas"]["AdminUserResponse"][];
             meta: components["schemas"]["PageMeta"];
         };
+        PageResponseCustomerOrderSummaryResponse: {
+            data: components["schemas"]["CustomerOrderSummaryResponse"][];
+            meta: components["schemas"]["PageMeta"];
+        };
         PageResponseProductResponse: {
             data: components["schemas"]["ProductResponse"][];
             meta: components["schemas"]["PageMeta"];
+        };
+        PageResponseStaffOrderSummaryResponse: {
+            data: components["schemas"]["StaffOrderSummaryResponse"][];
+            meta: components["schemas"]["PageMeta"];
+        };
+        PlaceOrderRequest: {
+            deliveryAddress: components["schemas"]["DeliveryAddressRequest"];
+            items: components["schemas"]["CartItem"][];
         };
         ProductCategory: {
             /** Format: uuid */
@@ -468,6 +633,51 @@ export interface components {
             email: string;
             name: string;
             password: string;
+        };
+        StaffOrderDetailResponse: {
+            cancellation?: components["schemas"]["OrderCancellationResponse"] | null;
+            customer: components["schemas"]["OrderCustomer"];
+            deliveryAddress: components["schemas"]["DeliveryAddressResponse"];
+            history: components["schemas"]["StaffOrderHistoryEntry"][];
+            /** Format: uuid */
+            id: string;
+            items: components["schemas"]["OrderItemResponse"][];
+            live: boolean;
+            /** Format: int64 */
+            number: number;
+            /** Format: date-time */
+            placedAt: string;
+            /** @enum {string} */
+            status: "RECEIVED" | "PREPARING" | "OUT_FOR_DELIVERY" | "DELIVERED" | "CANCELLED";
+            total: number;
+        };
+        StaffOrderHistoryEntry: {
+            actorName: string;
+            /** @enum {string} */
+            actorSide: "CUSTOMER" | "RESTAURANT";
+            /** @enum {string|null} */
+            fromStatus?: "RECEIVED" | "PREPARING" | "OUT_FOR_DELIVERY" | "DELIVERED" | "CANCELLED" | null;
+            note?: string | null;
+            /** Format: date-time */
+            occurredAt: string;
+            /** @enum {string|null} */
+            reason?: "CHANGED_MIND" | "ORDERED_BY_MISTAKE" | "TAKING_TOO_LONG" | "ITEM_UNAVAILABLE" | "STORE_CLOSED" | "CUSTOMER_REQUEST" | "DELIVERY_FAILED" | "OTHER" | null;
+            /** @enum {string} */
+            toStatus: "RECEIVED" | "PREPARING" | "OUT_FOR_DELIVERY" | "DELIVERED" | "CANCELLED";
+        };
+        StaffOrderSummaryResponse: {
+            customerName: string;
+            /** Format: uuid */
+            id: string;
+            items: components["schemas"]["OrderItemSummary"][];
+            live: boolean;
+            /** Format: int64 */
+            number: number;
+            /** Format: date-time */
+            placedAt: string;
+            /** @enum {string} */
+            status: "RECEIVED" | "PREPARING" | "OUT_FOR_DELIVERY" | "DELIVERED" | "CANCELLED";
+            total: number;
         };
     };
     responses: never;
@@ -1002,6 +1212,128 @@ export interface operations {
                 };
                 content: {
                     "*/*": components["schemas"]["CartQuote"];
+                };
+            };
+        };
+    };
+    myOrderList: {
+        parameters: {
+            query?: {
+                page?: number;
+                pageSize?: 10 | 25 | 50 | 100;
+                /** @description property,asc or property,desc; repeat it to sort by more than one property */
+                sort?: string[];
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["PageResponseCustomerOrderSummaryResponse"];
+                };
+            };
+        };
+    };
+    myOrderPlace: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PlaceOrderRequest"];
+            };
+        };
+        responses: {
+            /** @description Created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["CustomerOrderDetailResponse"];
+                };
+            };
+        };
+    };
+    myOrderDetail: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["CustomerOrderDetailResponse"];
+                };
+            };
+        };
+    };
+    orderList: {
+        parameters: {
+            query?: {
+                status?: ("RECEIVED" | "PREPARING" | "OUT_FOR_DELIVERY" | "DELIVERED" | "CANCELLED")[];
+                from?: string;
+                to?: string;
+                search?: string;
+                page?: number;
+                pageSize?: 10 | 25 | 50 | 100;
+                /** @description property,asc or property,desc; repeat it to sort by more than one property */
+                sort?: string[];
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["PageResponseStaffOrderSummaryResponse"];
+                };
+            };
+        };
+    };
+    orderDetail: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["StaffOrderDetailResponse"];
                 };
             };
         };

@@ -1,0 +1,28 @@
+import { MESSAGES } from "@/constants/messages";
+
+export const CHECKOUT_MESSAGES = {
+  TITLE: "Finalizar pedido",
+  BACK: "Voltar ao cardápio",
+  ADDRESS: MESSAGES.ORDERS.DELIVERY_ADDRESS,
+  ZIP_CODE: "CEP",
+  ZIP_CODE_PLACEHOLDER: "00000-000",
+  STREET: "Rua",
+  NUMBER: "Número",
+  COMPLEMENT: "Complemento",
+  COMPLEMENT_PLACEHOLDER: "Opcional",
+  NEIGHBORHOOD: "Bairro",
+  CITY: "Cidade",
+  STATE: "UF",
+  CHOOSE_STATE: "UF",
+  SUMMARY: "Resumo",
+  TOTAL: MESSAGES.ORDERS.TOTAL,
+  UNKNOWN_PRODUCT: MESSAGES.ORDERS.UNKNOWN_PRODUCT,
+  UNAVAILABLE: MESSAGES.ORDERS.UNAVAILABLE,
+  UNAVAILABLE_NOTICE: "Remova os itens indisponíveis da sacola para fazer o pedido.",
+  PLACE: "Fazer pedido",
+  PLACING: "Enviando pedido",
+  PLACED: MESSAGES.ORDERS.PLACED,
+  EMPTY: "Sua sacola está vazia",
+  EMPTY_DESCRIPTION: "Escolha seus pratos no cardápio para fazer um pedido.",
+  BROWSE_MENU: MESSAGES.BROWSE_MENU,
+} as const;

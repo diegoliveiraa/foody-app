@@ -5,6 +5,7 @@ import { HTTP_METHODS, SCREEN_URLS } from "../../support/constants";
 import { expect, test } from "../../support/fixtures";
 import { expectNoHorizontalOverflow, pathIs } from "../../support/layout";
 import { CUSTOMER_ME, ME_LABELS } from "../../support/me";
+import { customerPage, stubMyOrders } from "../../support/orders";
 import { SIGNED_IN, stubMe, stubSignedOut } from "../../support/session";
 
 const PRIVATE_PATH: string = SCREEN_URLS.MY_ORDERS;
@@ -32,6 +33,7 @@ test("brings the visitor back to the page they were going to after signing in", 
   await stubSignedOut(api);
   await api.respond(HTTP_METHODS.POST, API_PATHS.LOGIN, SIGNED_IN);
   await stubMe(api, CUSTOMER_ME);
+  await stubMyOrders(api, customerPage([]));
   await page.goto(`${ROUTE_PATHS.LOGIN}?${REDIRECT_TO_PARAM}=${encodeURIComponent(PRIVATE_PATH)}`);
 
   await signIn(page, CUSTOMER_ME.user.email);

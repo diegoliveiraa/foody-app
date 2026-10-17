@@ -9,6 +9,8 @@ export const API_PATHS = {
   MENU_QUOTE: "/menu/quote",
   CATALOG_CATEGORIES: "/catalog/categories",
   CATALOG_PRODUCTS: "/catalog/products",
+  MY_ORDERS: "/my-orders",
+  ORDERS: "/orders",
 } as const;
 
 export const ADMIN_USER_PATHS = {
@@ -27,6 +29,14 @@ export const PRODUCT_PATHS = {
   ONE: (id: string): string => `${API_PATHS.CATALOG_PRODUCTS}/${id}`,
   DISABLE: (id: string): string => `${API_PATHS.CATALOG_PRODUCTS}/${id}/disable`,
   ENABLE: (id: string): string => `${API_PATHS.CATALOG_PRODUCTS}/${id}/enable`,
+} as const;
+
+export const MY_ORDER_PATHS = {
+  ONE: (id: string): string => `${API_PATHS.MY_ORDERS}/${id}`,
+} as const;
+
+export const ORDER_PATHS = {
+  ONE: (id: string): string => `${API_PATHS.ORDERS}/${id}`,
 } as const;
 
 export const AUTH_PATH_PREFIX: string = "/auth/";
@@ -70,6 +80,7 @@ export const ERROR_CODES = {
   CATEGORY_IN_USE: "CATEGORY_IN_USE",
   UNKNOWN_CATEGORY: "UNKNOWN_CATEGORY",
   PRODUCT_IN_USE: "PRODUCT_IN_USE",
+  PRODUCT_UNAVAILABLE: "PRODUCT_UNAVAILABLE",
 } as const;
 
 export type ErrorCode = (typeof ERROR_CODES)[keyof typeof ERROR_CODES];

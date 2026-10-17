@@ -1,4 +1,4 @@
-import type { CartItem, CartQuote, MenuCategory, MenuProduct } from "@/@types/menu";
+import type { CartItem, MenuCategory, MenuProduct } from "@/@types/menu";
 import type { CategoryChoice, MenuFilterModel } from "./filter/types";
 
 export interface BagLine {
@@ -33,13 +33,6 @@ export interface CartModel {
   increase: (productId: string) => void;
   decrease: (productId: string) => void;
   remove: (productId: string) => void;
-}
-
-export interface CartQuoteModel {
-  quote: CartQuote | undefined;
-  quoting: boolean;
-  error: string | null;
-  hasUnavailable: boolean;
 }
 
 export interface BagModel {
