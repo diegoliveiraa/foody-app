@@ -260,6 +260,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/dashboard": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["dashboardOverview"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/me": {
         parameters: {
             query?: never;
@@ -590,6 +606,91 @@ export interface components {
             /** @enum {string} */
             status: "RECEIVED" | "PREPARING" | "OUT_FOR_DELIVERY" | "DELIVERED" | "CANCELLED";
             total: number;
+        };
+        DashboardActiveOrders: {
+            /** Format: int64 */
+            outForDelivery: number;
+            /** Format: int64 */
+            preparing: number;
+            /** Format: int64 */
+            received: number;
+        };
+        DashboardBucket: {
+            /** Format: date-time */
+            bucketStart: string;
+            /** Format: int64 */
+            count: number;
+        };
+        DashboardCancellationCount: {
+            /** @enum {string} */
+            cancelledBy: "CUSTOMER" | "RESTAURANT";
+            /** Format: int64 */
+            count: number;
+            /** @enum {string} */
+            reason: "CHANGED_MIND" | "ORDERED_BY_MISTAKE" | "TAKING_TOO_LONG" | "ITEM_UNAVAILABLE" | "STORE_CLOSED" | "CUSTOMER_REQUEST" | "DELIVERY_FAILED" | "OTHER";
+        };
+        DashboardCancellations: {
+            byReason: components["schemas"]["DashboardCancellationCount"][];
+            /** Format: int64 */
+            count: number;
+            ratePercent?: number | null;
+        };
+        DashboardOrders: {
+            changePercent?: number | null;
+            /** Format: int64 */
+            count: number;
+            /** Format: int64 */
+            previousCount: number;
+        };
+        DashboardOrdersOverTime: {
+            /** @enum {string} */
+            granularity: "HOUR" | "DAY";
+            points: components["schemas"]["DashboardBucket"][];
+        };
+        DashboardPendingRequest: {
+            /** Format: int64 */
+            number: number;
+            /** Format: uuid */
+            orderId: string;
+            /** Format: date-time */
+            requestedAt: string;
+        };
+        DashboardPendingRequests: {
+            /** Format: int64 */
+            count: number;
+            items: components["schemas"]["DashboardPendingRequest"][];
+        };
+        DashboardResponse: {
+            activeByStatus: components["schemas"]["DashboardActiveOrders"];
+            averageStageMinutes: components["schemas"]["DashboardStageMinutes"];
+            averageTicket?: number | null;
+            cancellations: components["schemas"]["DashboardCancellations"];
+            /** Format: date-time */
+            generatedAt: string;
+            orders: components["schemas"]["DashboardOrders"];
+            ordersOverTime: components["schemas"]["DashboardOrdersOverTime"];
+            pendingCancellationRequests: components["schemas"]["DashboardPendingRequests"];
+            /** @enum {string} */
+            period: "TODAY" | "LAST_7_DAYS" | "LAST_30_DAYS";
+            revenue: number;
+            timeZone: string;
+            topProducts: components["schemas"]["DashboardTopProduct"][];
+        };
+        DashboardStageMinutes: {
+            /** Format: int64 */
+            outForDeliveryToDelivered?: number | null;
+            /** Format: int64 */
+            preparingToOutForDelivery?: number | null;
+            /** Format: int64 */
+            receivedToPreparing?: number | null;
+        };
+        DashboardTopProduct: {
+            name: string;
+            /** Format: uuid */
+            productId: string;
+            /** Format: int64 */
+            quantity: number;
+            revenue: number;
         };
         DeliveryAddressRequest: {
             city: string;
@@ -1295,6 +1396,28 @@ export interface operations {
                 };
                 content: {
                     "*/*": components["schemas"]["ProductResponse"];
+                };
+            };
+        };
+    };
+    dashboardOverview: {
+        parameters: {
+            query?: {
+                period?: "TODAY" | "LAST_7_DAYS" | "LAST_30_DAYS";
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["DashboardResponse"];
                 };
             };
         };

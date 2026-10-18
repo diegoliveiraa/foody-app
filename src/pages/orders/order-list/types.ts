@@ -1,13 +1,7 @@
 import type { FormEvent } from "react";
-import type { OrderId, StaffOrderSummary } from "@/@types/orders";
+import type { StaffOrderSummary } from "@/@types/orders";
 import type { AdvanceStatus } from "@/constants/orders";
 import type { CancellationForm } from "@/services/validation-schemas/cancellation";
-
-export interface OrderListPaths {
-  board: string;
-  history: string;
-  detail: (id: OrderId) => string;
-}
 
 export interface NextStep {
   status: AdvanceStatus;

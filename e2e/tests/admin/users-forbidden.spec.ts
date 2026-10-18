@@ -1,5 +1,6 @@
 import { MESSAGES } from "../../../src/constants/messages";
 import { SCREEN_URLS } from "../../support/constants";
+import { dashboardResponse, stubDashboard } from "../../support/dashboard";
 import { expect, test } from "../../support/fixtures";
 import { expectNoHorizontalOverflow, pathIs } from "../../support/layout";
 import { STAFF_ME } from "../../support/me";
@@ -25,6 +26,7 @@ test("takes staff from the forbidden page back to their home", async ({
   api,
 }): Promise<void> => {
   await stubSession(api, STAFF_ME);
+  await stubDashboard(api, dashboardResponse());
   await page.goto(SCREEN_URLS.ADMIN_USERS);
 
   await page.getByRole("link", { name: MESSAGES.BACK_HOME }).click();

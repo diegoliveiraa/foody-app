@@ -3,8 +3,6 @@ import { Bike, ChefHat, CircleCheck, type LucideIcon } from "lucide-react";
 import { ORDER_STATUSES, type AdvanceStatus } from "@/constants/orders";
 import { CACHE_TAGS, LIST_ID, type CacheTag } from "@/services/cache-tags";
 
-export const HISTORY_SEGMENT: string = "history";
-
 export const ORDER_LIST_TAGS: readonly TagDescription<CacheTag>[] = [
   { type: CACHE_TAGS.ORDER, id: LIST_ID },
 ];

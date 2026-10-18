@@ -17,3 +17,5 @@ export const ID_PARAM = "id" as const;
 export const ID_SEGMENT: string = `:${ID_PARAM}`;
 
 export const PARENT_PATH: string = "..";
+
+export const HISTORY_SEGMENT: string = "history";

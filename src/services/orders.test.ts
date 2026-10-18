@@ -3,7 +3,7 @@ import { describe, expect, it, vi } from "vitest";
 import type { StaffOrder, StaffOrderPage } from "@/@types/orders";
 import type { AppStore } from "@/store";
 import { tokenReceived } from "@/store/slices/session";
-import { countDashboardReads, openDashboard } from "@/test/dashboard";
+import { countDashboardReads, openDashboard } from "@/test/dashboard-reads";
 import { orderId, staffOrder, staffPage, staffSummary } from "@/test/orders";
 import { problem } from "@/test/problems";
 import { apiUrl, server } from "@/test/server";

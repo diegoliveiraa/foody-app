@@ -17,7 +17,7 @@ export function UnexpectedErrorScreen(): JSX.Element {
         description={MESSAGES.UNEXPECTED.DESCRIPTION}
       >
         <Button variant="outline" onClick={reload}>
-          {MESSAGES.UNEXPECTED.RETRY}
+          {MESSAGES.ACTIONS.RETRY}
         </Button>
       </EmptyState>
     </section>

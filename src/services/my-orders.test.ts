@@ -4,7 +4,7 @@ import type { CartQuote } from "@/@types/menu";
 import type { CustomerOrder, CustomerOrderPage, PlaceOrderRequest } from "@/@types/orders";
 import type { AppStore } from "@/store";
 import { tokenReceived } from "@/store/slices/session";
-import { countDashboardReads, openDashboard } from "@/test/dashboard";
+import { countDashboardReads, openDashboard } from "@/test/dashboard-reads";
 import { customerOrder, customerPage, customerSummary, orderId, PAULISTA } from "@/test/orders";
 import { problem } from "@/test/problems";
 import { apiUrl, server } from "@/test/server";

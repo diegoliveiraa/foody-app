@@ -1,4 +1,5 @@
 import type { LucideIcon } from "lucide-react";
+import type { OrderId } from "@/@types/orders";
 import type { ModuleKey, ScreenKey } from "@/constants/screens";
 
 export interface ScreenHandle {
@@ -31,4 +32,10 @@ export interface NavigationModule {
   key: string;
   label: string;
   items: NavigationItem[];
+}
+
+export interface OrderListPaths {
+  board: string;
+  history: string;
+  detail: (id: OrderId) => string;
 }

@@ -8,7 +8,11 @@ import type {
 } from "../../src/@types/orders";
 import { API_PATHS, MY_ORDER_PATHS, ORDER_PATHS } from "../../src/constants/api";
 import { MESSAGES } from "../../src/constants/messages";
-import { CANCELLATION_REASON_LABELS } from "../../src/constants/orders";
+import {
+  BOARD_PAGE_SIZE,
+  BOARD_STATUSES,
+  CANCELLATION_REASON_LABELS,
+} from "../../src/constants/orders";
 import { HTTP_METHODS, SCREEN_URLS } from "./constants";
 import type { ApiStubs, RecordedRequest } from "./fixtures";
 import { showsListCards } from "./layout";
@@ -33,6 +37,12 @@ export const MY_ORDERS_PATH: string = API_PATHS.MY_ORDERS;
 export const ORDERS_PATH: string = API_PATHS.ORDERS;
 
 export const LIVE_POLL: string = "00:30";
+
+const BOARD_QUERY: string = new URLSearchParams([
+  ...BOARD_STATUSES.map((status: string): [string, string] => ["status", status]),
+  ["pageSize", String(BOARD_PAGE_SIZE)],
+  ["sort", "placedAt,asc"],
+]).toString();
 
 export const CLOCK_START: Date = new Date(2026, 9, 17, 19, 30, 0);
 
@@ -80,10 +90,14 @@ export function orderQueries(api: ApiStubs): URLSearchParams[] {
     .map((request: RecordedRequest): URLSearchParams => request.url.searchParams);
 }
 
+function isBoardQuery(query: URLSearchParams): boolean {
+  return query.toString() === BOARD_QUERY;
+}
+
 export function historyQueries(api: ApiStubs): Record<string, string>[] {
-  return orderQueries(api).map((query: URLSearchParams): Record<string, string> =>
-    Object.fromEntries(query),
-  );
+  return orderQueries(api)
+    .filter((query: URLSearchParams): boolean => !isBoardQuery(query))
+    .map((query: URLSearchParams): Record<string, string> => Object.fromEntries(query));
 }
 
 export function orderEntry(page: Page, number: number): Locator {

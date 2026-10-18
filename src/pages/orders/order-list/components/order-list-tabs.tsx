@@ -1,8 +1,8 @@
 import type { JSX } from "react";
 import { NavLink } from "react-router";
+import { useOrderListPaths } from "@/hooks/use-order-list-paths";
+import type { OrderListPaths } from "@/routes/types";
 import { ORDER_LIST_MESSAGES } from "../constants/messages";
-import { useOrderListPaths } from "../hooks/use-order-list-paths";
-import type { OrderListPaths } from "../types";
 
 const TAB_CLASS: string =
   "flex h-10 items-center rounded-[9px] px-3.5 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground aria-[current=page]:bg-card aria-[current=page]:font-semibold aria-[current=page]:text-foreground aria-[current=page]:shadow-xs";

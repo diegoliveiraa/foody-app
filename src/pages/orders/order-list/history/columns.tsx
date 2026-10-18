@@ -5,10 +5,10 @@ import type { OrderItemSummary, OrderStatus, StaffOrderSummary } from "@/@types/
 import type { DataTableColumns, DataTableFeatures } from "@/components/data-table/features";
 import { OrderStatusBadge } from "@/components/order-status-badge";
 import { MESSAGES } from "@/constants/messages";
+import type { OrderListPaths } from "@/routes/types";
 import { formatMoney } from "@/utils/format-money";
 import { formatOrderTime } from "@/utils/format-order-date";
 import { summarizeItems } from "@/utils/order-items";
-import type { OrderListPaths } from "../types";
 import { HISTORY_COLUMNS } from "./constants";
 import { HISTORY_MESSAGES } from "./constants/messages";
 

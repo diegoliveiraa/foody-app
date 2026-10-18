@@ -1,7 +1,7 @@
 import type { JSX } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { BOARD_TAB_LABELS, ORDER_STATUSES } from "@/constants/orders";
-import type { OrderListPaths } from "../../types";
+import type { OrderListPaths } from "@/routes/types";
 import { BOARD_MESSAGES } from "../constants/messages";
 import type { BoardColumn } from "../types";
 import { BoardOrderList } from "./board-order-list";

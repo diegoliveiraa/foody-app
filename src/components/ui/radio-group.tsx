@@ -38,4 +38,20 @@ function RadioGroupItem({
   );
 }
 
-export { RadioGroup, RadioGroupItem };
+function RadioGroupSegment({
+  className,
+  ...props
+}: ComponentProps<typeof RadioGroupPrimitive.Item>): JSX.Element {
+  return (
+    <RadioGroupPrimitive.Item
+      data-slot="radio-group-segment"
+      className={cn(
+        "inline-flex min-h-11 min-w-0 items-center justify-center rounded-[10px] px-2 text-sm font-medium text-muted-foreground transition-colors outline-none hover:text-foreground focus-visible:ring-3 focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-50 data-checked:bg-card data-checked:font-bold data-checked:text-foreground data-checked:shadow-xs",
+        className,
+      )}
+      {...props}
+    />
+  );
+}
+
+export { RadioGroup, RadioGroupItem, RadioGroupSegment };

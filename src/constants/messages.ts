@@ -24,6 +24,8 @@ import { NAME_MAX_LENGTH, NAME_MIN_LENGTH, PASSWORD_MIN_LENGTH } from "./validat
 
 const CREATED_AT: string = "Criado em";
 
+const ONE_ORDER: number = 1;
+
 function orderNumber(number: number): string {
   return `#${number}`;
 }
@@ -99,8 +101,12 @@ export const MESSAGES = {
     MENU_TITLE: "Menu",
     MENU_DESCRIPTION: "Telas que você pode abrir",
     TOGGLE_SIDEBAR: "Mostrar ou esconder o menu",
+    ACTIVE_ORDERS: (count: number): string =>
+      count === ONE_ORDER ? `${count} pedido ativo` : `${count} pedidos ativos`,
   },
   ACTIONS: {
+    RELOAD: "Recarregar",
+    RETRY: "Tentar novamente",
     CANCEL: "Cancelar",
     SAVE: "Salvar",
     EDIT: "Editar",
@@ -138,9 +144,6 @@ export const MESSAGES = {
     PAGE_OF: (page: number, totalPages: number): string => `Página ${page} de ${totalPages}`,
     RANGE: (first: number, last: number, total: number): string => `${first}–${last} de ${total}`,
   },
-  SCREEN_PLACEHOLDER: {
-    TITLE: "Esta tela ainda está sendo preparada",
-  },
   FORBIDDEN: {
     TITLE: "Acesso negado",
     DESCRIPTION: "Sua conta não tem acesso a esta tela.",
@@ -152,7 +155,6 @@ export const MESSAGES = {
   UNEXPECTED: {
     TITLE: "Algo deu errado",
     DESCRIPTION: "Não foi possível carregar o Foody agora.",
-    RETRY: "Tentar novamente",
   },
   BACK_HOME: "Voltar ao início",
   BROWSE_MENU: "Ver cardápio",
@@ -166,6 +168,8 @@ export const MESSAGES = {
       minutes === 0 ? `há ${hours} h` : `há ${hours} h ${minutes} min`,
     UPDATED_SECONDS_AGO: (seconds: number): string => `Atualizado há ${seconds} s`,
     UPDATED_MINUTES_AGO: (minutes: number): string => `Atualizado há ${minutes} min`,
+    HOUR: (hour: number): string => `${hour}h`,
+    MINUTES: (minutes: string): string => `${minutes} min`,
   },
   ORDERS: {
     NUMBER: orderNumber,

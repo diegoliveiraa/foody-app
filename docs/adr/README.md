@@ -94,5 +94,7 @@ needs migration, rework or monitoring.
 | [ADR-0017](./0017-render-the-content-security-policy-at-build-time.md) | 2026-10-17 | Render the Content Security Policy at build time | Accepted |
 | [ADR-0018](./0018-lists-render-cards-below-1024px-and-a-data-table-from-1024px-up.md) | 2026-10-17 | Lists render cards below 1024px and a data table from 1024px up | Accepted |
 | [ADR-0019](./0019-the-cart-keeps-only-product-ids-and-quantities-per-user-priced-by-the-api.md) | 2026-10-17 | The cart keeps only product ids and quantities, per user, priced by the API | Accepted |
-| [ADR-0020](./0020-live-screens-poll-with-rtk-query-and-announce-changes-from-listener-middleware.md) | 2026-10-17 | Live screens poll with RTK Query and announce changes from listener middleware | Accepted |
+| [ADR-0020](./0020-live-screens-poll-with-rtk-query-and-announce-changes-from-listener-middleware.md) | 2026-10-17 | Live screens poll with RTK Query and announce changes from listener middleware | Accepted — "only live screens poll" superseded by ADR-0023 |
 | [ADR-0021](./0021-order-writes-store-the-servers-answer-and-refresh-on-stale-errors.md) | 2026-10-17 | Order writes store the server's answer and refresh on stale errors | Accepted |
+| [ADR-0022](./0022-charts-use-the-shadcn-chart-component-over-recharts.md) | 2026-10-17 | Charts use the shadcn chart component over Recharts | Accepted |
+| [ADR-0023](./0023-the-back-office-shell-keeps-the-active-orders-count-live.md) | 2026-10-17 | The back-office shell keeps the active-orders count live | Accepted |

@@ -1,9 +1,8 @@
 import type { ComponentType } from "react";
 import type { RouteObject } from "react-router";
-import { ID_SEGMENT } from "@/constants/routes";
+import { HISTORY_SEGMENT, ID_SEGMENT } from "@/constants/routes";
 import { SCREEN_KEYS } from "@/constants/screens";
 import { screenHandle } from "@/routes/handles";
-import { HISTORY_SEGMENT } from "./constants";
 
 export const orderListRoute: RouteObject = {
   path: "orders",

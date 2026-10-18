@@ -186,6 +186,10 @@ const LIVE_POLLING_SECONDS: number = 30;
 
 export const LIVE_ORDER_POLLING_MS: number = LIVE_POLLING_SECONDS * MS_PER_SECOND;
 
+export const DASHBOARD_POLLING_SECONDS: number = 60;
+
+export const DASHBOARD_POLLING_MS: number = DASHBOARD_POLLING_SECONDS * MS_PER_SECOND;
+
 export const NO_POLLING_MS: number = 0;
 
 export const BOARD_PAGE_SIZE = 100 as const;

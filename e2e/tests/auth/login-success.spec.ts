@@ -2,14 +2,16 @@ import type { Locator } from "@playwright/test";
 import { API_PATHS } from "../../../src/constants/api";
 import { MESSAGES } from "../../../src/constants/messages";
 import { ROUTE_PATHS } from "../../../src/constants/routes";
+import { DASHBOARD_MESSAGES } from "../../../src/pages/dashboard/overview/constants/messages";
 import { signIn } from "../../support/auth";
 import { openBackofficeNavigation } from "../../support/backoffice";
 import { HTTP_METHODS, SCREEN_URLS } from "../../support/constants";
+import { dashboardResponse, stubDashboard } from "../../support/dashboard";
 import { expect, test } from "../../support/fixtures";
 import { expectNoHorizontalOverflow, pathIs } from "../../support/layout";
 import { CUSTOMER_ME, ME_LABELS, STAFF_ME } from "../../support/me";
 import { stubMenu } from "../../support/menu";
-import { SIGNED_IN, stubMe, stubSignedOut } from "../../support/session";
+import { SIGNED_IN, stubMe, stubShell, stubSignedOut } from "../../support/session";
 
 test("a customer who signs in lands on the menu, with the store navigation", async ({
   page,
@@ -38,12 +40,14 @@ test("staff who sign in land on the dashboard, with the back-office sidebar", as
   await stubSignedOut(api);
   await api.respond(HTTP_METHODS.POST, API_PATHS.LOGIN, SIGNED_IN);
   await stubMe(api, STAFF_ME);
+  await stubShell(api, STAFF_ME);
+  await stubDashboard(api, dashboardResponse());
   await page.goto(ROUTE_PATHS.LOGIN);
 
   await signIn(page, STAFF_ME.user.email);
 
   await expect(page).toHaveURL(pathIs(SCREEN_URLS.DASHBOARD));
-  await expect(page.getByRole("heading", { name: ME_LABELS.OVERVIEW })).toBeVisible();
+  await expect(page.getByRole("heading", { name: DASHBOARD_MESSAGES.TITLE })).toBeVisible();
   const navigation: Locator = await openBackofficeNavigation(page);
   await expect(navigation.getByRole("link", { name: ME_LABELS.PRODUCTS })).toBeVisible();
   await expectNoHorizontalOverflow(page);

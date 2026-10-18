@@ -11,6 +11,7 @@ export const API_PATHS = {
   CATALOG_PRODUCTS: "/catalog/products",
   MY_ORDERS: "/my-orders",
   ORDERS: "/orders",
+  DASHBOARD: "/dashboard",
 } as const;
 
 export const ADMIN_USER_PATHS = {

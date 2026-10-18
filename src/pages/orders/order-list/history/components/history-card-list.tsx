@@ -4,10 +4,10 @@ import type { StaffOrderSummary } from "@/@types/orders";
 import { OrderStatusBadge } from "@/components/order-status-badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { MESSAGES } from "@/constants/messages";
+import type { OrderListPaths } from "@/routes/types";
 import { formatMoney } from "@/utils/format-money";
 import { formatOrderTime } from "@/utils/format-order-date";
 import { summarizeItems } from "@/utils/order-items";
-import type { OrderListPaths } from "../../types";
 import { SKELETON_CARDS } from "../constants";
 import { HISTORY_MESSAGES } from "../constants/messages";
 

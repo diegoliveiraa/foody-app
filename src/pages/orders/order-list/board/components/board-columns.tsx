@@ -2,7 +2,7 @@ import { cn } from "cn";
 import type { JSX } from "react";
 import { ORDER_STATUS_TONES } from "@/components/order-status-badge/tones";
 import { BOARD_COLUMN_LABELS } from "@/constants/orders";
-import type { OrderListPaths } from "../../types";
+import type { OrderListPaths } from "@/routes/types";
 import type { BoardColumn } from "../types";
 import { BoardOrderList } from "./board-order-list";
 

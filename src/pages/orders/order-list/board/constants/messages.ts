@@ -9,7 +9,6 @@ export const EMPTY_COLUMN_MESSAGES: Record<BoardStatus, string> = {
 };
 
 export const BOARD_MESSAGES = {
-  RELOAD: "Recarregar",
   RELOAD_LABEL: "Recarregar pedidos",
   BY_STATUS: "Pedidos por status",
   LOADING: "Carregando pedidos",

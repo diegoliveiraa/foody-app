@@ -1,5 +1,5 @@
 import { LogOut } from "lucide-react";
-import { useId, type JSX } from "react";
+import { useId, type JSX, type ReactElement } from "react";
 import { NavLink, useMatch } from "react-router";
 import { AccountSummary } from "@/components/account-summary";
 import { BrandLogo } from "@/components/brand-logo";
@@ -21,11 +21,13 @@ import { MESSAGES } from "@/constants/messages";
 import { useLogout } from "@/hooks/use-logout";
 import { useNavigationMenu } from "@/hooks/use-navigation-menu";
 import type { NavigationItem, NavigationModule } from "@/routes/types";
+import { screenBadgeFor } from "./screen-badges";
 
 function ModuleItem({ item }: { item: NavigationItem }): JSX.Element {
   const { setOpenMobile }: SidebarContextProps = useSidebar();
   const active: boolean = useMatch({ path: item.path, end: false }) !== null;
   const Icon: NavigationItem["icon"] = item.icon;
+  const badge: ReactElement | null = screenBadgeFor(item.key);
 
   return (
     <SidebarMenuItem>
@@ -35,6 +37,7 @@ function ModuleItem({ item }: { item: NavigationItem }): JSX.Element {
           <span>{item.label}</span>
         </NavLink>
       </SidebarMenuButton>
+      {badge}
     </SidebarMenuItem>
   );
 }

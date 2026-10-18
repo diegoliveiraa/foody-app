@@ -1,6 +1,6 @@
 # ADR-0020 — Live screens poll with RTK Query and announce changes from listener middleware
 
-- **Status:** Accepted
+- **Status:** Accepted — "only live screens poll" superseded by ADR-0023
 - **Date:** 2026-10-17
 - **Decided by:** Diego
 

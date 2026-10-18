@@ -1,7 +1,7 @@
 import type { JSX } from "react";
 import type { StaffOrderSummary } from "@/@types/orders";
 import { BOARD_COLUMN_LABELS } from "@/constants/orders";
-import type { OrderListPaths } from "../../types";
+import type { OrderListPaths } from "@/routes/types";
 import { BOARD_MESSAGES, EMPTY_COLUMN_MESSAGES } from "../constants/messages";
 import type { BoardColumn } from "../types";
 import { BoardOrderCard } from "./board-order-card";

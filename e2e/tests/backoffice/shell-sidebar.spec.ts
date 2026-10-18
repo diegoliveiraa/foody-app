@@ -4,11 +4,16 @@ import { ROUTE_PATHS } from "../../../src/constants/routes";
 import { USERS_MESSAGES } from "../../../src/pages/admin/users/constants/messages";
 import { openBackofficeNavigation } from "../../support/backoffice";
 import { SCREEN_URLS } from "../../support/constants";
+import { dashboardResponse, stubDashboard } from "../../support/dashboard";
 import { expect, test } from "../../support/fixtures";
 import { expectNoHorizontalOverflow, pathIs } from "../../support/layout";
 import { ADMIN_ME, ME_LABELS, STAFF_ME } from "../../support/me";
 import { stubLogout, stubSession } from "../../support/session";
 import { EVERYONE, stubUsers, usersPage } from "../../support/users";
+
+test.beforeEach(async ({ api }): Promise<void> => {
+  await stubDashboard(api, dashboardResponse());
+});
 
 test("gives staff one sidebar group per module, without administration", async ({
   page,
