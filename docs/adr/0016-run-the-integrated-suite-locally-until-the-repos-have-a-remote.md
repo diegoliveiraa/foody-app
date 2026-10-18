@@ -1,6 +1,6 @@
 # ADR-0016 — Run the integrated suite locally until the repos have a remote
 
-- **Status:** Accepted
+- **Status:** Accepted — failing on a missing seed variable superseded by ADR-0027
 - **Date:** 2026-10-17
 - **Decided by:** Diego
 

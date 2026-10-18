@@ -56,6 +56,30 @@ jobs:
         if: always()
         run: docker compose -f compose.deploy.yaml down
 
+  demo:
+    name: Web demo starts with one command
+    needs: verify
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7
+      - name: Build and start the web demo
+        run: docker compose up -d --build --wait --wait-timeout 300
+      - name: The SPA answers 200 with its Content-Security-Policy
+        run: |
+          for route in / /login /menu; do
+            status="$(curl -sS -o page.html -D headers.txt -w '%{http_code}' "http://localhost:5173${route}")"
+            echo "${route} -> ${status}"
+            test "${status}" = "200"
+            grep -q '<div id="root">' page.html
+            grep -i '^content-security-policy:' headers.txt | grep -qF "connect-src 'self' http://localhost:8080"
+          done
+      - name: Logs on failure
+        if: failure()
+        run: docker compose logs
+      - name: Tear down
+        if: always()
+        run: docker compose down
+
   e2e:
     name: E2E (stubbed network, every viewport)
     needs: verify

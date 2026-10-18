@@ -377,26 +377,32 @@ Authentication follows ADR-0008:
   Retry-After, X-Request-Id`) — without the expose header the app cannot read `Retry-After`.
   Preflights never reach `page.route` (Chromium under Playwright answers them), so specs do not
   stub `OPTIONS`.
-- **Integrated suite (ADR-0016), local only:** start the API with `./mvnw spring-boot:test-run` in
-  `../foody-api` (seed data and accounts on port 8080), then run
-  `set -a; . ../foody-api/.env; set +a; npm run e2e:integrated`. It starts its own Vite on 4174,
-  logs in with `SEED_CUSTOMER_EMAIL`, `SEED_STAFF_EMAIL` and `SEED_DEFAULT_PASSWORD`, and as the
-  admin with `SEED_ADMIN_EMAIL` and `SEED_ADMIN_PASSWORD`; it fails before starting anything when
-  one of them is missing. `admin-users.spec.ts` registers a fresh customer on every run (a unique
-  e-mail) and changes only that account, never the seed ones.
-- `foody-api` runs on `http://localhost:8080`; the front runs on `http://localhost:5173`. Copy
-  `.env.example` to `.env`: the API base URL goes there as `VITE_API_URL` — never hard-coded in a
-  service.
-- **A backend for `npm run dev`:** `docker compose up -d --wait` builds and runs foody-api and its
-  PostgreSQL from `../foody-api` (ADR-0009). It needs that repo cloned beside this one, with its
-  own `.env`, and it takes port 8080 — stop it before `./mvnw spring-boot:run` there. Before the
-  first `docker compose up` (which includes the API's deploy file), run
-  `bash scripts/generate-jwt-keys.sh` in `../foody-api` once.
+- **A backend for `npm run dev` and the integrated suite:** the API's seeded demo stack —
+  `docker compose up -d --build --wait` in `../foody-api` (API on `http://localhost:8080`, demo
+  accounts `admin@foody.local`, `equipe@foody.local` and `cliente@foody.local`, password
+  `Foody#2026`, CORS for `http://localhost:5173` and `http://localhost:4174`). It takes port 8080
+  like `./mvnw spring-boot:run` there — only one of them runs at a time.
+- **Integrated suite (ADR-0016, ADR-0027), local only:** with that API up, `npm run e2e:integrated`.
+  It starts its own Vite on 4174 (an origin the API must allow) and logs in with the demo accounts;
+  `SEED_CUSTOMER_EMAIL`, `SEED_STAFF_EMAIL`, `SEED_DEFAULT_PASSWORD`, `SEED_ADMIN_EMAIL` and
+  `SEED_ADMIN_PASSWORD` override them one by one — against `./mvnw spring-boot:test-run`, export
+  the API's `.env` first (`set -a; . ../foody-api/.env; set +a`). `admin-users.spec.ts` registers a
+  fresh customer on every run (a unique e-mail) and changes only that account, never the seed ones.
+- `foody-api` runs on `http://localhost:8080`; the front runs on `http://localhost:5173`. **`.env` is
+  optional:** when neither the environment nor an `.env*` file sets `VITE_API_URL`, `vite.config.ts`
+  defines it as `http://localhost:8080` (never in test mode). To point elsewhere, copy
+  `.env.example` to `.env` or export the variable — the API base URL lives only in `VITE_API_URL`,
+  never hard-coded in a service.
+- **`compose.yaml` is the standalone web demo (ADR-0027):** `docker compose up -d --build --wait`
+  builds the production image with `VITE_API_URL` (default `http://localhost:8080`) and serves it on
+  `http://localhost:5173` (`WEB_PORT`); `docker compose down` stops it. It never starts the API, and
+  it shares port 5173 with `npm run dev` — one at a time. It and `compose.deploy.yaml` are both
+  project `foody-web`, and a `WEB_PORT` in `.env` applies to both.
 - **`VITE_*` variables are inlined at build time:** after changing `.env`, restart `dev` or
-  rebuild; reloading the page does nothing. The same goes for the image:
-  `docker build --build-arg VITE_API_URL=<url> -t foody-app .` — one image per API URL. The build
-  also renders `nginx.conf.template` into the image's nginx config, with the API's origin in the
-  Content-Security-Policy (ADR-0017).
+  rebuild; reloading the page does nothing. The same goes for the image —
+  `docker compose up -d --build` for the demo,
+  `docker build --build-arg VITE_API_URL=<url> -t foody-app .` otherwise — one image per API URL. The build also renders `nginx.conf.template` into the image's nginx config,
+  with the API's origin in the Content-Security-Policy (ADR-0017).
   **Deploy:** `docker compose -f compose.deploy.yaml up -d`, with the `.env` on the host.
 
 ## Before handing off

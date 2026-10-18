@@ -1,10 +1,31 @@
 import path from "node:path";
 import tailwindcss from "@tailwindcss/vite";
 import react from "@vitejs/plugin-react";
-import { defineConfig } from "vitest/config";
+import { loadEnv } from "vite";
+import { defineConfig, type ConfigEnv, type ViteUserConfig } from "vitest/config";
 
-export default defineConfig({
+const API_URL_VARIABLE: string = "VITE_API_URL";
+
+const API_URL_DEFINE: string = "import.meta.env.VITE_API_URL";
+
+const DEFAULT_API_URL: string = "http://localhost:8080";
+
+const TEST_API_URL: string = "http://api.test";
+
+const TEST_MODE: string = "test";
+
+function defaultApiUrl(mode: string): Record<string, string> {
+  const configured: string =
+    loadEnv(mode, import.meta.dirname, API_URL_VARIABLE)[API_URL_VARIABLE] ?? "";
+  if (mode === TEST_MODE || configured.trim() !== "") {
+    return {};
+  }
+  return { [API_URL_DEFINE]: JSON.stringify(DEFAULT_API_URL) };
+}
+
+export default defineConfig(({ mode }: ConfigEnv): ViteUserConfig => ({
   plugins: [react(), tailwindcss()],
+  define: defaultApiUrl(mode),
   resolve: {
     alias: {
       "@": path.resolve(import.meta.dirname, "./src"),
@@ -15,7 +36,7 @@ export default defineConfig({
     setupFiles: ["./src/test/setup.ts"],
     include: ["src/**/*.test.{ts,tsx}"],
     env: {
-      VITE_API_URL: "http://api.test",
+      [API_URL_VARIABLE]: TEST_API_URL,
     },
   },
-});
+}));

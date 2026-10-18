@@ -16,25 +16,27 @@ export interface SeedAccounts {
   adminPassword: string;
 }
 
-function missingVariables(): SeedVariable[] {
-  return Object.values(SEED_VARIABLES).filter(
-    (name: SeedVariable): boolean => (process.env[name] ?? "").trim() === "",
-  );
+const DEMO_PASSWORD: string = "Foody#2026";
+
+const DEMO_ACCOUNTS: Record<SeedVariable, string> = {
+  [SEED_VARIABLES.CUSTOMER_EMAIL]: "cliente@foody.local",
+  [SEED_VARIABLES.STAFF_EMAIL]: "equipe@foody.local",
+  [SEED_VARIABLES.PASSWORD]: DEMO_PASSWORD,
+  [SEED_VARIABLES.ADMIN_EMAIL]: "admin@foody.local",
+  [SEED_VARIABLES.ADMIN_PASSWORD]: DEMO_PASSWORD,
+};
+
+function readVariable(name: SeedVariable): string {
+  const value: string = process.env[name] ?? "";
+  return value.trim() === "" ? DEMO_ACCOUNTS[name] : value;
 }
 
 export function readSeedAccounts(): SeedAccounts {
-  const missing: SeedVariable[] = missingVariables();
-  if (missing.length > 0) {
-    throw new Error(
-      `The integrated suite logs in with the API's seed accounts. Set ${missing.join(", ")} ` +
-        "(the same values as ../foody-api/.env), e.g. `set -a; . ../foody-api/.env; set +a`.",
-    );
-  }
   return {
-    customerEmail: process.env[SEED_VARIABLES.CUSTOMER_EMAIL] ?? "",
-    staffEmail: process.env[SEED_VARIABLES.STAFF_EMAIL] ?? "",
-    password: process.env[SEED_VARIABLES.PASSWORD] ?? "",
-    adminEmail: process.env[SEED_VARIABLES.ADMIN_EMAIL] ?? "",
-    adminPassword: process.env[SEED_VARIABLES.ADMIN_PASSWORD] ?? "",
+    customerEmail: readVariable(SEED_VARIABLES.CUSTOMER_EMAIL),
+    staffEmail: readVariable(SEED_VARIABLES.STAFF_EMAIL),
+    password: readVariable(SEED_VARIABLES.PASSWORD),
+    adminEmail: readVariable(SEED_VARIABLES.ADMIN_EMAIL),
+    adminPassword: readVariable(SEED_VARIABLES.ADMIN_PASSWORD),
   };
 }

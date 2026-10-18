@@ -83,14 +83,14 @@ needs migration, rework or monitoring.
 | [ADR-0006](./0006-invalidate-the-cache-by-entity-from-the-service.md) | 2026-10-16 | Invalidate the cache by entity and id, only from the service | Accepted |
 | [ADR-0007](./0007-the-sidebar-and-screen-access-come-from-get-me.md) | 2026-10-16 | The sidebar and screen access come from GET /me | Accepted |
 | [ADR-0008](./0008-keep-the-access-token-in-memory-and-refresh-it-in-the-base-query.md) | 2026-10-16 | Keep the access token in memory and refresh it in the base query | Accepted |
-| [ADR-0009](./0009-serve-the-spa-from-unprivileged-nginx-and-run-the-api-locally-with-compose.md) | 2026-10-16 | Serve the SPA from unprivileged nginx; the local compose runs the API | Accepted — CSP decided in ADR-0017 |
+| [ADR-0009](./0009-serve-the-spa-from-unprivileged-nginx-and-run-the-api-locally-with-compose.md) | 2026-10-16 | Serve the SPA from unprivileged nginx; the local compose runs the API | Accepted — CSP decided in ADR-0017; the local compose superseded by ADR-0027 |
 | [ADR-0010](./0010-generate-the-api-types-from-its-openapi-contract.md) | 2026-10-16 | Generate the API's types from its OpenAPI contract | Accepted |
 | [ADR-0011](./0011-enforce-the-code-rules-with-prettier-type-aware-lint-and-ci.md) | 2026-10-16 | Enforce the code rules with Prettier, type-aware lint and CI | Accepted |
 | [ADR-0012](./0012-stub-the-network-in-tests-and-keep-an-integrated-suite-for-critical-flows.md) | 2026-10-16 | Stub the network in tests; keep an integrated suite for critical flows | Accepted — integrated CI job superseded by ADR-0016 |
 | [ADR-0013](./0013-keep-dependencies-current-with-dependabot.md) | 2026-10-16 | Keep dependencies current with Dependabot | Accepted |
 | [ADR-0014](./0014-one-shell-per-area-and-public-pages-outside-me.md) | 2026-10-17 | One shell per area and public pages outside /me | Accepted |
 | [ADR-0015](./0015-visual-identity-mobile-first-and-sonner-toasts.md) | 2026-10-17 | Visual identity, mobile-first and Sonner toasts | Accepted |
-| [ADR-0016](./0016-run-the-integrated-suite-locally-until-the-repos-have-a-remote.md) | 2026-10-17 | Run the integrated suite locally until the repos have a remote | Accepted |
+| [ADR-0016](./0016-run-the-integrated-suite-locally-until-the-repos-have-a-remote.md) | 2026-10-17 | Run the integrated suite locally until the repos have a remote | Accepted — failing on a missing seed variable superseded by ADR-0027 |
 | [ADR-0017](./0017-render-the-content-security-policy-at-build-time.md) | 2026-10-17 | Render the Content Security Policy at build time | Accepted |
 | [ADR-0018](./0018-lists-render-cards-below-1024px-and-a-data-table-from-1024px-up.md) | 2026-10-17 | Lists render cards below 1024px and a data table from 1024px up | Accepted — "cards get no sort control" superseded by ADR-0025 |
 | [ADR-0019](./0019-the-cart-keeps-only-product-ids-and-quantities-per-user-priced-by-the-api.md) | 2026-10-17 | The cart keeps only product ids and quantities, per user, priced by the API | Accepted |
@@ -101,3 +101,4 @@ needs migration, rework or monitoring.
 | [ADR-0024](./0024-every-page-names-itself-with-react-19s-document-title.md) | 2026-10-17 | Every page names itself with React 19's document title | Accepted |
 | [ADR-0025](./0025-card-lists-sort-through-one-shared-select.md) | 2026-10-17 | Card lists sort through one shared select | Accepted |
 | [ADR-0026](./0026-checkout-prefills-the-address-from-the-customers-last-order.md) | 2026-10-17 | Checkout prefills the address from the customer's last order | Accepted |
+| [ADR-0027](./0027-each-repo-starts-on-its-own-with-one-command.md) | 2026-10-17 | Each repo starts on its own with one command | Accepted |

@@ -1,6 +1,5 @@
 import { defineConfig, devices } from "@playwright/test";
 import { INTEGRATED_API_URL } from "./e2e/support/constants";
-import { readSeedAccounts } from "./e2e/support/seed-accounts";
 
 const INTEGRATED_PORT: number = 4174;
 
@@ -11,8 +10,6 @@ const DESKTOP_WIDTH: number = 1280;
 const DESKTOP_HEIGHT: number = 800;
 
 const INTEGRATED_OUTPUT_DIR: string = "test-results-integrated";
-
-readSeedAccounts();
 
 export default defineConfig({
   testDir: "./e2e/integrated",
