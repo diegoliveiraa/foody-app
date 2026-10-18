@@ -151,8 +151,8 @@ test("asks again every 30 seconds while the order is live, and stops once it is 
 
   await page.clock.fastForward(LIVE_POLL);
   await expect(page.getByText(ORDER_STATUS_LABELS.CANCELLED, { exact: true })).toBeVisible();
-  await page.clock.fastForward(LIVE_POLL);
-  await page.clock.fastForward(LIVE_POLL);
+  await page.clock.runFor(LIVE_POLL);
+  await page.clock.runFor(LIVE_POLL);
 
   await expect(page.getByText(CANCELLED_BY_LABELS.RESTAURANT)).toBeVisible();
   expect(readsOf(api)).toBe(2);

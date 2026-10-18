@@ -110,8 +110,8 @@ test("asks again every 30 seconds while the order is live, and stops once it is 
 
   await page.clock.fastForward(LIVE_POLL);
   await expect(step(page, ORDER_STATUS_LABELS.DELIVERED)).toHaveAttribute("aria-current", "step");
-  await page.clock.fastForward(LIVE_POLL);
-  await page.clock.fastForward(LIVE_POLL);
+  await page.clock.runFor(LIVE_POLL);
+  await page.clock.runFor(LIVE_POLL);
 
   await expect(page.getByText(TRACKING_MESSAGES.LIVE)).toHaveCount(0);
   expect(readsOf(api, PREPARING)).toBe(2);
