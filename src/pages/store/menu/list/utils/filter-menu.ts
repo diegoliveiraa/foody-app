@@ -15,14 +15,22 @@ function normalized(text: string): string {
     .trim();
 }
 
-function withProductsNamed(category: MenuCategory, wanted: string): MenuCategory {
-  if (wanted === EMPTY_SEARCH) {
+function mentions(text: string | null | undefined, wanted: string): boolean {
+  return typeof text === "string" && normalized(text).includes(wanted);
+}
+
+function productMentions(product: MenuProduct, wanted: string): boolean {
+  return mentions(product.name, wanted) || mentions(product.description, wanted);
+}
+
+function withProductsMatching(category: MenuCategory, wanted: string): MenuCategory {
+  if (wanted === EMPTY_SEARCH || mentions(category.name, wanted)) {
     return category;
   }
   return {
     ...category,
     products: category.products.filter((product: MenuProduct): boolean =>
-      normalized(product.name).includes(wanted),
+      productMentions(product, wanted),
     ),
   };
 }
@@ -36,6 +44,6 @@ export function filterMenu(
     .filter(
       (category: MenuCategory): boolean => categoryId === ALL_FILTER || category.id === categoryId,
     )
-    .map((category: MenuCategory): MenuCategory => withProductsNamed(category, wanted))
+    .map((category: MenuCategory): MenuCategory => withProductsMatching(category, wanted))
     .filter((category: MenuCategory): boolean => category.products.length > 0);
 }

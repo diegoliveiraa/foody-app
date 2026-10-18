@@ -39,3 +39,8 @@ export interface OrderListPaths {
   history: string;
   detail: (id: OrderId) => string;
 }
+
+export interface AuthRedirect {
+  destination: string;
+  switchPath: string;
+}

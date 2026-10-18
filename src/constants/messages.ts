@@ -26,6 +26,10 @@ const CREATED_AT: string = "Criado em";
 
 const ONE_ORDER: number = 1;
 
+const APP_NAME: string = "Foody";
+
+const TITLE_SEPARATOR: string = " · ";
+
 function orderNumber(number: number): string {
   return `#${number}`;
 }
@@ -36,6 +40,8 @@ function orderTitle(number: number): string {
 
 export const MESSAGES = {
   BRAND: "foody",
+  DOCUMENT_TITLE: (label?: string): string =>
+    label === undefined ? APP_NAME : `${label}${TITLE_SEPARATOR}${APP_NAME}`,
   TAGLINE: "Comida boa, do nosso fogão até a sua porta.",
   LOADING: "Carregando",
   CLOSE: "Fechar",
@@ -86,7 +92,7 @@ export const MESSAGES = {
     LOGIN_LINK: "Entrar",
   },
   SESSION: {
-    EXPIRED: "Sua sessão expirou, entre novamente",
+    ENDED: "Sua sessão terminou. Entre novamente.",
   },
   ERRORS: {
     RATE_LIMITED: (seconds: number): string => `Muitas tentativas. Tente de novo em ${seconds} s`,
@@ -137,12 +143,18 @@ export const MESSAGES = {
     CREATED_AT,
     ACTIONS: "Ações",
     CREATED_ON: (date: string): string => `${CREATED_AT} ${date}`,
+    SORT_BY: "Ordenar por",
     PAGINATION: "Paginação",
     PAGE_SIZE: "Itens por página",
     PREVIOUS_PAGE: "Página anterior",
     NEXT_PAGE: "Próxima página",
     PAGE_OF: (page: number, totalPages: number): string => `Página ${page} de ${totalPages}`,
     RANGE: (first: number, last: number, total: number): string => `${first}–${last} de ${total}`,
+  },
+  SORT_OPTIONS: {
+    NAME_ASC: "Nome (A–Z)",
+    NAME_DESC: "Nome (Z–A)",
+    NEWEST: "Mais recentes",
   },
   FORBIDDEN: {
     TITLE: "Acesso negado",

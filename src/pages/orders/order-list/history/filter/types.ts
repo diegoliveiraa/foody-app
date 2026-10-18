@@ -11,6 +11,8 @@ export interface HistoryFilterState {
   status: StatusFilter;
   from: string;
   to: string;
+  appliedFrom: string;
+  appliedTo: string;
   page: number;
   pageSize: PageSize;
   sort: SortOrder;
@@ -31,4 +33,5 @@ export interface HistoryFilterModel {
   filter: HistoryFilterState;
   actions: HistoryFilterActions;
   hasFilters: boolean;
+  invertedRange: boolean;
 }

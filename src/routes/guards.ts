@@ -11,7 +11,7 @@ import {
 } from "react-router";
 import type { MeResponse, MeScreen } from "@/@types/me";
 import { HTTP_STATUS } from "@/constants/api";
-import { REDIRECT_TO_PARAM, ROUTE_PATHS } from "@/constants/routes";
+import { QUERY_START, REDIRECT_TO_PARAM, ROUTE_PATHS } from "@/constants/routes";
 import type { ScreenKey } from "@/constants/screens";
 import { authApi } from "@/services/auth";
 import { meApi } from "@/services/me";
@@ -84,7 +84,7 @@ function loginRedirectFrom(url: URL): Response {
   const search: URLSearchParams = new URLSearchParams({
     [REDIRECT_TO_PARAM]: `${url.pathname}${url.search}`,
   });
-  return redirect(`${ROUTE_PATHS.LOGIN}?${search.toString()}`);
+  return redirect(`${ROUTE_PATHS.LOGIN}${QUERY_START}${search.toString()}`);
 }
 
 function hasScreen(me: MeResponse, screenKey: ScreenKey): boolean {

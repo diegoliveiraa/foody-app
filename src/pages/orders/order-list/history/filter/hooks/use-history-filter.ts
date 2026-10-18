@@ -1,23 +1,23 @@
-import { useMemo, useReducer } from "react";
-import { ALL_FILTER, EMPTY_SEARCH, SEARCH_DEBOUNCE_MS } from "@/constants/filters";
+import { useMemo } from "react";
+import { useSelector } from "react-redux";
+import { ALL_FILTER, EMPTY_SEARCH } from "@/constants/filters";
 import type { PageSize } from "@/constants/pagination";
-import { useDebouncedValue } from "@/hooks/use-debounced-value";
-import { settledSearchToApply } from "@/utils/settled-search";
-import type { SortOrder } from "@/utils/sort-param";
-import { NO_DATE } from "../../constants";
+import { useAppDispatch } from "@/hooks/use-app-dispatch";
+import type { AppDispatch } from "@/store";
 import {
   filtersCleared,
   fromChanged,
-  historyFilterReducer,
-  INITIAL_HISTORY_FILTER,
+  isInvertedRange,
   pageChanged,
   pageSizeChanged,
-  searchApplied,
   searchChanged,
+  selectOrderHistoryFilter,
   sortChanged,
   statusChanged,
   toChanged,
-} from "../index";
+} from "@/store/slices/order-history-filter";
+import type { SortOrder } from "@/utils/sort-param";
+import { NO_DATE } from "../../constants";
 import type {
   HistoryFilterActions,
   HistoryFilterModel,
@@ -36,12 +36,8 @@ function hasFiltersIn({ search, appliedSearch, status, from, to }: HistoryFilter
 }
 
 export function useHistoryFilter(): HistoryFilterModel {
-  const [filter, dispatch] = useReducer(historyFilterReducer, INITIAL_HISTORY_FILTER);
-  const settledSearch: string = useDebouncedValue(filter.search, SEARCH_DEBOUNCE_MS);
-  const searchToApply: string | null = settledSearchToApply(filter, settledSearch);
-  if (searchToApply !== null) {
-    dispatch(searchApplied(searchToApply));
-  }
+  const filter: HistoryFilterState = useSelector(selectOrderHistoryFilter);
+  const dispatch: AppDispatch = useAppDispatch();
   const actions: HistoryFilterActions = useMemo(
     (): HistoryFilterActions => ({
       changeSearch: (search: string): void => {
@@ -69,8 +65,13 @@ export function useHistoryFilter(): HistoryFilterModel {
         dispatch(filtersCleared());
       },
     }),
-    [],
+    [dispatch],
   );
 
-  return { filter, actions, hasFilters: hasFiltersIn(filter) };
+  return {
+    filter,
+    actions,
+    hasFilters: hasFiltersIn(filter),
+    invertedRange: isInvertedRange(filter.from, filter.to),
+  };
 }

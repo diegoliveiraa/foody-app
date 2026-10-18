@@ -1,18 +1,27 @@
 import { use, type JSX, type ReactNode } from "react";
+import { DocumentTitle } from "@/components/document-title";
 import { PageHeaderLeadingContext } from "./leading-context";
 
 interface PageHeaderProps {
   title?: string;
+  documentTitle?: string;
   description?: string;
   back?: ReactNode;
   children?: ReactNode;
 }
 
-export function PageHeader({ title, description, back, children }: PageHeaderProps): JSX.Element {
+export function PageHeader({
+  title,
+  documentTitle,
+  description,
+  back,
+  children,
+}: PageHeaderProps): JSX.Element {
   const leading: ReactNode = use(PageHeaderLeadingContext);
 
   return (
     <header className="flex min-h-16 items-center gap-1 px-4 pt-4 pb-2 md:px-8 md:pt-8 md:pb-4">
+      <DocumentTitle label={documentTitle ?? title} />
       {leading}
       {back}
       <div className="flex min-w-0 flex-1 flex-col gap-0.5">

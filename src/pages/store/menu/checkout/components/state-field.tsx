@@ -18,7 +18,10 @@ interface StateFieldProps {
   fieldState: ControllerFieldState;
 }
 
-export function StateField({ field, fieldState }: StateFieldProps): JSX.Element {
+export function StateField({
+  field: { ref, name, value, onChange, onBlur },
+  fieldState,
+}: StateFieldProps): JSX.Element {
   const id: string = useId();
   const errorId: string = `${id}-error`;
   const invalid: boolean = fieldState.error !== undefined;
@@ -26,15 +29,11 @@ export function StateField({ field, fieldState }: StateFieldProps): JSX.Element 
   return (
     <Field data-invalid={invalid}>
       <FieldLabel htmlFor={id}>{CHECKOUT_MESSAGES.STATE}</FieldLabel>
-      <Select
-        name={field.name}
-        value={field.value}
-        onValueChange={field.onChange}
-        autoComplete="address-level1"
-      >
+      <Select name={name} value={value} onValueChange={onChange} autoComplete="address-level1">
         <SelectTrigger
+          ref={ref}
           id={id}
-          onBlur={field.onBlur}
+          onBlur={onBlur}
           aria-invalid={invalid}
           aria-describedby={invalid ? errorId : undefined}
           className="w-full min-w-0 data-[size=default]:h-12"

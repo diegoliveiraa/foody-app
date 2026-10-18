@@ -12,8 +12,8 @@ test("opens a signed-out visitor on the login page, without horizontal overflow"
 
   await page.goto(ROUTE_PATHS.HOME);
 
-  await expect(page).toHaveTitle("Foody");
   await expect(page).toHaveURL(pathIs(ROUTE_PATHS.LOGIN));
   await expect(page.getByRole("heading", { name: MESSAGES.LOGIN.TITLE })).toBeVisible();
+  await expect(page).toHaveTitle("Entrar · Foody");
   await expectNoHorizontalOverflow(page);
 });

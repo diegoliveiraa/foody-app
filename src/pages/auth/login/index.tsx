@@ -1,22 +1,23 @@
 import type { JSX } from "react";
 import type { FormState } from "react-hook-form";
 import { AuthSwitch } from "@/components/auth-layout/auth-switch";
+import { DocumentTitle } from "@/components/document-title";
 import { FormAlert } from "@/components/form-alert";
 import { FormField } from "@/components/form-field";
 import { Button } from "@/components/ui/button";
 import { MESSAGES } from "@/constants/messages";
-import { ROUTE_PATHS } from "@/constants/routes";
 import type { LoginValues } from "@/services/validation-schemas/login";
 import { useLoginForm } from "./hooks/use-login-form";
 import type { LoginFormModel } from "./types";
 
 export function LoginScreen(): JSX.Element {
-  const { form, submit, waitSeconds }: LoginFormModel = useLoginForm();
+  const { form, submit, waitSeconds, registerPath }: LoginFormModel = useLoginForm();
   const { errors, isSubmitting }: FormState<LoginValues> = form.formState;
   const locked: boolean = waitSeconds > 0;
 
   return (
     <form noValidate onSubmit={submit} className="flex flex-col gap-4.5">
+      <DocumentTitle label={MESSAGES.LOGIN.TITLE} />
       <h1 className="text-[26px] font-bold">{MESSAGES.LOGIN.TITLE}</h1>
       <FormAlert message={errors.root?.message} />
       <FormField
@@ -39,7 +40,7 @@ export function LoginScreen(): JSX.Element {
       <AuthSwitch
         question={MESSAGES.LOGIN.NO_ACCOUNT}
         linkLabel={MESSAGES.LOGIN.REGISTER_LINK}
-        to={ROUTE_PATHS.REGISTER}
+        to={registerPath}
       />
     </form>
   );

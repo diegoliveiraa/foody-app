@@ -1,15 +1,16 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState, type FormEvent } from "react";
 import { useForm, type UseFormReturn } from "react-hook-form";
-import { useNavigate, useSearchParams, type NavigateFunction } from "react-router";
+import { useNavigate, type NavigateFunction } from "react-router";
 import { ERROR_CODES } from "@/constants/api";
-import { REDIRECT_TO_PARAM, ROUTE_PATHS } from "@/constants/routes";
+import { ROUTE_PATHS } from "@/constants/routes";
 import { MS_PER_SECOND } from "@/constants/time";
+import { useAuthRedirect } from "@/hooks/use-auth-redirect";
 import { useCountdown } from "@/hooks/use-countdown";
 import { useLoginMutation } from "@/services/auth";
 import { loginSchema, type LoginValues } from "@/services/validation-schemas/login";
+import type { AuthRedirect } from "@/routes/types";
 import { extractApiError, type ApiErrorInfo } from "@/utils/api-error";
-import { safeRedirectPath } from "@/utils/safe-redirect-path";
 import { LOGIN_DEFAULTS } from "../constants";
 import type { LoginFormModel } from "../types";
 
@@ -20,7 +21,7 @@ export function useLoginForm(): LoginFormModel {
   });
   const [login] = useLoginMutation();
   const navigate: NavigateFunction = useNavigate();
-  const [searchParams] = useSearchParams();
+  const redirect: AuthRedirect = useAuthRedirect(ROUTE_PATHS.REGISTER);
   const [lockedUntil, setLockedUntil] = useState<number | null>(null);
   const waitSeconds: number = useCountdown(lockedUntil);
 
@@ -35,14 +36,12 @@ export function useLoginForm(): LoginFormModel {
 
   const signIn = async (values: LoginValues): Promise<void> => {
     await login(values).unwrap();
-    const destination: string =
-      safeRedirectPath(searchParams.get(REDIRECT_TO_PARAM)) ?? ROUTE_PATHS.HOME;
-    await navigate(destination, { replace: true });
+    await navigate(redirect.destination, { replace: true });
   };
 
   const submit = (event: FormEvent<HTMLFormElement>): void => {
     form.handleSubmit(signIn)(event).catch(showError);
   };
 
-  return { form, submit, waitSeconds };
+  return { form, submit, waitSeconds, registerPath: redirect.switchPath };
 }

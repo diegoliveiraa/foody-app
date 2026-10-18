@@ -47,7 +47,7 @@ export function listenForSessionChanges(startListening: AppStartListening): void
   startListening({
     actionCreator: sessionExpired,
     effect: async (_action: UnknownAction, listenerApi: SessionListenerApi): Promise<void> => {
-      toast(MESSAGES.SESSION.EXPIRED, { id: TOAST_IDS.SESSION_EXPIRED });
+      toast(MESSAGES.SESSION.ENDED, { id: TOAST_IDS.SESSION_ENDED });
       await leaveForLogin(listenerApi);
     },
   });

@@ -34,6 +34,13 @@ const APPROVED: CustomerOrderSummary = customerSummary(1036, {
   cancellationRequestStatus: "APPROVED",
 });
 
+const DECLINED_THEN_DELIVERED: CustomerOrderSummary = customerSummary(1033, {
+  status: "DELIVERED",
+  live: false,
+  placedAt: minutesBefore(2 * 24 * 60),
+  cancellationRequestStatus: "DECLINED",
+});
+
 const PLAIN: CustomerOrderSummary = customerSummary(1031, {
   status: "DELIVERED",
   live: false,
@@ -47,7 +54,10 @@ function orderCard(page: Page, order: CustomerOrderSummary): Locator {
 test.beforeEach(async ({ page, api }): Promise<void> => {
   await installClock(page);
   await stubSession(api, CUSTOMER_ME);
-  await stubMyOrders(api, customerPage([WAITING, DECLINED, APPROVED, PLAIN]));
+  await stubMyOrders(
+    api,
+    customerPage([WAITING, DECLINED, APPROVED, DECLINED_THEN_DELIVERED, PLAIN]),
+  );
 });
 
 test("tells on the card that a cancellation request waits for the restaurant", async ({
@@ -66,6 +76,19 @@ test("tells on the card that the restaurant declined the cancellation", async ({
 
   await expect(orderCard(page, DECLINED)).toContainText(MESSAGES.ORDERS.CANCELLATION_DECLINED);
   await expect(orderCard(page, DECLINED)).not.toContainText(MY_ORDERS_MESSAGES.REQUEST_PENDING);
+});
+
+test("stops telling about the declined cancellation once the order was delivered", async ({
+  page,
+}): Promise<void> => {
+  await page.goto(SCREEN_URLS.MY_ORDERS);
+
+  await expect(orderCard(page, DECLINED_THEN_DELIVERED)).toBeVisible();
+  await expect(orderCard(page, DECLINED_THEN_DELIVERED)).not.toContainText(
+    MESSAGES.ORDERS.CANCELLATION_DECLINED,
+  );
+  await expect(orderCard(page, DECLINED)).toContainText(MESSAGES.ORDERS.CANCELLATION_DECLINED);
+  await expectNoHorizontalOverflow(page);
 });
 
 test("adds nothing to an order cancelled on request or never asked about", async ({

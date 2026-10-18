@@ -61,7 +61,24 @@ describe("filterMenu", () => {
     expect(filterMenu(MENU, { search: "calabresa", categoryId: LANCHES.id })).toEqual([]);
   });
 
-  it("matches the product name, not its description", () => {
-    expect(filterMenu(MENU, { search: "brioche", categoryId: ALL_FILTER })).toEqual([]);
+  it("keeps the products whose description has the search, ignoring case and accents", () => {
+    const sections: MenuCategory[] = filterMenu(MENU, {
+      search: "PÃO BRIÓCHE",
+      categoryId: ALL_FILTER,
+    });
+
+    expect(sections).toEqual([{ ...LANCHES, products: [LANCHES.products[0]] }]);
+  });
+
+  it("keeps every product of a category whose name has the search", () => {
+    const sections: MenuCategory[] = filterMenu(MENU, { search: "pizza", categoryId: ALL_FILTER });
+
+    expect(sections).toEqual([PIZZAS]);
+  });
+
+  it("keeps the whole category named by the search only when it is the chosen one", () => {
+    const sections: MenuCategory[] = filterMenu(MENU, { search: "pizzas", categoryId: LANCHES.id });
+
+    expect(sections).toEqual([]);
   });
 });

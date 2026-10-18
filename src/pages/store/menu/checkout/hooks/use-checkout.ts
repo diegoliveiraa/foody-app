@@ -1,6 +1,5 @@
-import { zodResolver } from "@hookform/resolvers/zod";
 import { useMemo, type FormEvent } from "react";
-import { useForm } from "react-hook-form";
+import type { FieldErrors } from "react-hook-form";
 import { useSelector } from "react-redux";
 import { useNavigate, type NavigateFunction } from "react-router";
 import { toast } from "sonner";
@@ -17,19 +16,21 @@ import { joinPath } from "@/routes/navigation";
 import { usePlaceOrderMutation } from "@/services/my-orders";
 import {
   CHECKOUT_FIELDS,
-  checkoutSchema,
+  type CheckoutField,
   type CheckoutFormInput,
   type CheckoutFormValues,
 } from "@/services/validation-schemas/delivery-address";
 import type { AppDispatch } from "@/store";
 import { cartCleared, selectCartItems } from "@/store/slices/cart";
 import { extractApiError } from "@/utils/api-error";
+import { firstInvalidField } from "@/utils/first-invalid-field";
 import { useCartQuote } from "../../hooks/use-cart-quote";
 import type { CartQuoteModel } from "../../types";
-import { EMPTY_CHECKOUT_FORM, NO_CODE_FIELDS } from "../constants";
+import { NO_CODE_FIELDS } from "../constants";
 import { CHECKOUT_MESSAGES } from "../constants/messages";
-import type { CheckoutForm, CheckoutModel, SummaryLine } from "../types";
+import type { CheckoutFormModel, CheckoutModel, SummaryLine } from "../types";
 import { toSummaryLines } from "../utils/summary-lines";
+import { useCheckoutForm } from "./use-checkout-form";
 
 function isReady(quote: CartQuoteModel): boolean {
   return (
@@ -41,10 +42,8 @@ export function useCheckout(): CheckoutModel {
   const items: CartItem[] = useSelector(selectCartItems);
   const quote: CartQuoteModel = useCartQuote(items);
   const canOrder: boolean = useCan(SCREEN_KEYS.STORE_MENU, SCREEN_ACTIONS.PLACE_ORDER);
-  const form: CheckoutForm = useForm<CheckoutFormInput, unknown, CheckoutFormValues>({
-    resolver: zodResolver(checkoutSchema),
-    defaultValues: EMPTY_CHECKOUT_FORM,
-  });
+  const empty: boolean = items.length === 0;
+  const { form, prefilled }: CheckoutFormModel = useCheckoutForm(empty);
   const [placeOrder] = usePlaceOrderMutation();
   const dispatch: AppDispatch = useAppDispatch();
   const navigate: NavigateFunction = useNavigate();
@@ -59,7 +58,6 @@ export function useCheckout(): CheckoutModel {
     (): SummaryLine[] => toSummaryLines(quote.quote),
     [quote.quote],
   );
-  const empty: boolean = items.length === 0;
   const placing: boolean = form.formState.isSubmitting;
   const canPlace: boolean = canOrder && !empty && !placing && isReady(quote);
 
@@ -71,6 +69,14 @@ export function useCheckout(): CheckoutModel {
     } finally {
       dispatch(cartCleared());
     }
+  };
+
+  const focusFirstError = (errors: FieldErrors<CheckoutFormInput>): void => {
+    const field: CheckoutField | undefined = firstInvalidField(errors, CHECKOUT_FIELDS);
+    if (field === undefined) {
+      return;
+    }
+    form.setFocus(field);
   };
 
   const fail = (error: unknown): void => {
@@ -86,11 +92,12 @@ export function useCheckout(): CheckoutModel {
       event.preventDefault();
       return;
     }
-    form.handleSubmit(place)(event).catch(fail);
+    form.handleSubmit(place, focusFirstError)(event).catch(fail);
   };
 
   return {
     form,
+    prefilled,
     quote,
     lines,
     pendingLines: items.length,

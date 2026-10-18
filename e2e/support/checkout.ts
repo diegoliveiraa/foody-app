@@ -23,6 +23,7 @@ export async function fillDeliveryAddress(
   page: Page,
   address: TypedAddress = TYPED_PAULISTA,
 ): Promise<void> {
+  await addressField(page, CHECKOUT_MESSAGES.ZIP_CODE).clear();
   await addressField(page, CHECKOUT_MESSAGES.ZIP_CODE).pressSequentially(address.zipCode);
   await addressField(page, CHECKOUT_MESSAGES.STREET).fill(address.street);
   await addressField(page, CHECKOUT_MESSAGES.NUMBER).fill(address.number);
@@ -38,4 +39,8 @@ export function placeOrderButton(page: Page): Locator {
 
 export function checkoutSummary(page: Page): Locator {
   return page.getByRole("region", { name: CHECKOUT_MESSAGES.SUMMARY });
+}
+
+export function lastAddressHint(page: Page): Locator {
+  return page.getByText(CHECKOUT_MESSAGES.LAST_ADDRESS);
 }

@@ -5,4 +5,5 @@ import type { RegisterValues } from "@/services/validation-schemas/register";
 export interface RegisterFormModel {
   form: UseFormReturn<RegisterValues>;
   submit: (event: FormEvent<HTMLFormElement>) => void;
+  loginPath: string;
 }

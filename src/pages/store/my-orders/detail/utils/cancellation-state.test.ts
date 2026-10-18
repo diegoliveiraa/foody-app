@@ -63,6 +63,24 @@ describe("cancellationStateOf", () => {
     expect(state).toBe("declined");
   });
 
+  it("stops telling about the declined request once the order is over", () => {
+    const state: CancellationState | null = cancellationStateOf(
+      customerOrder(1042, {
+        status: "DELIVERED",
+        live: false,
+        cancellationRequest: {
+          ...PENDING,
+          status: "DECLINED",
+          decidedAt: "2026-10-17T22:34:00Z",
+          decisionNote: "Já saiu para entrega",
+        },
+      }),
+      BOTH,
+    );
+
+    expect(state).toBeNull();
+  });
+
   it("shows nothing for an order that can no longer change, or was cancelled on request", () => {
     const delivered: CancellationState | null = cancellationStateOf(
       customerOrder(1042, { status: "DELIVERED", live: false }),

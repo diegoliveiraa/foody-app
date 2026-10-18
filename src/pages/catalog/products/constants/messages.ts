@@ -33,6 +33,13 @@ export const PRODUCTS_MESSAGES = {
     ACTIONS: MESSAGES.LIST.ACTIONS,
   },
   CREATED_AT: MESSAGES.LIST.CREATED_ON,
+  SORT_OPTIONS: {
+    NAME_ASC: MESSAGES.SORT_OPTIONS.NAME_ASC,
+    NAME_DESC: MESSAGES.SORT_OPTIONS.NAME_DESC,
+    LOWEST_PRICE: "Menor preço",
+    HIGHEST_PRICE: "Maior preço",
+    NEWEST: MESSAGES.SORT_OPTIONS.NEWEST,
+  },
   EMPTY: "Nenhum produto encontrado",
   LOAD_FAILED: "Não foi possível carregar os produtos",
   NEW: NEW_PRODUCT,

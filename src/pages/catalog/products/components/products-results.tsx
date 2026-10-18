@@ -3,7 +3,9 @@ import type { Product } from "@/@types/catalog";
 import { DataTable } from "@/components/data-table";
 import type { DataTableColumns } from "@/components/data-table/features";
 import { ResponsiveList } from "@/components/responsive-list";
+import { SortSelect } from "@/components/sort-select";
 import { buildProductColumns } from "../columns";
+import { PRODUCT_SORT_OPTIONS } from "../constants";
 import { PRODUCTS_MESSAGES } from "../constants/messages";
 import type { ProductRowActions, ProductsListModel } from "../types";
 import { ProductCardList } from "./product-card-list";
@@ -36,12 +38,19 @@ export function ProductsResults({ list, actions }: ProductsResultsProps): JSX.El
     <div aria-busy={list.refreshing} className="transition-opacity aria-busy:opacity-60">
       <ResponsiveList
         cards={
-          <ProductCardList
-            products={list.products}
-            loading={list.loading}
-            emptyState={emptyState}
-            actions={actions}
-          />
+          <div className="flex flex-col gap-3">
+            <SortSelect
+              options={PRODUCT_SORT_OPTIONS}
+              sort={list.filter.sort}
+              onChange={list.actions.changeSort}
+            />
+            <ProductCardList
+              products={list.products}
+              loading={list.loading}
+              emptyState={emptyState}
+              actions={actions}
+            />
+          </div>
         }
         table={
           <DataTable

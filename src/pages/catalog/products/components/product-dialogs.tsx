@@ -1,6 +1,5 @@
 import type { JSX } from "react";
 import { ConfirmDialog } from "@/components/confirm-dialog";
-import { Button } from "@/components/ui/button";
 import { CATALOG_STATUSES } from "@/constants/catalog";
 import { EMPTY_TEXT } from "@/constants/validation";
 import { PRODUCT_DIALOGS } from "../constants";
@@ -39,16 +38,15 @@ export function ProductDialogs({ actions }: ProductDialogsProps): JSX.Element {
         description={PRODUCTS_MESSAGES.DELETE_DIALOG.DESCRIPTION}
         confirmLabel={PRODUCTS_MESSAGES.DELETE_DIALOG.CONFIRM}
         pending={actions.pending}
-        error={actions.target?.error}
+        conflict={actions.target?.error}
+        alternative={
+          offersDisable
+            ? { label: PRODUCTS_MESSAGES.DISABLE_INSTEAD, onSelect: actions.disableInstead }
+            : undefined
+        }
         onConfirm={actions.confirmDelete}
         onClose={actions.closeDialog}
-      >
-        {offersDisable && (
-          <Button variant="outline" disabled={actions.pending} onClick={actions.disableInstead}>
-            {PRODUCTS_MESSAGES.DISABLE_INSTEAD}
-          </Button>
-        )}
-      </ConfirmDialog>
+      />
     </>
   );
 }

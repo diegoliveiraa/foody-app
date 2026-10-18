@@ -116,6 +116,38 @@ test("keeps following a waiting request and shows the restaurant's refusal with 
   await expectNoHorizontalOverflow(page);
 });
 
+test("stops telling about the declined request and its note once the order was delivered", async ({
+  page,
+  api,
+}): Promise<void> => {
+  const declined: CustomerOrder = {
+    ...WAITING,
+    status: "OUT_FOR_DELIVERY",
+    cancellationRequest: {
+      ...PENDING_REQUEST,
+      status: "DECLINED",
+      decidedAt: minutesBefore(0),
+      decisionNote: "Já está saindo para entrega",
+    },
+  };
+  await stubMyOrder(api, declined);
+  await page.goto(myOrderUrl(declined.id));
+  await expect(cancellationBlock(page)).toContainText(TRACKING_MESSAGES.REQUEST_DECLINED);
+  await stubMyOrder(api, {
+    ...declined,
+    ...customerActionsFor("DELIVERED"),
+    status: "DELIVERED",
+    live: false,
+  });
+
+  await page.clock.fastForward(LIVE_POLL);
+
+  await expect(page.getByText(TRACKING_MESSAGES.LIVE)).toHaveCount(0);
+  await expect(cancellationBlock(page)).toHaveCount(0);
+  await expect(page.getByText("Já está saindo para entrega")).toHaveCount(0);
+  await expectNoHorizontalOverflow(page);
+});
+
 test("shows the order cancelled by the customer once the restaurant approved the request", async ({
   page,
   api,

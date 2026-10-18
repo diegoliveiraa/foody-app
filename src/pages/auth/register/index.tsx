@@ -1,21 +1,22 @@
 import type { JSX } from "react";
 import type { FormState } from "react-hook-form";
 import { AuthSwitch } from "@/components/auth-layout/auth-switch";
+import { DocumentTitle } from "@/components/document-title";
 import { FormAlert } from "@/components/form-alert";
 import { FormField } from "@/components/form-field";
 import { Button } from "@/components/ui/button";
 import { MESSAGES } from "@/constants/messages";
-import { ROUTE_PATHS } from "@/constants/routes";
 import type { RegisterValues } from "@/services/validation-schemas/register";
 import { useRegisterForm } from "./hooks/use-register-form";
 import type { RegisterFormModel } from "./types";
 
 export function RegisterScreen(): JSX.Element {
-  const { form, submit }: RegisterFormModel = useRegisterForm();
+  const { form, submit, loginPath }: RegisterFormModel = useRegisterForm();
   const { errors, isSubmitting }: FormState<RegisterValues> = form.formState;
 
   return (
     <form noValidate onSubmit={submit} className="flex flex-col gap-4.5">
+      <DocumentTitle label={MESSAGES.REGISTER.TITLE} />
       <h1 className="text-[26px] font-bold">{MESSAGES.REGISTER.TITLE}</h1>
       <FormAlert message={errors.root?.message} />
       <FormField
@@ -44,7 +45,7 @@ export function RegisterScreen(): JSX.Element {
       <AuthSwitch
         question={MESSAGES.REGISTER.HAS_ACCOUNT}
         linkLabel={MESSAGES.REGISTER.LOGIN_LINK}
-        to={ROUTE_PATHS.LOGIN}
+        to={loginPath}
       />
     </form>
   );

@@ -6,4 +6,5 @@ export interface LoginFormModel {
   form: UseFormReturn<LoginValues>;
   submit: (event: FormEvent<HTMLFormElement>) => void;
   waitSeconds: number;
+  registerPath: string;
 }

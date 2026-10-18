@@ -12,6 +12,12 @@ export const VIEWPORT_HEIGHT: number = 800;
 
 export const MOBILE_MAX_WIDTH: number = 767;
 
+export const DIALOG_CHECK_WIDTHS: readonly number[] = [640, 768, 1024, 1280, 1536];
+
+export const STACKED_DIALOG_ACTIONS_MAX_WIDTH: number = 639;
+
+export const LAYOUT_TOLERANCE_PX: number = 0.5;
+
 export const HTTP_OK: number = 200;
 
 export const HTTP_CREATED: number = 201;

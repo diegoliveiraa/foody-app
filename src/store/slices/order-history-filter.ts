@@ -1,9 +1,22 @@
-import { createSlice, type PayloadAction, type Reducer } from "@reduxjs/toolkit";
+import {
+  createSlice,
+  isAnyOf,
+  type ActionReducerMapBuilder,
+  type PayloadAction,
+} from "@reduxjs/toolkit";
 import { ALL_FILTER, EMPTY_SEARCH } from "@/constants/filters";
 import { DEFAULT_PAGE_SIZE, FIRST_PAGE, type PageSize } from "@/constants/pagination";
+import {
+  DEFAULT_HISTORY_SORT,
+  HISTORY_FILTER_NAME,
+  NO_DATE,
+} from "@/pages/orders/order-list/history/constants";
+import type {
+  HistoryFilterState,
+  StatusFilter,
+} from "@/pages/orders/order-list/history/filter/types";
 import type { SortOrder } from "@/utils/sort-param";
-import { DEFAULT_HISTORY_SORT, HISTORY_FILTER_NAME, NO_DATE } from "../constants";
-import type { HistoryFilterState, StatusFilter } from "./types";
+import { sessionCleared, sessionExpired } from "./session";
 
 export const INITIAL_HISTORY_FILTER: HistoryFilterState = {
   search: EMPTY_SEARCH,
@@ -11,16 +24,33 @@ export const INITIAL_HISTORY_FILTER: HistoryFilterState = {
   status: ALL_FILTER,
   from: NO_DATE,
   to: NO_DATE,
+  appliedFrom: NO_DATE,
+  appliedTo: NO_DATE,
   page: FIRST_PAGE,
   pageSize: DEFAULT_PAGE_SIZE,
   sort: DEFAULT_HISTORY_SORT,
 };
 
+export function isInvertedRange(from: string, to: string): boolean {
+  return from !== NO_DATE && to !== NO_DATE && to < from;
+}
+
 function backToFirstPage(state: HistoryFilterState): void {
   state.page = FIRST_PAGE;
 }
 
-const historyFilterSlice = createSlice({
+function applyDatesInOrder(state: HistoryFilterState): void {
+  if (isInvertedRange(state.from, state.to)) {
+    return;
+  }
+  state.appliedFrom = state.from;
+  state.appliedTo = state.to;
+  backToFirstPage(state);
+}
+
+const isSessionEnd = isAnyOf(sessionCleared, sessionExpired);
+
+export const orderHistoryFilterSlice = createSlice({
   name: HISTORY_FILTER_NAME,
   initialState: INITIAL_HISTORY_FILTER,
   reducers: {
@@ -37,11 +67,11 @@ const historyFilterSlice = createSlice({
     },
     fromChanged: (state: HistoryFilterState, action: PayloadAction<string>): void => {
       state.from = action.payload;
-      backToFirstPage(state);
+      applyDatesInOrder(state);
     },
     toChanged: (state: HistoryFilterState, action: PayloadAction<string>): void => {
       state.to = action.payload;
-      backToFirstPage(state);
+      applyDatesInOrder(state);
     },
     pageChanged: (state: HistoryFilterState, action: PayloadAction<number>): void => {
       state.page = action.payload;
@@ -60,9 +90,13 @@ const historyFilterSlice = createSlice({
       sort: state.sort,
     }),
   },
+  extraReducers: (builder: ActionReducerMapBuilder<HistoryFilterState>): void => {
+    builder.addMatcher(isSessionEnd, (): HistoryFilterState => INITIAL_HISTORY_FILTER);
+  },
+  selectors: {
+    selectOrderHistoryFilter: (state: HistoryFilterState): HistoryFilterState => state,
+  },
 });
-
-export const historyFilterReducer: Reducer<HistoryFilterState> = historyFilterSlice.reducer;
 
 export const {
   searchChanged,
@@ -74,4 +108,6 @@ export const {
   pageSizeChanged,
   sortChanged,
   filtersCleared,
-} = historyFilterSlice.actions;
+} = orderHistoryFilterSlice.actions;
+
+export const { selectOrderHistoryFilter } = orderHistoryFilterSlice.selectors;

@@ -1,4 +1,5 @@
-import type { JSX, ReactNode } from "react";
+import { cn } from "cn";
+import type { JSX } from "react";
 import { FormAlert } from "@/components/form-alert";
 import {
   AlertDialog,
@@ -12,6 +13,11 @@ import {
 import { Button } from "@/components/ui/button";
 import { MESSAGES } from "@/constants/messages";
 
+interface ConfirmDialogAlternative {
+  label: string;
+  onSelect: () => void;
+}
+
 interface ConfirmDialogProps {
   open: boolean;
   title: string;
@@ -20,9 +26,11 @@ interface ConfirmDialogProps {
   pending: boolean;
   onConfirm: () => void;
   onClose: () => void;
-  error?: string;
-  children?: ReactNode;
+  conflict?: string;
+  alternative?: ConfirmDialogAlternative;
 }
+
+const WIDE_DIALOG_CLASS: string = "data-[size=default]:sm:max-w-md";
 
 export function ConfirmDialog({
   open,
@@ -32,9 +40,11 @@ export function ConfirmDialog({
   pending,
   onConfirm,
   onClose,
-  error,
-  children,
+  conflict,
+  alternative,
 }: ConfirmDialogProps): JSX.Element {
+  const confirmable: boolean = conflict === undefined;
+
   return (
     <AlertDialog
       open={open}
@@ -44,18 +54,26 @@ export function ConfirmDialog({
         }
       }}
     >
-      <AlertDialogContent>
+      <AlertDialogContent
+        className={cn("grid-cols-[minmax(0,1fr)]", alternative && WIDE_DIALOG_CLASS)}
+      >
         <AlertDialogHeader>
           <AlertDialogTitle>{title}</AlertDialogTitle>
           <AlertDialogDescription>{description}</AlertDialogDescription>
         </AlertDialogHeader>
-        <FormAlert message={error} />
-        <AlertDialogFooter>
+        <FormAlert message={conflict} />
+        <AlertDialogFooter className="sm:flex-wrap">
           <AlertDialogCancel>{MESSAGES.ACTIONS.CANCEL}</AlertDialogCancel>
-          {children}
-          <Button variant="destructive" disabled={pending} onClick={onConfirm}>
-            {confirmLabel}
-          </Button>
+          {alternative && (
+            <Button disabled={pending} onClick={alternative.onSelect}>
+              {alternative.label}
+            </Button>
+          )}
+          {confirmable && (
+            <Button variant="destructive" disabled={pending} onClick={onConfirm}>
+              {confirmLabel}
+            </Button>
+          )}
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>

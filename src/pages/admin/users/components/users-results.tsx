@@ -3,7 +3,9 @@ import type { AdminUser } from "@/@types/users";
 import { DataTable } from "@/components/data-table";
 import type { DataTableColumns } from "@/components/data-table/features";
 import { ResponsiveList } from "@/components/responsive-list";
+import { SortSelect } from "@/components/sort-select";
 import { buildUserColumns } from "../columns";
+import { USER_SORT_OPTIONS } from "../constants";
 import { USERS_MESSAGES } from "../constants/messages";
 import type { UserRowActions, UsersListModel } from "../types";
 import { UserCardList } from "./user-card-list";
@@ -36,12 +38,19 @@ export function UsersResults({ list, actions }: UsersResultsProps): JSX.Element 
     <div aria-busy={list.refreshing} className="transition-opacity aria-busy:opacity-60">
       <ResponsiveList
         cards={
-          <UserCardList
-            users={list.users}
-            loading={list.loading}
-            emptyState={emptyState}
-            actions={actions}
-          />
+          <div className="flex flex-col gap-3">
+            <SortSelect
+              options={USER_SORT_OPTIONS}
+              sort={list.filter.sort}
+              onChange={list.actions.changeSort}
+            />
+            <UserCardList
+              users={list.users}
+              loading={list.loading}
+              emptyState={emptyState}
+              actions={actions}
+            />
+          </div>
         }
         table={
           <DataTable

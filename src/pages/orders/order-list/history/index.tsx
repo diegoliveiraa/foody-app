@@ -19,7 +19,11 @@ export function OrderHistoryScreen(): JSX.Element {
       <PageHeader title={screen?.label} />
       <section className="flex flex-1 flex-col gap-4 px-4 pb-8 md:px-8">
         <OrderListTabs />
-        <HistoryToolbar filter={history.filter} actions={history.actions} />
+        <HistoryToolbar
+          filter={history.filter}
+          actions={history.actions}
+          invertedRange={history.invertedRange}
+        />
         <HistoryResults history={history} />
         {history.pagination && (
           <ListPagination

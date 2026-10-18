@@ -16,6 +16,7 @@ import { StateField } from "./state-field";
 
 interface AddressFieldsetProps {
   form: CheckoutForm;
+  prefilled: boolean;
 }
 
 interface ZipCodeFieldProps {
@@ -42,7 +43,7 @@ function ZipCodeField({ field, fieldState }: ZipCodeFieldProps): JSX.Element {
   );
 }
 
-export function AddressFieldset({ form }: AddressFieldsetProps): JSX.Element {
+export function AddressFieldset({ form, prefilled }: AddressFieldsetProps): JSX.Element {
   const errors: AddressErrors = form.formState.errors.deliveryAddress;
 
   return (
@@ -51,6 +52,9 @@ export function AddressFieldset({ form }: AddressFieldsetProps): JSX.Element {
         <MapPin aria-hidden="true" className="size-[18px] text-primary" />
         {CHECKOUT_MESSAGES.ADDRESS}
       </legend>
+      {prefilled && (
+        <p className="-mt-2 text-sm text-muted-foreground">{CHECKOUT_MESSAGES.LAST_ADDRESS}</p>
+      )}
       <Controller
         control={form.control}
         name="deliveryAddress.zipCode"

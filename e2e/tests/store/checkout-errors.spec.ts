@@ -27,7 +27,7 @@ import {
   stubQuote,
   unavailable,
 } from "../../support/menu";
-import { MY_ORDERS_PATH } from "../../support/orders";
+import { customerPage, MY_ORDERS_PATH, stubMyOrders } from "../../support/orders";
 import { problem } from "../../support/problems";
 import { stubSession } from "../../support/session";
 
@@ -40,6 +40,7 @@ const UNAVAILABLE_DETAIL: string = "Um ou mais produtos não estão mais dispon�
 test.beforeEach(async ({ page, api }): Promise<void> => {
   await seedCart(page, CUSTOMER_ME, [itemOf(SMASH, 1), itemOf(LIMONADA, 2)]);
   await stubSession(api, CUSTOMER_ME);
+  await stubMyOrders(api, customerPage([]));
   await stubQuote(api, quoteOf([priced(SMASH, 1, 34.9), priced(LIMONADA, 2, 24)], 58.9));
 });
 

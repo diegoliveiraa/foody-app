@@ -4,6 +4,7 @@ export const CHECKOUT_MESSAGES = {
   TITLE: "Finalizar pedido",
   BACK: "Voltar ao cardápio",
   ADDRESS: MESSAGES.ORDERS.DELIVERY_ADDRESS,
+  LAST_ADDRESS: "Endereço do seu último pedido",
   ZIP_CODE: "CEP",
   ZIP_CODE_PLACEHOLDER: "00000-000",
   STREET: "Rua",

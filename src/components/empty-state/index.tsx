@@ -13,6 +13,7 @@ interface EmptyStateProps {
   icon: LucideIcon;
   title: string;
   description?: string;
+  asPageTitle?: boolean;
   children?: ReactNode;
 }
 
@@ -20,6 +21,7 @@ export function EmptyState({
   icon: Icon,
   title,
   description,
+  asPageTitle = false,
   children,
 }: EmptyStateProps): JSX.Element {
   return (
@@ -28,7 +30,7 @@ export function EmptyState({
         <EmptyMedia variant="icon">
           <Icon aria-hidden="true" />
         </EmptyMedia>
-        <EmptyTitle>{title}</EmptyTitle>
+        <EmptyTitle>{asPageTitle ? <h1>{title}</h1> : title}</EmptyTitle>
         {description && <EmptyDescription>{description}</EmptyDescription>}
       </EmptyHeader>
       {children && <EmptyContent>{children}</EmptyContent>}

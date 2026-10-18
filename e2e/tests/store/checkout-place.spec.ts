@@ -25,10 +25,12 @@ import {
 import { sentBodies } from "../../support/catalog";
 import {
   customerOrder,
+  customerPage,
   MY_ORDERS_PATH,
   myOrderUrl,
   PAULISTA,
   stubMyOrder,
+  stubMyOrders,
 } from "../../support/orders";
 import { stubSession } from "../../support/session";
 
@@ -55,6 +57,7 @@ const PLACED: CustomerOrder = customerOrder(1042, {
 test.beforeEach(async ({ page, api }): Promise<void> => {
   await seedCart(page, CUSTOMER_ME, [itemOf(SMASH, 1), itemOf(LIMONADA, 2)]);
   await stubSession(api, CUSTOMER_ME);
+  await stubMyOrders(api, customerPage([]));
   await stubQuote(api, quoteOf([priced(SMASH, 1, 34.9), priced(LIMONADA, 2, 24)], 58.9));
 });
 

@@ -4,6 +4,8 @@ import { useForm, type UseFormReturn } from "react-hook-form";
 import { useNavigate, type NavigateFunction } from "react-router";
 import { ERROR_CODES } from "@/constants/api";
 import { ROUTE_PATHS } from "@/constants/routes";
+import { useAuthRedirect } from "@/hooks/use-auth-redirect";
+import type { AuthRedirect } from "@/routes/types";
 import { useRegisterMutation } from "@/services/auth";
 import {
   REGISTER_FIELDS,
@@ -24,6 +26,7 @@ export function useRegisterForm(): RegisterFormModel {
   });
   const [register] = useRegisterMutation();
   const navigate: NavigateFunction = useNavigate();
+  const redirect: AuthRedirect = useAuthRedirect(ROUTE_PATHS.LOGIN);
 
   const showError = (error: unknown): void => {
     const info: ApiErrorInfo = extractApiError(error);
@@ -43,12 +46,12 @@ export function useRegisterForm(): RegisterFormModel {
 
   const signUp = async (values: RegisterValues): Promise<void> => {
     await register(values).unwrap();
-    await navigate(ROUTE_PATHS.HOME, { replace: true });
+    await navigate(redirect.destination, { replace: true });
   };
 
   const submit = (event: FormEvent<HTMLFormElement>): void => {
     form.handleSubmit(signUp)(event).catch(showError);
   };
 
-  return { form, submit };
+  return { form, submit, loginPath: redirect.switchPath };
 }

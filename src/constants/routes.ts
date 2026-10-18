@@ -6,6 +6,8 @@ export const ROUTE_PATHS = {
 
 export const REDIRECT_TO_PARAM: string = "redirectTo";
 
+export const QUERY_START: string = "?";
+
 export const ROOT_ROUTE_ID: string = "root";
 
 export const PATH_SEPARATOR: string = "/";

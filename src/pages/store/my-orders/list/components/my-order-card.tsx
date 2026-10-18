@@ -4,6 +4,7 @@ import { Link } from "react-router";
 import type { CancellationRequestStatus, CustomerOrderSummary } from "@/@types/orders";
 import { OrderStatusBadge } from "@/components/order-status-badge";
 import { MESSAGES } from "@/constants/messages";
+import { requestStatusToShow } from "@/utils/cancellation-request";
 import { formatMoney } from "@/utils/format-money";
 import { formatOrderTime } from "@/utils/format-order-date";
 import { summarizeItems } from "@/utils/order-items";
@@ -16,11 +17,11 @@ interface MyOrderCardProps {
 }
 
 interface RequestNoteProps {
-  status: CancellationRequestStatus | null | undefined;
+  status: CancellationRequestStatus | null;
 }
 
 function RequestNote({ status }: RequestNoteProps): JSX.Element | null {
-  if (status === null || status === undefined || REQUEST_NOTES[status] === null) {
+  if (status === null || REQUEST_NOTES[status] === null) {
     return null;
   }
   const Icon: LucideIcon = REQUEST_NOTE_ICONS[status];
@@ -51,7 +52,7 @@ export function MyOrderCard({ order, now }: MyOrderCardProps): JSX.Element {
         </span>
         <span className="text-[15px] font-bold">{formatMoney(order.total)}</span>
       </span>
-      <RequestNote status={order.cancellationRequestStatus} />
+      <RequestNote status={requestStatusToShow(order.cancellationRequestStatus, order.live)} />
     </Link>
   );
 }

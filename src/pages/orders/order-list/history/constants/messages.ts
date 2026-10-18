@@ -14,6 +14,7 @@ export const HISTORY_MESSAGES = {
   STATUS_FILTER: "Filtrar por status",
   FROM: "De",
   TO: "Até",
+  INVERTED_RANGE: "A data final não pode ser anterior à inicial",
   LIST: "Histórico de pedidos",
   COLUMNS: {
     NUMBER: "Nº",
@@ -22,6 +23,14 @@ export const HISTORY_MESSAGES = {
     TOTAL: MESSAGES.ORDERS.TOTAL,
     STATUS: MESSAGES.LIST.STATUS,
     PLACED_AT: "Data",
+  },
+  SORT_OPTIONS: {
+    NEWEST: MESSAGES.SORT_OPTIONS.NEWEST,
+    OLDEST: "Mais antigos",
+    HIGHEST_TOTAL: "Maior total",
+    LOWEST_TOTAL: "Menor total",
+    NUMBER_DESC: "Número (maior)",
+    NUMBER_ASC: "Número (menor)",
   },
   EMPTY: "Nenhum pedido encontrado",
   LOAD_FAILED: "Não foi possível carregar o histórico",

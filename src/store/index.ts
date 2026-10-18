@@ -10,16 +10,19 @@ import {
 import { setupListeners } from "@reduxjs/toolkit/query";
 import { api } from "@/services/api";
 import { listenForCartChanges } from "./listeners/cart";
+import { listenForHistorySearch } from "./listeners/order-history-filter";
 import { listenForNewOrders } from "./listeners/orders";
 import { listenForRateLimits } from "./listeners/rate-limit";
 import { listenForSessionChanges } from "./listeners/session";
 import { cartSlice } from "./slices/cart";
+import { orderHistoryFilterSlice } from "./slices/order-history-filter";
 import { sessionSlice } from "./slices/session";
 
 const rootReducer = combineReducers({
   [api.reducerPath]: api.reducer,
   [sessionSlice.reducerPath]: sessionSlice.reducer,
   [cartSlice.reducerPath]: cartSlice.reducer,
+  [orderHistoryFilterSlice.reducerPath]: orderHistoryFilterSlice.reducer,
 });
 
 export type RootState = ReturnType<typeof rootReducer>;
@@ -50,5 +53,6 @@ export function createAppStore(dependencies: StoreDependencies): AppStore {
   listenForSessionChanges(listener.startListening);
   listenForCartChanges(listener.startListening);
   listenForNewOrders(listener.startListening);
+  listenForHistorySearch(listener.startListening);
   return store;
 }

@@ -23,6 +23,7 @@ import {
   stubQuote,
   unavailable,
 } from "../../support/menu";
+import { customerPage, stubMyOrders } from "../../support/orders";
 
 test("lists the bag with the unit prices, subtotals and total the API quoted", async ({
   page,
@@ -120,6 +121,7 @@ test("marks an unavailable item and lets the customer continue only after removi
 
   await expect(bagLine(page, BROWNIE_NAME)).toHaveCount(0);
   await expect(continueButton(page)).toBeEnabled();
+  await stubMyOrders(api, customerPage([]));
   await continueButton(page).click();
   await expect(page).toHaveURL(pathIs(SCREEN_URLS.CHECKOUT));
 });

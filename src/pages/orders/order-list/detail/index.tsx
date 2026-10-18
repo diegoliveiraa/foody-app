@@ -10,6 +10,7 @@ import { OrderDetailSkeleton, OrderLoadError, OrderNotFound } from "@/components
 import { OrderStatusBadge } from "@/components/order-status-badge";
 import { PageHeader } from "@/components/page-header";
 import { Button } from "@/components/ui/button";
+import { MESSAGES } from "@/constants/messages";
 import { CANCELLATION_REQUEST_STATUSES } from "@/constants/orders";
 import { SCREEN_KEYS } from "@/constants/screens";
 import { useMeScreen } from "@/hooks/use-me-screen";
@@ -98,6 +99,7 @@ export function OrderDetailScreen(): JSX.Element {
             ? screen?.label
             : ORDER_DETAIL_MESSAGES.TITLE(order.number, order.customer.name)
         }
+        documentTitle={order === undefined ? screen?.label : MESSAGES.ORDERS.TITLE(order.number)}
         description={order === undefined ? undefined : placedLine(order, now)}
         back={<BackLink to={paths.board} label={ORDER_DETAIL_MESSAGES.BACK} />}
       >

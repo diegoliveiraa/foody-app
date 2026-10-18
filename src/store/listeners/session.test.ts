@@ -4,6 +4,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import type { AuthResponse } from "@/@types/auth";
 import type { MeResponse } from "@/@types/me";
 import { MESSAGES } from "@/constants/messages";
+import { TOAST_IDS } from "@/constants/toasts";
 import { authApi } from "@/services/auth";
 import { meApi } from "@/services/me";
 import type { AppStore } from "@/store";
@@ -112,13 +113,17 @@ describe("session listeners", () => {
     expect(selectAccessToken(store.getState())).toBeNull();
   });
 
-  it("tell the user the session expired, leave for /login and empty the API cache", async () => {
+  it("tell the user, in neutral words, that the session ended, leave for /login and empty the API cache", async () => {
     const { store, navigate }: TestStore = await signedInWithCachedMe();
 
     store.dispatch(sessionExpired());
 
     await vi.waitFor((): void => expect(cachedQueries(store)).toBe(0));
     expect(navigate).toHaveBeenCalledWith("/login");
-    expect(toast).toHaveBeenCalledWith(MESSAGES.SESSION.EXPIRED, expect.anything());
+    expect(toast).toHaveBeenCalledWith(
+      "Sua sessão terminou. Entre novamente.",
+      expect.objectContaining({ id: TOAST_IDS.SESSION_ENDED }),
+    );
+    expect(MESSAGES.SESSION.ENDED).toBe("Sua sessão terminou. Entre novamente.");
   });
 });

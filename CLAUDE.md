@@ -203,7 +203,8 @@ List screens are paginated on the server: they send `page` (from 1), `pageSize` 
 `totalPages`, `hasNext`, `hasPrevious`). The page-size selector offers exactly 10, 25, 50 and
 100, declared once in `src/constants` — the API rejects anything else. A list renders cards below
 1024px and `components/data-table` from 1024px up (`LIST_TABLE_BREAKPOINT_PX`), through
-`components/responsive-list`, with `components/list-pagination` under both (ADR-0018).
+`components/responsive-list`, with `components/list-pagination` under both (ADR-0018); the cards sort
+through `components/sort-select`, shown only below that breakpoint (ADR-0025).
 
 **Cache tags (ADR-0006)** decide which screens refresh after a write:
 

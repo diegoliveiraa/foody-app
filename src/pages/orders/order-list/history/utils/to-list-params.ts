@@ -7,8 +7,8 @@ import type { HistoryFilterState } from "../filter/types";
 export function toListOrdersParams({
   appliedSearch,
   status,
-  from,
-  to,
+  appliedFrom,
+  appliedTo,
   page,
   pageSize,
   sort,
@@ -17,8 +17,8 @@ export function toListOrdersParams({
   return {
     ...(search === EMPTY_SEARCH ? {} : { search }),
     ...(status === ALL_FILTER ? {} : { status: [status] }),
-    ...(from === NO_DATE ? {} : { from }),
-    ...(to === NO_DATE ? {} : { to }),
+    ...(appliedFrom === NO_DATE ? {} : { from: appliedFrom }),
+    ...(appliedTo === NO_DATE ? {} : { to: appliedTo }),
     page,
     pageSize,
     sort: [toSortParam(sort)],

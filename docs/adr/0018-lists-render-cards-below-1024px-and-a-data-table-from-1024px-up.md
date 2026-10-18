@@ -1,6 +1,6 @@
 # ADR-0018 — Lists render cards below 1024px and a data table from 1024px up
 
-- **Status:** Accepted
+- **Status:** Accepted — "cards get no sort control" superseded by ADR-0025
 - **Date:** 2026-10-17
 - **Decided by:** Diego
 

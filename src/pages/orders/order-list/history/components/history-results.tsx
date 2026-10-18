@@ -3,11 +3,13 @@ import type { StaffOrderSummary } from "@/@types/orders";
 import { DataTable } from "@/components/data-table";
 import type { DataTableColumns } from "@/components/data-table/features";
 import { ResponsiveList } from "@/components/responsive-list";
+import { SortSelect } from "@/components/sort-select";
 import { MS_PER_MINUTE } from "@/constants/time";
 import { useNow } from "@/hooks/use-now";
 import { useOrderListPaths } from "@/hooks/use-order-list-paths";
 import type { OrderListPaths } from "@/routes/types";
 import { buildHistoryColumns } from "../columns";
+import { HISTORY_SORT_OPTIONS } from "../constants";
 import { HISTORY_MESSAGES } from "../constants/messages";
 import type { OrderHistoryModel } from "../types";
 import { HistoryCardList } from "./history-card-list";
@@ -44,13 +46,20 @@ export function HistoryResults({ history }: HistoryResultsProps): JSX.Element {
     <div aria-busy={history.refreshing} className="transition-opacity aria-busy:opacity-60">
       <ResponsiveList
         cards={
-          <HistoryCardList
-            orders={history.orders}
-            loading={history.loading}
-            emptyState={emptyState}
-            paths={paths}
-            now={now}
-          />
+          <div className="flex flex-col gap-3">
+            <SortSelect
+              options={HISTORY_SORT_OPTIONS}
+              sort={history.filter.sort}
+              onChange={history.actions.changeSort}
+            />
+            <HistoryCardList
+              orders={history.orders}
+              loading={history.loading}
+              emptyState={emptyState}
+              paths={paths}
+              now={now}
+            />
+          </div>
         }
         table={
           <DataTable

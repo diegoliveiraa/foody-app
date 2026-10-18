@@ -132,6 +132,37 @@ test("filters by status and by dates, back on the first page", async ({
   await expectNoHorizontalOverflow(page);
 });
 
+test("refuses an end date earlier than the start, keeping the last results and asking nothing", async ({
+  page,
+  api,
+}): Promise<void> => {
+  await openHistory(page, api);
+  const from: Locator = page.getByLabel(HISTORY_MESSAGES.FROM, { exact: true });
+  const to: Locator = page.getByLabel(HISTORY_MESSAGES.TO, { exact: true });
+  await from.fill("2026-10-10");
+  await expect
+    .poll((): Record<string, string>[] => historyQueries(api))
+    .toContainEqual({ ...DEFAULT_QUERY, from: "2026-10-10" });
+
+  await to.fill("2026-10-01");
+
+  await expect(page.getByText(HISTORY_MESSAGES.INVERTED_RANGE)).toBeVisible();
+  await expect(to).toHaveAttribute("aria-invalid", "true");
+  await expect(orderEntry(page, 1042)).toBeVisible();
+  await expect(page.getByText(HISTORY_MESSAGES.EMPTY)).toHaveCount(0);
+  await expectNoHorizontalOverflow(page);
+  expect(
+    historyQueries(api).filter((query: Record<string, string>): boolean => "to" in query),
+  ).toEqual([]);
+
+  await to.fill("2026-10-17");
+
+  await expect(page.getByText(HISTORY_MESSAGES.INVERTED_RANGE)).toHaveCount(0);
+  await expect
+    .poll((): Record<string, string>[] => historyQueries(api))
+    .toContainEqual({ ...DEFAULT_QUERY, from: "2026-10-10", to: "2026-10-17" });
+});
+
 test("sorts by total from the column header, flipping the order on a second click", async ({
   page,
   api,

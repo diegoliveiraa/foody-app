@@ -92,9 +92,12 @@ needs migration, rework or monitoring.
 | [ADR-0015](./0015-visual-identity-mobile-first-and-sonner-toasts.md) | 2026-10-17 | Visual identity, mobile-first and Sonner toasts | Accepted |
 | [ADR-0016](./0016-run-the-integrated-suite-locally-until-the-repos-have-a-remote.md) | 2026-10-17 | Run the integrated suite locally until the repos have a remote | Accepted |
 | [ADR-0017](./0017-render-the-content-security-policy-at-build-time.md) | 2026-10-17 | Render the Content Security Policy at build time | Accepted |
-| [ADR-0018](./0018-lists-render-cards-below-1024px-and-a-data-table-from-1024px-up.md) | 2026-10-17 | Lists render cards below 1024px and a data table from 1024px up | Accepted |
+| [ADR-0018](./0018-lists-render-cards-below-1024px-and-a-data-table-from-1024px-up.md) | 2026-10-17 | Lists render cards below 1024px and a data table from 1024px up | Accepted — "cards get no sort control" superseded by ADR-0025 |
 | [ADR-0019](./0019-the-cart-keeps-only-product-ids-and-quantities-per-user-priced-by-the-api.md) | 2026-10-17 | The cart keeps only product ids and quantities, per user, priced by the API | Accepted |
 | [ADR-0020](./0020-live-screens-poll-with-rtk-query-and-announce-changes-from-listener-middleware.md) | 2026-10-17 | Live screens poll with RTK Query and announce changes from listener middleware | Accepted — "only live screens poll" superseded by ADR-0023 |
 | [ADR-0021](./0021-order-writes-store-the-servers-answer-and-refresh-on-stale-errors.md) | 2026-10-17 | Order writes store the server's answer and refresh on stale errors | Accepted |
 | [ADR-0022](./0022-charts-use-the-shadcn-chart-component-over-recharts.md) | 2026-10-17 | Charts use the shadcn chart component over Recharts | Accepted |
 | [ADR-0023](./0023-the-back-office-shell-keeps-the-active-orders-count-live.md) | 2026-10-17 | The back-office shell keeps the active-orders count live | Accepted |
+| [ADR-0024](./0024-every-page-names-itself-with-react-19s-document-title.md) | 2026-10-17 | Every page names itself with React 19's document title | Accepted |
+| [ADR-0025](./0025-card-lists-sort-through-one-shared-select.md) | 2026-10-17 | Card lists sort through one shared select | Accepted |
+| [ADR-0026](./0026-checkout-prefills-the-address-from-the-customers-last-order.md) | 2026-10-17 | Checkout prefills the address from the customer's last order | Accepted |

@@ -5,8 +5,16 @@ import type {
   CheckoutFormValues,
 } from "@/services/validation-schemas/delivery-address";
 import type { CartQuoteModel } from "../types";
+import type { PREFILL_STATES } from "./constants";
 
 export type CheckoutForm = UseFormReturn<CheckoutFormInput, unknown, CheckoutFormValues>;
+
+export type PrefillState = (typeof PREFILL_STATES)[keyof typeof PREFILL_STATES];
+
+export interface CheckoutFormModel {
+  form: CheckoutForm;
+  prefilled: boolean;
+}
 
 export interface SummaryLine {
   productId: string;
@@ -17,6 +25,7 @@ export interface SummaryLine {
 
 export interface CheckoutModel {
   form: CheckoutForm;
+  prefilled: boolean;
   quote: CartQuoteModel;
   lines: readonly SummaryLine[];
   pendingLines: number;

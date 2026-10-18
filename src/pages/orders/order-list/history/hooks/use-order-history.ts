@@ -9,7 +9,7 @@ import type { OrderHistoryModel } from "../types";
 import { toListOrdersParams } from "../utils/to-list-params";
 
 export function useOrderHistory(): OrderHistoryModel {
-  const { filter, actions, hasFilters }: HistoryFilterModel = useHistoryFilter();
+  const { filter, actions, hasFilters, invertedRange }: HistoryFilterModel = useHistoryFilter();
   const params: ListOrdersParams = useMemo(
     (): ListOrdersParams => toListOrdersParams(filter),
     [filter],
@@ -25,6 +25,7 @@ export function useOrderHistory(): OrderHistoryModel {
     filter,
     actions,
     hasFilters,
+    invertedRange,
     orders,
     pagination: loadError === null && data !== undefined && orders.length > 0 ? data.meta : null,
     loading: isLoading,

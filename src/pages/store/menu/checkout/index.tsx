@@ -18,7 +18,7 @@ function CheckoutForm({ checkout }: { checkout: CheckoutModel }): JSX.Element {
       onSubmit={checkout.submit}
       className="flex flex-col gap-5 lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(0,22rem)] lg:items-start"
     >
-      <AddressFieldset form={checkout.form} />
+      <AddressFieldset form={checkout.form} prefilled={checkout.prefilled} />
       <div className="flex flex-col gap-4">
         <CheckoutSummary
           quote={checkout.quote}

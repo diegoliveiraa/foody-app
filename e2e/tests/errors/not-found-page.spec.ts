@@ -13,7 +13,10 @@ test("shows the not-found page for an address the app does not have", async ({
 
   await page.goto(UNKNOWN_URL);
 
-  await expect(page.getByText(MESSAGES.NOT_FOUND.TITLE)).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: MESSAGES.NOT_FOUND.TITLE, level: 1 }),
+  ).toBeVisible();
+  await expect(page).toHaveTitle("Página não encontrada · Foody");
   await expect(page.getByText(MESSAGES.NOT_FOUND.DESCRIPTION)).toBeVisible();
   await expectNoHorizontalOverflow(page);
 });
