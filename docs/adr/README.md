@@ -87,7 +87,7 @@ needs migration, rework or monitoring.
 | [ADR-0010](./0010-generate-the-api-types-from-its-openapi-contract.md) | 2026-10-16 | Generate the API's types from its OpenAPI contract | Accepted |
 | [ADR-0011](./0011-enforce-the-code-rules-with-prettier-type-aware-lint-and-ci.md) | 2026-10-16 | Enforce the code rules with Prettier, type-aware lint and CI | Accepted |
 | [ADR-0012](./0012-stub-the-network-in-tests-and-keep-an-integrated-suite-for-critical-flows.md) | 2026-10-16 | Stub the network in tests; keep an integrated suite for critical flows | Accepted — integrated CI job superseded by ADR-0016 |
-| [ADR-0013](./0013-keep-dependencies-current-with-dependabot.md) | 2026-10-16 | Keep dependencies current with Dependabot | Accepted |
+| [ADR-0013](./0013-keep-dependencies-current-with-dependabot.md) | 2026-10-16 | Keep dependencies current with Dependabot | Accepted — target branch and platform majors refined by ADR-0028 |
 | [ADR-0014](./0014-one-shell-per-area-and-public-pages-outside-me.md) | 2026-10-17 | One shell per area and public pages outside /me | Accepted |
 | [ADR-0015](./0015-visual-identity-mobile-first-and-sonner-toasts.md) | 2026-10-17 | Visual identity, mobile-first and Sonner toasts | Accepted |
 | [ADR-0016](./0016-run-the-integrated-suite-locally-until-the-repos-have-a-remote.md) | 2026-10-17 | Run the integrated suite locally until the repos have a remote | Accepted — failing on a missing seed variable superseded by ADR-0027 |
@@ -102,3 +102,4 @@ needs migration, rework or monitoring.
 | [ADR-0025](./0025-card-lists-sort-through-one-shared-select.md) | 2026-10-17 | Card lists sort through one shared select | Accepted |
 | [ADR-0026](./0026-checkout-prefills-the-address-from-the-customers-last-order.md) | 2026-10-17 | Checkout prefills the address from the customer's last order | Accepted |
 | [ADR-0027](./0027-each-repo-starts-on-its-own-with-one-command.md) | 2026-10-17 | Each repo starts on its own with one command | Accepted |
+| [ADR-0028](./0028-dependabot-targets-develop-and-leaves-platform-majors-to-planned-upgrades.md) | 2026-10-18 | Dependabot targets develop and leaves platform majors to planned upgrades | Accepted |
