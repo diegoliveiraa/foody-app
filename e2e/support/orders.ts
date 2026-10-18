@@ -44,7 +44,7 @@ const BOARD_QUERY: string = new URLSearchParams([
   ["sort", "placedAt,asc"],
 ]).toString();
 
-export const CLOCK_START: Date = new Date(2026, 9, 17, 19, 30, 0);
+export const CLOCK_START: Date = new Date("2026-10-17T22:30:00Z");
 
 const MS_PER_MINUTE: number = 60_000;
 
