@@ -35,7 +35,10 @@ estão no README do `foody-api`.
 
 ### 2. Suba o front (este repositório)
 
+A partir da pasta `foody-api` do passo 1 — o `cd ..` deixa os dois clones lado a lado:
+
 ```bash
+cd ..
 git clone https://github.com/diegoliveiraa/foody-app.git foody-app
 cd foody-app
 docker compose up -d --build --wait
@@ -47,7 +50,7 @@ Abra **<http://localhost:5173>** — exatamente esse endereço (veja [CORS](#sol
   e o mesmo nginx do deploy) apontada para `http://localhost:8080` e a publica na porta 5173.
 - **Primeira vez:** o Docker baixa as imagens base (Node 24 e nginx), instala as dependências e
   compila o app. Conte com 1 a 3 minutos, conforme a rede; com as imagens base já baixadas, o build
-  levou 27 s nesta máquina. Das próximas vezes, poucos segundos.
+  leva cerca de 30 s. Das próximas vezes, poucos segundos.
 - **Está pronto quando** o comando devolve o prompt depois de `Container foody-web-web-1 Healthy`:
   o `--wait` só termina quando o nginx já responde. `docker compose ps` mostra `(healthy)`.
 - **Conferir pelo terminal:** `curl -I http://localhost:5173` (no PowerShell,
@@ -72,7 +75,7 @@ Todas com a senha **`Foody#2026`**:
 | Papel | E-mail | Vê no menu |
 |---|---|---|
 | Cliente | `cliente@foody.local` | Loja: Cardápio, Pedidos |
-| Equipe | `equipe@foody.local` | Dashboard, Pedidos, Catálogo (Produtos, Categorias) |
+| Equipe | `equipe@foody.local` | Dashboard (Visão geral), Pedidos, Catálogo (Produtos, Categorias) |
 | Administrador | `admin@foody.local` | o mesmo da equipe, mais Administração → Usuários |
 
 A navegação vem de `GET /me`: cada papel vê só as telas que a API libera. Uma tela fora do papel,
@@ -81,7 +84,8 @@ aberta pelo endereço, mostra _"Acesso negado"_.
 ## Roteiro de avaliação (5–10 min)
 
 Use duas janelas lado a lado: uma normal para o **cliente** e uma anônima/privativa para a
-**equipe** (cada janela precisa da sua própria sessão).
+**equipe** (cada janela precisa da sua própria sessão). **Entre nas duas antes de começar:** os
+passos do cliente pedem ações da equipe, e a equipe reage aos pedidos do cliente.
 
 ### Como cliente (`cliente@foody.local`)
 
@@ -94,18 +98,21 @@ Use duas janelas lado a lado: uma normal para o **cliente** e uma anônima/priva
    último pedido"_), e o CEP tem máscara. _"Fazer pedido"_ → _"Pedido #N enviado ao restaurante"_,
    e o acompanhamento abre.
 4. **Acompanhamento ao vivo** — a linha do tempo marca cada etapa com o horário e _"Atualiza
-   sozinho"_ (a cada 30 s). Deixe essa tela aberta e avance o pedido na janela da equipe.
+   sozinho"_ (a cada 30 s). Deixe essa tela aberta e avance o pedido no quadro da janela da equipe
+   (passo 2 da equipe, abaixo).
 5. **Cancelar** — enquanto o pedido está _"Recebido"_, _"Cancelar pedido"_ pede um motivo e cancela
    na hora. Já _"Em preparo"_, o botão vira _"Solicitar cancelamento"_ → _"Enviar solicitação"_, e
-   o restaurante decide.
-6. **Pedidos** (menu) — a lista dos seus pedidos, do mais novo para o mais antigo, com _"Ver mais
-   pedidos"_ e o aviso _"Solicitação enviada. Avisaremos a resposta."_ nos que aguardam decisão.
+   o restaurante decide. Se o seu pedido já avançou, use os da demonstração: a conta do cliente já
+   começa com um pedido _"Recebido"_ e um _"Em preparo"_.
+6. **Pedidos** (menu) — a lista dos seus pedidos, do mais novo para o mais antigo, 10 por vez
+   (passando de 10, aparece _"Ver mais pedidos"_), com o aviso _"Solicitação enviada. Avisaremos a
+   resposta."_ nos que aguardam decisão.
 
 ### Como equipe (`equipe@foody.local`, na janela anônima)
 
-1. **Pedido novo** — com a equipe em qualquer tela, faça um pedido como cliente: em até 30 s surge o
-   aviso _"Novo pedido #N recebido"_ e o contador ao lado de **Pedidos** no menu lateral (_"N
-   pedidos ativos"_) sobe.
+1. **Pedido novo** — com a equipe em qualquer tela, o pedido feito no passo 3 do cliente faz surgir,
+   em até 30 s, o aviso _"Novo pedido #N recebido"_, e o número de pedidos ativos ao lado de
+   **Pedidos** no menu lateral sobe.
 2. **Quadro de pedidos** — no desktop, três colunas: _"Recebidos"_, _"Em preparo"_ e _"Saiu para
    entrega"_. Abaixo de 1024 px, as colunas viram abas (_"Recebidos"_, _"Em preparo"_,
    _"Saindo"_). Avance um pedido com _"Iniciar preparo"_ → _"Saiu para entrega"_ → _"Marcar
@@ -117,11 +124,13 @@ Use duas janelas lado a lado: uma normal para o **cliente** e uma anônima/priva
 4. **Histórico** — a aba _"Histórico"_ busca por número ou cliente, filtra por status e por
    período (_"De"_ / _"Até"_), ordena (mais recentes, maior total, número…) e pagina com 10, 25,
    50 ou 100 itens. Abaixo de 1024 px a tabela vira cartões, com _"Ordenar por"_.
-5. **Dashboard** — alterne _"Hoje"_, _"7 dias"_ e _"30 dias"_: pedidos, faturamento, ticket médio
-   e cancelamentos contra o período anterior, pedidos por hora/dia, tempo médio por etapa, mais
-   vendidos e motivos de cancelamento.
-6. **Catálogo** — em **Produtos** e **Categorias**: _"Novo produto"_ / _"Nova categoria"_,
-   _"Editar"_, _"Desabilitar"_ / _"Habilitar"_ e _"Excluir"_. Tente excluir um produto que já foi
+5. **Dashboard** (_"Visão geral"_ no menu) — alterne _"Hoje"_, _"7 dias"_ e _"30 dias"_: pedidos,
+   com a variação contra o período anterior (_"vs ontem"_, _"vs 7 dias anteriores"_…), faturamento,
+   ticket médio, cancelamentos, pedidos por hora/dia, tempo médio por etapa, mais vendidos e motivos
+   de cancelamento.
+6. **Catálogo** — em **Produtos** e **Categorias**: _"Novo produto"_ / _"Nova categoria"_ e, no
+   menu _"Ações para …"_ de cada item, _"Editar"_, _"Desabilitar"_ / _"Habilitar"_ e _"Excluir"_.
+   Tente excluir um produto que já foi
    pedido, ou uma categoria com produtos: a API recusa (_"O produto já aparece em pedidos;
    desabilite-o em vez de excluir"_), o diálogo mostra esse motivo e oferece _"Desabilitar em vez
    disso"_ — o item sai do cardápio sem apagar o histórico.
@@ -130,8 +139,8 @@ Use duas janelas lado a lado: uma normal para o **cliente** e uma anônima/priva
 
 1. Na janela anônima, saia e crie uma conta nova em _"Criar conta"_ — assim as contas de
    demonstração ficam intactas. Deixe essa sessão aberta.
-2. Na janela normal, entre como admin e abra **Usuários**: busque por nome ou e-mail, filtre por
-   papel e status, ordene e pagine.
+2. Na janela normal, saia da conta do cliente, entre como admin e abra **Usuários**: busque por
+   nome ou e-mail, filtre por papel e status, ordene e pagine.
 3. **Alterar papel** da conta nova (por exemplo, para _"Equipe"_) → _"Papel alterado: … agora é
    Equipe"_.
 4. **Desabilitar** a conta nova: _"… perde o acesso imediatamente e a sessão é encerrada."_ Na
@@ -254,7 +263,7 @@ e2e/
   tests/                 specs com a API simulada, em todas as larguras
   integrated/            fluxos críticos contra a API real
   support/               fixtures, stubs e as contas de demonstração
-docs/adr/                as decisões de arquitetura, ADR-0001 a ADR-0027
+docs/adr/                as decisões de arquitetura (ADRs)
 CLAUDE.md                as regras do repositório (fonte única)
 ```
 
@@ -280,7 +289,16 @@ O Docker Compose lê um `.env` nesta pasta: um `WEB_PORT` ali vale para os dois 
 
 - **"Não foi possível falar com o servidor. Tente novamente."** — a API não está no ar. Rode
   `docker compose up -d --build --wait` no `foody-api` e confira
-  <http://localhost:8080/actuator/health> (`{"status":"UP"}`).
+  <http://localhost:8080/actuator/health> (responde com `"status":"UP"`).
+- **"E-mail ou senha inválidos" com as contas de demonstração** — um `.env` na pasta `foody-api`
+  troca as contas e as senhas da demonstração. Apague-o (ou confira os valores) e recrie o banco da
+  API: `docker compose down -v` e `docker compose up -d --build --wait` no `foody-api`.
+- **Quadro vazio, _"Hoje"_ sem pedidos no dashboard ou nenhuma solicitação de cancelamento** — os
+  pedidos de demonstração são criados na hora em que a API sobe pela primeira vez e envelhecem, e
+  as 2 solicitações pendentes acabam depois de decididas. `docker compose down -v` e
+  `docker compose up -d --build --wait` no `foody-api` recriam tudo no presente.
+- **`401` em `/auth/refresh` no console** — ao abrir o app sem sessão, ele tenta restaurá-la pelo
+  cookie; sem cookie, a API responde `401` e o app mostra o login. É o esperado.
 - **CORS** — a API só aceita o front em `http://localhost:5173`. Abra exatamente esse endereço:
   `http://127.0.0.1:5173` ou outra porta são outra origem, e o navegador bloqueia as chamadas (o
   console do DevTools mostra o erro de CORS, e a tela mostra a mensagem acima).
