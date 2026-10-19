@@ -1,6 +1,6 @@
 # ADR-0013 — Keep dependencies current with Dependabot
 
-- **Status:** Accepted
+- **Status:** Accepted — target branch and platform majors refined by ADR-0028
 - **Date:** 2026-10-16
 - **Decided by:** Diego
 
